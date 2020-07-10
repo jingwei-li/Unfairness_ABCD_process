@@ -1,11 +1,13 @@
-function [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL(subj_list, race, dohist, hist_dir, hist_fstem)
+function [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS(subj_list, race, dohist, hist_dir, hist_fstem)
 
-% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL(subj_list, race, dohist, hist_dir, hist_fstem)
+% [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read and plot histograms of the necessary measures from Achenbach Child Behavior Check List
+% Read and plot histograms of the mecessary measures from Modified UPPS-P for Children from PhenX
 %
 % Example:
-% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% where "race" is obtained from
+% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
@@ -13,15 +15,13 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-CBCL_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_cbcls01.txt';
-CBCL_hdr = {'cbcl_scr_syn_anxdep_r', 'cbcl_scr_syn_withdep_r', 'cbcl_scr_syn_somatic_r', ...
-    'cbcl_scr_syn_social_r', 'cbcl_scr_syn_thought_r', 'cbcl_scr_syn_attention_r', ...
-    'cbcl_scr_syn_rulebreak_r', 'cbcl_scr_syn_aggressive_r'};
-CBCL_colloquial = {'Anxious,Depressed', 'Withdrawn,Depressed', 'Somatic complaints', ...
-    'Social problems', 'Thought problems', 'Attention problems', 'Rule-breaking behavior', ...
-    'Aggressive behavior'};
-for c = 1:length(CBCL_colloquial)
-    CBCL_col_plot{c} = regexprep(CBCL_colloquial{c}, ' +', '_');
+UPPS_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
+UPPS_hdr = {'upps_y_ss_negative_urgency', 'upps_y_ss_positive_urgency', 'upps_y_ss_lack_of_planning', ...
+    'upps_y_ss_lack_of_perseverance', 'upps_y_ss_sensation_seeking'};
+UPPS_colloquial = {'Negative urgency', 'Positive urgency', 'Lack of planning', ...
+    'Lack of perseverance', 'Sensation seeking'};
+for c = 1:length(UPPS_colloquial)
+    UPPS_col_plot{c} = regexprep(UPPS_colloquial{c}, ' +', '_');
 end
 subj_hdr = 'subjectkey';
 event_hdr = 'eventname';
@@ -38,40 +38,40 @@ for s = 1:nsub
     subjects_csv{s} = [subjects{s}(1:4) '_' subjects{s}(5:end)];
 end
 
-d = readtable(CBCL_csv);
+d = readtable(UPPS_csv);
 base_event = strcmp(d.(event_hdr), 'baseline_year_1_arm_1');
 
-% choose columns of selected CBCL measures
-CBCL_read = [];
-for c = 1:length(CBCL_hdr)
-    curr_CBCL = d.(CBCL_hdr{c});
-    CBCL_read = [CBCL_read curr_CBCL];
+% choose columns of selected UPPS measures
+UPPS_read = [];
+for c = 1:length(UPPS_hdr)
+    curr_UPPS = d.(UPPS_hdr{c});
+    UPPS_read = [UPPS_read curr_UPPS];
 end
 
 % select only the rows corresponding to required subjects
-CBCL = cell(nsub, length(CBCL_hdr));
+UPPS = cell(nsub, length(UPPS_hdr));
 for s = 1:nsub
     tmp_idx = strcmp(d.(subj_hdr), subjects_csv{s});
     if(any(tmp_idx==1))
         tmp_idx = tmp_idx & base_event;
-        CBCL(s,:) = CBCL_read(tmp_idx,:);
+        UPPS(s,:) = UPPS_read(tmp_idx,:);
     end
 end
-empty_idx = cellfun(@isempty, CBCL);
-CBCL(empty_idx) = {'NaN'};
-CBCL = cellfun(@str2num, CBCL);
+empty_idx = cellfun(@isempty, UPPS);
+UPPS(empty_idx) = {'NaN'};
+UPPS = cellfun(@str2num, UPPS);
 
 if(dohist==1)
     binwidth = 1;
-    nan_replace = -2;
+    nan_replace = 0;
     
-    for c = 1:length(CBCL_hdr)
-        CBCL_plot = CBCL(:,c);
+    for c = 1:length(UPPS_hdr)
+        UPPS_plot = UPPS(:,c);
         % assign NaN to 10 (an invalid number for this task), so that #subjects without scores can be plotted
-        CBCL_plot(isnan(CBCL_plot)) = nan_replace; 
+        UPPS_plot(isnan(UPPS_plot)) = nan_replace; 
         
         %% histogram across all subjects
-        h = histogram(CBCL_plot, 'binwidth', binwidth);
+        h = histogram(UPPS_plot, 'binwidth', binwidth);
         box off
         set(gcf, 'Position', [0 0 1500 600])
         E = h.BinEdges;
@@ -81,24 +81,24 @@ if(dohist==1)
         
         xloc = E(1:end-1) + diff(E)/2; xloc(2:start_idx) = [];
         xloc_txt = E(1:end-1); xloc_txt(2:start_idx) = [];
-        text(xloc_txt, y+20, string(y), 'FontSize', 13)
+        text(xloc_txt, y+30, string(y), 'FontSize', 13)
         set(gca, 'xtick', xloc, 'linewidth', 2, 'fontsize', 12, 'TickDir','out')
         xticklabels(sprintfc('%d', [nan round(xloc(2:end))]))
         
         if(~exist(hist_dir, 'dir'))
             mkdir(hist_dir);
         end
-        [imageData, alpha] = export_fig(fullfile(hist_dir, [CBCL_col_plot{c} hist_fstem '.png']), '-png', '-nofontswap', '-a1');
+        [imageData, alpha] = export_fig(fullfile(hist_dir, [UPPS_col_plot{c} hist_fstem '.png']), '-png', '-nofontswap', '-a1');
         close(gcf)
         
         %% histogram for AA/WA separately
         WA_filter = strcmp(race, '1');
         AA_filter = strcmp(race, '2');
-        WA_CBCL = CBCL_plot(WA_filter);
-        AA_CBCL = CBCL_plot(AA_filter);
+        WA_UPPS = UPPS_plot(WA_filter);
+        AA_UPPS = UPPS_plot(AA_filter);
         
-        hc_WA = histcounts(WA_CBCL, E); hc_WA(2:start_idx) = [];
-        hc_AA = histcounts(AA_CBCL, E); hc_AA(2:start_idx) = [];
+        hc_WA = histcounts(WA_UPPS, E); hc_WA(2:start_idx) = [];
+        hc_AA = histcounts(AA_UPPS, E); hc_AA(2:start_idx) = [];
         xloc = E(1:end-1) + diff(E)/2; xloc(2:start_idx) = [];
         bar(xloc, [hc_WA; hc_AA]')
         box off
@@ -111,14 +111,15 @@ if(dohist==1)
         legend boxoff
         
         xloc_txt = xloc([1 (start_idx+1):end]);
-        text(xloc-binwidth/2, hc_WA+10, string(hc_WA), 'FontSize', 13)
-        text(xloc, hc_AA+10, string(hc_AA), 'FontSize', 13)
+        text(xloc-binwidth/2, hc_WA+30, string(hc_WA), 'FontSize', 13)
+        text(xloc, hc_AA+30, string(hc_AA), 'FontSize', 13)
         
-        fname2 = fullfile(hist_dir, [CBCL_col_plot{c} hist_fstem '_WAvsAA.png']);
+        fname2 = fullfile(hist_dir, [UPPS_col_plot{c} hist_fstem '_WAvsAA.png']);
         [imageData, alpha] = export_fig(fname2, '-png', '-nofontswap', '-a1');
         close(gcf)
     end
 end
+
 
 
 rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))

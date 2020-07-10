@@ -1,11 +1,4 @@
-function [site, site_hdr] = ABCD_read_site(subj_list, race, dohist, hist_fname)
-
-% [site, site_hdr] = ABCD_read_site(subj_list, race, dohist, hist_fname)
-%
-% Example:
-% site = ABCD_read_site([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/site_pass_rs.png');
-% "race" is calculated using 
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+function [sex, sex_hdr] = ABCD_read_sex(subj_list, race, dohist, hist_fname)
 
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
@@ -13,8 +6,8 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-site_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
-site_hdr = 'site_id_l';
+sex_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
+sex_hdr = 'gender';
 event_hdr = 'eventname';
 subj_hdr = 'subjectkey';
 
@@ -30,35 +23,32 @@ for s = 1:nsub
     subjects_csv{s} = [subjects{s}(1:4) '_' subjects{s}(5:end)];
 end
 
-d = readtable(site_csv);
+d = readtable(sex_csv);
 base_event = strcmp(d.(event_hdr), 'baseline_year_1_arm_1');
-site = cell(nsub,1);
+sex = cell(nsub,1);
 for s = 1:nsub
     tmp_idx = strcmp(d.(subj_hdr), subjects_csv{s});
     if(any(tmp_idx==1))
         tmp_idx = tmp_idx & base_event;
-        site(s) = d.(site_hdr)(tmp_idx);
+        sex(s) = d.(sex_hdr)(tmp_idx);
     end
 end
 
 if(dohist==1)
-    %% plot pure site distribution, without considering raes
-    site_plot = site;
-    for i = 1:length(site_plot)
-        site_plot{i} = str2num(site_plot{i}(5:end));
-    end
-    site_plot = cell2mat(site_plot);
-    xtl = sort(unique(site_plot));
-    xtl = sprintfc('%d', xtl);
+    %% plot pure sex distribution, without considering raes
+    sex_plot = sex;
+    sex_plot = strcmp(sex_plot, 'F');
+    xtl = {'F', 'M'};
     
-    h = histogram(site_plot, 'BinWidth', 0.9999);
+    E = [-0.5 0.5 1.5];
+    hc = histcounts(sex_plot, E);
+    bar(E(1:end-1) + diff(E)/2, hc');
+    
     box off
-    set(gcf, 'Position', [0 0 800 600])
-    E = h.BinEdges;
-    y = h.BinCounts;
+    set(gcf, 'Position', [0 0 600 600])
     xloc = E(1:end-1)+diff(E)/2;
     xloc_txt = E(1:end-1);
-    text(xloc_txt, y+50, string(y), 'FontSize', 13)
+    text(xloc_txt, hc+50, string(hc), 'FontSize', 13)
     set(gca, 'xtick', xloc, 'linewidth', 2, 'fontsize', 13, 'TickDir','out')
     xticklabels(xtl)
     
@@ -69,24 +59,25 @@ if(dohist==1)
     [imageData, alpha] = export_fig(hist_fname, '-png', '-nofontswap', '-a1');
     close(gcf)
     
-    %% plot AA/WA histograms across sites
+    %% plot AA/WA histograms across sexs
     WA_filter = strcmp(race, '1');
     AA_filter = strcmp(race, '2');
-    WA_site = site_plot(WA_filter);
-    AA_site = site_plot(AA_filter);
+    WA_sex = sex_plot(WA_filter);
+    AA_sex = sex_plot(AA_filter);
     
-    hc_WA = histcounts(WA_site, E);
-    hc_AA = histcounts(AA_site, E);
-    bar(E(1:end-1), [hc_WA; hc_AA]')
+    hc_WA = histcounts(WA_sex, E);
+    hc_AA = histcounts(AA_sex, E);
+    bar(E(1:end-1) + diff(E)/2, [hc_WA; hc_AA]')
     box off
-    set(gcf, 'Position', [0 0 1200 600])
-    set(gca, 'linewidth', 2, 'fontsize', 13, 'TickDir', 'out')
+    set(gcf, 'Position', [0 0 800 600])
+    set(gca, 'xtick', xloc, 'linewidth', 2, 'fontsize', 13, 'TickDir', 'out')
     legend({'WA', 'AA'}, 'FontSize', 13)
     legend boxoff
     
-    xloc_txt = min(site_plot):1:max(site_plot);
+    xloc_txt = min(sex_plot):1:max(sex_plot);
     text(xloc_txt-0.4, hc_WA+15, string(hc_WA), 'FontSize', 13)
     text(xloc_txt, hc_AA+15, string(hc_AA), 'FontSize', 13)
+    xticklabels(xtl)
     
     [~, outbase, outext] = fileparts(hist_fname);
     fname2 = fullfile(outdir, [outbase '_WAvsAA' outext]);
@@ -94,6 +85,8 @@ if(dohist==1)
     close(gcf)
 end
 
+
+rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

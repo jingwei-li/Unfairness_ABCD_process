@@ -30,7 +30,7 @@ end
 subj_hdr = 'subjectkey';
 
 if(~exist('subj_list', 'var') || isempty(subj_list))
-    subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/control_rs_nback/subjects_pass_rs.txt';
+    subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
 end
 [subjects, nsub] = CBIG_text2cell(subj_list);
 
@@ -90,8 +90,8 @@ if(dohist==1)
         close(gcf)
         
         %% histogram for AA/WA separately
-        WA_filter = strcmp(race, '"1"');
-        AA_filter = strcmp(race, '"2"');
+        WA_filter = strcmp(race, '1');
+        AA_filter = strcmp(race, '2');
         WA_NIH = NIH_plot(WA_filter);
         AA_NIH = NIH_plot(AA_filter);
         
