@@ -39,6 +39,9 @@ for s = 1:nsub
 end
 
 if(dohist)
+    uniq_race = unique(race);
+    [~,idx] = intersect(race_labels, uniq_race);
+    xtl = race_grps(idx);
     race_plot = race;
     for l = 1:length(race_labels)
         idx = strcmp(race, race_labels{l});
@@ -55,7 +58,7 @@ if(dohist)
     xloc_txt = E(1:end-1)+diff(E)/3;
     text(xloc_txt, y+100, string(y), 'FontSize', 13)
     set(gca, 'xtick', xloc, 'linewidth', 2, 'fontsize', 13, 'TickDir','out')
-    xticklabels(race_grps);
+    xticklabels(xtl);
     
     [outdir] = fileparts(hist_fname);
     if(~exist(outdir, 'dir'))
