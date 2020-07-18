@@ -44,7 +44,7 @@ if(~isempty(sites_same_fam))
     end
 end
 
-%% 
+%% deal with too large individual sites
 uniq_site = unique(site);
 site_sz = zeros(length(uniq_site), 1);
 site_subj = cell(length(uniq_site), 1);
@@ -52,6 +52,17 @@ for i = 1:length(site_sz)
     site_sz(i) = length(find(site == uniq_site(i) ));
     site_subj{i} = subjects(site == uniq_site(i));
 end
+
+exceed_sites = site_sz > N_fold;
+N_exceeded = sum(site_sz(exceed_sites)) - N_fold * sum(double(exceed_sites));
+if(N_exceeded >= N_fold)
+    % if the large sites take up the size of an entire fold, adjust the
+    % upper-bound size of average fold
+    N_fold = round( (N - sum(site_sz(exceed_sites))) / (Nfolds - sum(double(exceed_sites))) );
+end
+
+
+%%
 % [~, sort_idx] = sort(site_sz, 'descend');
 
 rng('default')
