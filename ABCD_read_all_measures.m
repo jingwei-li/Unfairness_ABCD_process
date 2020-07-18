@@ -1,5 +1,11 @@
 function ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
 
+% ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
+%
+% Example:
+% ABCD_read_all_measures([], '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
+%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
+
 dohist = 0;
 subjectkey = CBIG_text2cell(subj_list);
 
@@ -24,21 +30,24 @@ fprintf('Empty sex: %d subjects.\n', length(find(sex_empty)));
 site_empty = cellfun(@isempty, site);
 fprintf('Empty site: %d subjects.\n', length(find(site_empty)));
 
-% 4. motion
+% 4. family ID
+[family_id, fam_mem] = ABCD_read_family(subj_list);
+
+% 5. motion
 [FD, DVARS] = ABCD_read_motion(fmri_dir, subj_list, 1, outdir, outstem);
 
-% 5. brain volume
+% 6. brain volume
 [ICV] = ABCD_read_ICV(subj_list, race, dohist);
 ICV_empty = isnan(ICV);
 fprintf('Empty ICV: %d subjects.\n', length(find(ICV_empty)));
 
-% 6. parental education
+% 7. parental education
 [peduc, peduc_comb, peduc_avg, peduc_hdr, peduc_colloquial] = ABCD_read_Prt_Educ(subj_list, race, dohist);
 peduc_empty = isnan(peduc_avg);
 fprintf('Empty parental education: %d subjects.\n', length(find(peduc_empty)));
 
 subjectkey = subjectkey';
-d = table(subjectkey, race, age, sex, site, FD, DVARS, ICV, peduc_avg);
+d = table(subjectkey, race, age, sex, site, family_id, FD, DVARS, ICV, peduc_avg);
 for i = 1:length(peduc_hdr)
     d.(peduc_hdr{i}) = peduc(:,i);
 end
@@ -139,10 +148,15 @@ behaviors = [behaviors BISBAS_hdr];
 colloquial = [colloquial BISBAS_colloquial];
 
 
+%% get subjects collected using
+[subj_philips, isPhilips] = ABCD_get_subj_Philips(subj_list);
+
+
 %% integrate results
 any_empty = race_empty | age_empty | sex_empty | site_empty | ICV_empty | peduc_empty | ...
     RAVLT_empty | WISC_empty | NIH_empty | LMT_empty | CBCL_empty | PGBI_empty | ...
     PPS_empty | UPPS_empty | BISBAS_empty;
+any_empty = any_empty | isPhilips;
 pass_subj = subjectkey(~any_empty);
 CBIG_cell2text(pass_subj, fullfile(outdir, ['subjects' outstem '_pass_pheno.txt']));
 writetable(d, fullfile(outdir, ['phenotypes' outstem '.txt']));

@@ -4,6 +4,9 @@ function [race, race_hdr] = ABCD_read_race(subj_list, dohist, hist_fname)
 %
 % Example:
 % race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% race = ABCD_read_race('/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt',...
+%    [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs_pass_pheno.png');
 
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
