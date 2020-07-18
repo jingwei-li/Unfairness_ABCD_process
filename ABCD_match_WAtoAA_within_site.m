@@ -2,7 +2,7 @@ function [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjec
 
 WArace = 1;
 AArace = 2;
-cost_ceil = 2.5;
+cost_ceil = 2.45;
 
 AA = subjects(race == AArace);
 AA_sites = site(race == AArace);
@@ -13,6 +13,7 @@ selWA = cell(size(bhvr_zn,2), length(uq_AA_sites));
 sel_mAA = cell(size(bhvr_zn,2), 1);
 sel_mWA = cell(size(bhvr_zn,2), 1);
 for b = 1:size(bhvr_zn,2)
+    fprintf('Behavior #%d ...\n', b);
     for st = 1:length(uq_AA_sites)
         possib_WA_idx = race == WArace & site == uq_AA_sites(st);
         
@@ -72,7 +73,7 @@ for b = 1:size(bhvr_zn,2)
                 end
             end
             
-            disp(cost_currAA)
+            %disp(cost_currAA)
             selAA{b,st} = [selAA{b,st}; curr_AA];
             selWA{b,st} = [selWA{b,st}; curr_WA(asgn_WAidx)];
             sel_mAA{b} = [sel_mAA{b}; mAA];
