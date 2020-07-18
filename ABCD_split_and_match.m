@@ -89,15 +89,19 @@ for b = 1:length(bhvr_nm)
 end
 bhvr_zn = zscore(bhvr, 0, 1);
 
-%%
+%% select AA that can find matched AA, return selected AA and WA
 [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter);
 
+%% statistical testing of measure difference between selected AA and WA
+[p_tt, H_tt_FDR, FDR_th] = ABCD_stats_MatchDiff_AAvsWA(sel_mAA, sel_mWA);
+
+%% split selected AA into K folds, as balance as possible
 for b = 1:length(bhvr_nm)
     curr_selAA = cat(2, selAA{b,:});
     [curr_selAA, curr_AAidx] = intersect(subjects, curr_selAA, 'stable');
     curr_AAsite = site(curr_AAidx);
     curr_AA_fam_id = fam_id(curr_AAidx);
-    [fold_AA{b}, fold_sites{b}] = ABCD_split_folds(curr_selAA, curr_AAsite, curr_AA_fam_id, 9);
+    [fold_AA{b}, fold_sites{b}] = ABCD_split_folds(curr_selAA, curr_AAsite, curr_AA_fam_id, 10);
 end
 
 
