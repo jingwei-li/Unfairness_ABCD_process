@@ -1,8 +1,10 @@
-function [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter)
+function [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter, cost_ceil)
 
 WArace = 1;
 AArace = 2;
-cost_ceil = 2.45;
+if(~exist('cost_ceil', 'var') || isempty(cost_ceil))
+    cost_ceil = 2.45;
+end
 
 AA = subjects(race == AArace);
 AA_sites = site(race == AArace);
