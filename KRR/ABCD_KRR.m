@@ -17,6 +17,9 @@ end
 [subjects, nsub] = CBIG_text2cell(subj_ls);
 subj_hdr = 'subjectkey';
 
+if(ischar(N_inner_folds))
+    N_inner_folds = str2double(N_inner_folds);
+end
 
 %% grab behavior, write to a .mat file
 y_file = fullfile(outdir, ['y_' bhvr_nm '.mat']);
