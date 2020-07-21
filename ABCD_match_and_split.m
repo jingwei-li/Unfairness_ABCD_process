@@ -162,17 +162,18 @@ save(oname, 'selAA', 'selWA', 'sel_mAA', 'sel_mWA', 'p_tt', 'H_tt_FDR', 'FDR_th'
 C = combnk(1:Nfolds, 3);
 for b = 1:length(bhvr_nm)
     for i = 1:size(C,1)
-        sub_fold.subject_list = cat(1, fold_subj{b}{C(i,:)});
-        sub_fold.selAA = intersect(subjects, cat(1, fold_AA{b}{C(i,:)}), 'stable');
-        sub_fold.selWA = intersect(subjects, cat(1, fold_WA{b}{C(i,:)}), 'stable');
-        [sub_fold.subject_list, fold_idx] = intersect(subjects, sub_fold.subject_list, 'stable');
-        sub_fold.fold_index = fold_idx;
-        
-        oname = fullfile(outdir, ['sub_fold' outstem '_' bhvr_nm{b} '.mat']);
-        save(oname, 'sub_fold');
-        
-        clear sub_fold
+        sub_fold(i).subject_list = cat(1, fold_subj{b}{C(i,:)});
+        sub_fold(i).selAA = intersect(subjects, cat(1, fold_AA{b}{C(i,:)}), 'stable');
+        sub_fold(i).selWA = intersect(subjects, cat(1, fold_WA{b}{C(i,:)}), 'stable');
+        [sub_fold(i).subject_list, fold_idx] = intersect(subjects, sub_fold(i).subject_list, 'stable');
+        sub_fold(i).fold_index = zeros(length(subjects), 1);
+        sub_fold(i).fold_index(fold_idx) = 1;
     end
+    
+    oname = fullfile(outdir, ['sub_fold' outstem '_' bhvr_nm{b} '.mat']);
+    save(oname, 'sub_fold');
+    
+    clear sub_fold
 end
 
 
