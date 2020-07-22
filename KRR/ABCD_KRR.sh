@@ -2,20 +2,30 @@
 #
 # Jingwei Li, 20200721
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 ls_dir=/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists
-csvname=$code_dir/phenotypes_pass_rs.txt
-cfds_ls=$code_dir/confounds_list.txt
+csvname=$ls_dir/phenotypes_pass_rs.txt
+cfds_ls=$ls_dir/confounds_list.txt
 N_inner_folds=10
 outstem=
 
 main() {
   mkdir -p $outdir/logs
-  LF="$outdir/logs/randseed_${seed}_${outstem}.log"
+  LF="$outdir/logs/randseed_${outstem}.log"
   if [ -f $LF ]; then rm $LF; fi
   
+  echo "bhvr_name = $bhvr_name" >> $LF
+  echo "subj_ls = $subj_ls" >> $LF
+  echo "subfold_f = $subfold_f" >> $LF
+  echo "FC_file = $FC_file" >> $LF
+  echo "outdir = $outdir" >> $LF
+  echo "csvname = $csvname" >> $LF
+  echo "cfds_ls = $cfds_ls" >> $LF
+  echo "N_inner_folds = $N_inner_folds" >> $LF
+  echo "outstem = $outstem" >> $LF
+  
   ############ Call matlab function
-  matlab -nodesktop -nosplash -nodisplay -r "adddpath $DIR; ABCD_KRR('$csvname', '$bhvr_name', '$cfds_ls', '$subj_ls', \
+  matlab -nodesktop -nosplash -nodisplay -r "addpath $DIR; ABCD_KRR('$csvname', '$bhvr_name', '$cfds_ls', '$subj_ls', \
     '$subfold_f', '$FC_file', $N_inner_folds, '$outdir', '$outstem'); exit;" >> $LF 2>&1
 }
 
