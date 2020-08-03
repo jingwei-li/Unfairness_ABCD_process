@@ -9,7 +9,11 @@ end
 if(~exist('cfds_ls', 'var') || isempty(cfds_ls))
     cfds_ls = fullfile(ls_dir, 'confounds_list.txt');
 end
-[cfds_nm, Ncfds] = CBIG_text2cell(cfds_ls);
+if(strcmpi(cfds_ls, 'none'))
+    cfds_nm = {'none'};
+else
+    [cfds_nm, Ncfds] = CBIG_text2cell(cfds_ls);
+end
 
 if(~exist('subj_ls', 'var') || isempty(subj_ls))
     subj_ls = fullfile(ls_dir, 'subjects_pass_rs_pass_pheno.txt');
@@ -30,13 +34,18 @@ end
 %% grab covariates, save to a .mat file
 cfds_file = fullfile(outdir, ['confounds_' strjoin(cfds_nm, '_'), '.mat']);
 if(~exist(cfds_file, 'file'))
-    cfds_types = repmat({'continuous'}, 1, Ncfds);
-    sex_idx = strcmpi(cfds_nm, 'sex');
-    if(any(sex_idx))
-        cfds_types{sex_idx} = 'categorical';
+    if(strcmpi(cfds_ls, 'none'))
+        fprintf('No regressor to be regressed from behavios.\n')
+        covariates = 'NONE';
+    else
+        cfds_types = repmat({'continuous'}, 1, Ncfds);
+        sex_idx = strcmpi(cfds_nm, 'sex');
+        if(any(sex_idx))
+            cfds_types{sex_idx} = 'categorical';
+        end
+        
+        covariates = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_nm, cfds_types, subj_ls, 'NONE', ',' );
     end
-    
-    covariates = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_nm, cfds_types, subj_ls, 'NONE', ',' );
     save(cfds_file, 'covariates')
 end
 
