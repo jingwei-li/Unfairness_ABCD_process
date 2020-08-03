@@ -135,7 +135,7 @@ for i = 1:length(UPPS_hdr)
     d.(UPPS_hdr{i}) = UPPS(:,i);
 end
 behaviors = [behaviors UPPS_hdr];
-colloquial = [colloquial UPPS_hdr];
+colloquial = [colloquial UPPS_colloquial];
 
 % 9. Behavioral Inhibition & Activation 
 [BISBAS, BISBAS_hdr, BISBAS_colloquial] = ABCD_read_BISBAS(subj_list, race, dohist);
