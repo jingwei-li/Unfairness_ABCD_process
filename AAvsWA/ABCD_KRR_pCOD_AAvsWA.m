@@ -1,5 +1,44 @@
-function ABCD_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
+function ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
     predictable_stats, outmat)
+
+% ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
+%     predictable_stats, outmat)
+%
+% Input:
+%   - model_dir
+%     The directory storing kernel regression results (full path).
+%
+%   - bhvr_ls (optional)
+%     Behavior list (full path, text file).
+%     Default: '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+% 
+%   - colloq_ls (optional)
+%     List of behaviors' colloquial name (full path).
+%     Default: '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%
+%   - subj_ls (optional)
+%     Subject list (full path). Default: 
+%  '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%
+%   - split_dir
+%     The directory storing the data split (full path). It contains a file
+%     called ['sel_AAWA' split_fstem '.mat']. For each behaviors, there
+%     should be a file called ['sub_fold' split_fstem '_' <behavior name>
+%     '.mat'].
+%
+%   - split_fstem
+%     The string that was attached to the filenames of the data split
+%     files.
+%
+%   - Nsplits (optional)
+%     Number of splits. Default: 120 (10 choose 3).
+%  
+%   - predictable_stats
+%     Filename of the permutation test result of predictability (full
+%     path).
+%
+%   - outmat
+%     Output filename (full path).
 
 %% default arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
