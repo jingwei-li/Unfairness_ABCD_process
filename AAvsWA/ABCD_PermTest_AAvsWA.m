@@ -1,5 +1,24 @@
 function ABCD_PermTest_AAvsWA( group_diff, bhvr_ls, metric, outmat )
 
+% ABCD_PermTest_AAvsWA( group_diff, bhvr_ls, metric, outmat )
+%
+% Input
+%   - group_diff
+%     A .mat file contains the accuracy of each race group, and the
+%     original & predicted scores of each group (full path).
+%
+%   - bhvr_ls (optional)
+%     Behavior list (full path, text file). Use the behaviors which passed
+%     predictability criteria.
+%     Default: '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%
+%   - metric
+%     Accuracy metric. For now, only support 'predictive_COD'.
+% 
+%   - outmat
+%     Output filename (full path).
+% 
+
 alpha = 0.5;
 
 switch metric

@@ -1,5 +1,29 @@
 function ABCD_regress_cfds_from_FC(FC_in, csvname, cfds_ls, subj_ls, FC_out)
 
+% ABCD_regress_cfds_from_FC(FC_in, csvname, cfds_ls, subj_ls, FC_out)
+%
+% Input:
+% - FC_in
+%   Input RSFC filename (full path).
+%
+% - csvname (optional)
+%   Filename of CSV which contains the confound values (full path).
+%   Default:
+%   '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/phenotypes_pass_rs.txt'
+% 
+% - cfds_ls (optional)
+%   List of confounds (full path). Default:
+%   '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+% 
+% - subj_ls (optional)
+%   List of subjects (full path). Default:
+%   '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%   
+% - FC_out
+%   Output RSFC filename (full path).
+%
+
+
 %% default arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('csvname', 'var') || isempty(csvname))

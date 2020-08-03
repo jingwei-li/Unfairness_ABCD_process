@@ -1,5 +1,37 @@
 function ABCD_whisker_AAvsWA(bhvr_ls, colloq_ls, group_diff, perm_fname, metric, outdir, outstem)
 
+% ABCD_whisker_AAvsWA(bhvr_ls, colloq_ls, group_diff, perm_fname, metric, outdir, outstem)
+% 
+% Input:
+%   - bhvr_ls (optional)
+%     Behavior list (full path, text file). Use the behaviors which passed
+%     predictability criteria. Default: 
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+% 
+%   - colloq_ls (optional)
+%     List of behaviors' colloquial names (full path). Use the same
+%     behaviors as in bhvr_ls. Default: 
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%
+%   - group_diff
+%     A .mat file contains the accuracy of each race group, and the
+%     original & predicted scores of each group (full path).
+%
+%   - perm_fname
+%     A .mat file contains the permutation testing results of AA-WA
+%     accuracy difference (full path).
+%
+%   - metric
+%     Type of accuracy metric. For now only support 'predictive_COD'.
+%
+%   - outdir
+%     Output directory (full path).
+%
+%   - outstem
+%     A string to be atttached onto the output filenames, e.g.
+%     '_pass_rs_pass_pheno'.
+%
+
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 %% figure utilities setup
@@ -19,8 +51,9 @@ legend2 = 'Matched WA';
 legend3 = 'Difference';
 
 %% parse input arguments, collect data
+ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
-    bhvr_ls = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt';
+    bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
 [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
 
