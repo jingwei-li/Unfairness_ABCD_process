@@ -22,7 +22,8 @@ function ABCD_whisker_AAvsWA(bhvr_ls, colloq_ls, group_diff, perm_fname, metric,
 %     accuracy difference (full path).
 %
 %   - metric
-%     Type of accuracy metric. For now only support 'predictive_COD'.
+%     Type of accuracy metric. For now only support 'predictive_COD', 
+%     'corr'.
 %
 %   - outdir
 %     Output directory (full path).
@@ -41,6 +42,11 @@ switch metric
         y_label_avg = 'Mean cross-validated predictive COD';
         AA_acc = 'pCOD_AA';
         WA_acc = 'pCOD_WA';
+    case 'corr'
+        y_label = 'Cross-validated Pearson''s r';
+        y_label_avg = 'Mean cross-validated Pearson''s r';
+        AA_acc = 'corr_AA';
+        WA_acc = 'corr_WA';
     otherwise
         error('Unknown metric.')
 end
@@ -88,7 +94,7 @@ if(~exist(outdir, 'dir'))
 end
 
 %% plot for each behavior
-f = figure;
+f = figure('visible', 'off');
 aboxplot(data_sort, 'colormap', colormat)
 hold on
 xlimit = get(gca, 'xlim');
@@ -102,7 +108,7 @@ set(gca, 'position', [0.35 0.4 0.6 0.5])
 ylm = get(gca, 'ylim');
 if(ylm(1)<-1)
     ylm(1) = -1;
-    warning('There are behaviors with COD lower than -1.')
+    warning('There are behaviors with accuracy lower than -1.')
 end
 set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
 yl = ylabel(y_label);
@@ -119,11 +125,11 @@ set(gca, 'tickdir', 'out', 'box', 'off')
 if(~isempty(IA))
     ylimvals = get(gca, 'ylim');
     ylimvals_new = ylimvals;
-    ylimvals_new(2) = (ylimvals(2)-ylimvals(1))*0.05 + ylimvals(2);
+    ylimvals_new(2) = (ylimvals(2)-ylimvals(1))*0.08 + ylimvals(2);
     set(gca, 'ylim', ylimvals_new)
     lp = get(l, 'position');
     if(lp(2)>0.5)
-        lp(2) = lp(2) - 0.01;
+        lp(2) = lp(2) - 0.03;
     end
     set(l, 'position', lp)
     text(IA, repmat(ylimvals(2), size(IA)), '*');
@@ -137,7 +143,7 @@ close
 
 %% plot the average
 avg_data = mean(data_sort, 3)';
-f = figure;
+f = figure('visible', 'off');
 aboxplot(avg_data, 'colormap', colormat, 'colorrev', 1);
 hold on
 xlimit = get(gca, 'xlim');

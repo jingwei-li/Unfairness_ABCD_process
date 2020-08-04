@@ -13,23 +13,28 @@ function ABCD_PermTest_AAvsWA( group_diff, bhvr_ls, metric, outmat )
 %     Default: '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 %
 %   - metric
-%     Accuracy metric. For now, only support 'predictive_COD'.
+%     Accuracy metric. For now, only support 'predictive_COD', 'corr'.
 % 
 %   - outmat
 %     Output filename (full path).
 % 
 
 alpha = 0.5;
+grpdif = load(group_diff);
 
 switch metric
     case 'predictive_COD'
         AA_acc = 'pCOD_AA';
         WA_acc = 'pCOD_WA';
+    case 'corr'
+        AA_acc = 'corr_AA';
+        WA_acc = 'corr_WA';
+        grpdif.AA_train = cell(size(grpdif.corr_AA));
+        grpdif.WA_train = cell(size(grpdif.corr_WA));
     otherwise
         error('Unknown metric.')
 end
 
-grpdif = load(group_diff);
 acc_diff = grpdif.(WA_acc) - grpdif.(AA_acc);
 
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
@@ -99,6 +104,9 @@ switch metric
         
         null_acc_AA = bsxfun(@minus, 1, ss_res_AA ./ ss_total);
         null_acc_WA = bsxfun(@minus, 1, ss_res_WA ./ ss_total);
+    case 'corr'
+        null_acc_AA = CBIG_corr(null_yp_AA, null_yt_AA);
+        null_acc_WA = CBIG_corr(null_yp_WA, null_yt_WA);
     % remember to revert the sign if using MSE
     otherwise
         error('Unknown metric')
