@@ -1,6 +1,8 @@
-# Preparation
+# KRR: compare matched AA & WA
 
-## Collection of confounds and behaviors; filter unsatisfactory subjects
+## Preparation
+
+### Collection of confounds and behaviors; filter unsatisfactory subjects
 
 ```matlab
 ABCD_read_all_measures('/mnt/eql/yeo13/data/ABCD/rs_GSR', ...
@@ -8,7 +10,7 @@ ABCD_read_all_measures('/mnt/eql/yeo13/data/ABCD/rs_GSR', ...
    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
 ```
 
-## Split & match
+### Split & match
 
 ```matlab
 ABCD_match_and_split(...
@@ -21,15 +23,15 @@ ABCD_match_and_split(...
    '_pass_rs_pass_pheno')
 ```
 
-# ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
+## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
-## Run KRR (bash)
+### Run KRR (bash)
 
 ```bash
 ../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_y.sh
 ```
 
-## Permutation test of predictability
+### Permutation test of predictability
 
 1. metric: predictive COD
 
@@ -57,7 +59,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'))
    ```
 
-## Compute accuracy metric per race group; get predictable behaviors
+### Compute accuracy metric per race group; get predictable behaviors
 
 1. metric: predictive COD
 
@@ -89,7 +91,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'))
    ```
 
-## Permutation test of accuracy difference
+### Permutation test of accuracy difference
 
 1. metric: predictive COD
 
@@ -113,7 +115,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_predictable.mat') )
    ```
 
-## Whisker plot
+### Whisker plot
 
 1. metric: predictive COD
 
@@ -143,7 +145,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), 'corr')
    ```
 
-# ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from RSFC ------
+## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from RSFC ------
 
 ## Regress confounds from RSFC
 
@@ -157,13 +159,13 @@ ABCD_regress_cfds_from_FC(...
    fullfile(proj_dir, 'mat', 'RSFC', 'pass_rs_pass_pheno_5351_reg_AgeSexMtIcvPEduc.mat'))
 ```
 
-## Run KRR (bash)
+### Run KRR (bash)
 
 ```bash
 ../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_FC.sh
 ```
 
-## Permutation test of predictability 
+### Permutation test of predictability 
 
 1. metric: predictive COD
 
@@ -187,7 +189,7 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'))
    ```
 
-## Compute accuracy metric per race group; get predictable behaviors
+### Compute accuracy metric per race group; get predictable behaviors
 
 1. metric: predictive COD
 
@@ -219,7 +221,7 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'))
    ```
 
-## Permutation test of accuracy difference
+### Permutation test of accuracy difference
 
 1. metric: predictive COD
 
@@ -243,7 +245,7 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC_predictable.mat') )
    ```
 
-## Whisker plot
+### Whisker plot
 
 1. metric: predictive COD
 
