@@ -116,16 +116,10 @@ for b = 1:nbhvr
         WA_train{b,f} = krry.y_resid(idx);
         
         %% compute predictive COD
-        ss_res_AA(b,f) = sum((AA_pred{b,f} - AA_test{b,f}).^2, 1) ./ length(AA_test{b,f});
-        ss_res_WA(b,f) = sum((WA_pred{b,f} - WA_test{b,f}).^2, 1) ./ length(WA_test{b,f});
-        ss_res_AAWA(b,f) = sum( ([AA_pred{b,f};WA_pred{b,f}] - [AA_test{b,f};WA_test{b,f}]).^2, 1 ) ...
-            ./ length([AA_test{b,f};WA_test{b,f}]);
-        ss_total(b,f) = sum( ([AA_train{b,f}; WA_train{b,f}] - mean([AA_train{b,f};WA_train{b,f}],1)).^2, 1 ) ...
-            ./ length([AA_train{b,f};WA_train{b,f}]);
-        
-        pCOD_AA(b,f) = bsxfun(@minus, 1, ss_res_AA(b,f)./ss_total(b,f));
-        pCOD_WA(b,f) = bsxfun(@minus, 1, ss_res_WA(b,f)./ss_total(b,f));
-        pCOD_AAWA(b,f) = bsxfun(@minus, 1, ss_res_AAWA(b,f)./ss_total(b,f));
+        [pCOD_AA(b,f), pCOD_WA(b,f), pCOD_AAWA(b,f), ss_res_AA(b,f), ...
+            ss_res_WA(b,f), ss_res_AAWA(b,f), ss_total(b,f)] = ...
+            ABCD_pCOD_2groups(AA_pred{b,f}, WA_pred{b,f}, AA_test{b,f}, ...
+            WA_test{b,f}, AA_train{b,f}, WA_train{b,f});
     end
 end
 
