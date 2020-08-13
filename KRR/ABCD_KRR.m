@@ -35,7 +35,7 @@ end
 cfds_file = fullfile(outdir, ['confounds_' strjoin(cfds_nm, '_'), '.mat']);
 if(~exist(cfds_file, 'file'))
     if(strcmpi(cfds_ls, 'none'))
-        fprintf('No regressor to be regressed from behavios.\n')
+        fprintf('No regressor to be regressed from behaviors.\n')
         covariates = 'NONE';
     else
         cfds_types = repmat({'continuous'}, 1, Ncfds);
