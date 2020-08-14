@@ -52,9 +52,7 @@ switch metric
 end
 
 colormat = [114 147 203; 132 186 91; 211 94 96]./255;
-legend1 = 'AA';
-legend2 = 'Matched WA';
-legend3 = 'Difference';
+legends = {'AA', 'Matched WA', 'Difference'};
 
 %% parse input arguments, collect data
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
@@ -94,78 +92,12 @@ if(~exist(outdir, 'dir'))
 end
 
 %% plot for each behavior
-f = figure('visible', 'off');
-aboxplot(data_sort, 'colormap', colormat)
-hold on
-xlimit = get(gca, 'xlim');
-plot(xlimit, [0 0], ':k');
-hold off
-
-pf = get(gcf, 'position');
-set(gcf, 'position', [0 0 100+90*nbhvr 900])
-set(gca, 'position', [0.35 0.4 0.6 0.5])
-
-ylm = get(gca, 'ylim');
-if(ylm(1)<-1)
-    ylm(1) = -1;
-    warning('There are behaviors with accuracy lower than -1.')
-end
-set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
-yl = ylabel(y_label);
-set(yl, 'fontsize', 16, 'linewidth', 2)
-
-l = legend(legend1, legend2, legend3);
-set(l, 'fontsize', 12, 'linewidth', 2, 'location', 'best', 'box', 'off')
-
-set(gca, 'xticklabel', colloq_nm_sort, 'fontsize', 16, 'linewidth', 2);
-rotateXLabels( gca(), 45 );
-set(gca, 'tickdir', 'out', 'box', 'off')
-
-% plot * on the significant behaviors
-if(~isempty(IA))
-    ylimvals = get(gca, 'ylim');
-    ylimvals_new = ylimvals;
-    ylimvals_new(2) = (ylimvals(2)-ylimvals(1))*0.08 + ylimvals(2);
-    set(gca, 'ylim', ylimvals_new)
-    lp = get(l, 'position');
-    if(lp(2)>0.5)
-        lp(2) = lp(2) - 0.03;
-    end
-    set(l, 'position', lp)
-    text(IA, repmat(ylimvals(2), size(IA)), '*');
-end
-
-outname = fullfile(outdir, [outstem ]);
-export_fig(outname, '-png', '-nofontswap', '-a1');
-set(gcf, 'color', 'w');
-hgexport(f, outname)
-close
+ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
+	colloq_nm_sort, IA, outdir, outstem)
 
 %% plot the average
 avg_data = mean(data_sort, 3)';
-f = figure('visible', 'off');
-aboxplot(avg_data, 'colormap', colormat, 'colorrev', 1);
-hold on
-xlimit = get(gca, 'xlim');
-plot(xlimit, [0 0], ':k');
-hold off
-
-pf = get(gcf, 'position');
-set(gcf, 'position', [0 0 300 800]);
-set(gca, 'position', [0.3 0.3 0.6 0.6])
-ylm = get(gca, 'ylim');
-set(gca, 'ytick', ylm(1):0.2:ylm(2))
-yl = ylabel(y_label_avg, 'fontsize', 16, 'linewidth', 2);
-
-set(gca, 'XTickLabel', {legend1, legend2, legend3}, 'fontsize', 16, 'linewidth', 2)
-rotateXLabels( gca(), 45 );
-set(gca, 'tickdir', 'out', 'box', 'off');
-
-outname = fullfile(outdir, ['Mean_' outstem]);
-export_fig(outname, '-png', '-nofontswap', '-a1');
-set(gcf, 'color', 'w');
-hgexport(f, outname)
-close
+ABCD_whisker_2grp_avg(avg_data, colormat, y_label, legends, outdir, outstem)
 
 rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
