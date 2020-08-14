@@ -43,9 +43,10 @@ for b in $behaviors; do
     FC_file=$outdir/FC/$b.mat
     subfold_f=$proj_dir/mat/matchANDsplit/20200719/allAA/${b}_pass_rs_pass_pheno.mat
 
+	mkdir -p $outdir/$b
     cmd="$DIR/ABCD_KRR_in_subgroup.sh -bhvr_name $b -full_subj_ls $full_subj_ls "
     cmd="$cmd -subj_ls $subj_ls -subfold_f $subfold_f -full_FC_file $full_FC_file "
-	cmd="$cmd -FC_file $FC_file -outdir $outdir"
+	cmd="$cmd -FC_file $FC_file -outdir $outdir/$b"
     echo $cmd
     echo $cmd | $CBIG_SCHEDULER_DIR/qsub -V -q circ-spool -l \
         walltime=25:00:00,mem=${memory}GB -m ae -N ABCD_KRR_${b}
