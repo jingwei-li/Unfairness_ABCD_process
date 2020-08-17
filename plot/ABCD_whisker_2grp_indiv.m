@@ -1,8 +1,8 @@
 function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
-	colloq_nm, sigdiff_idx, outdir, outstem)
+	tit, colloq_nm, sigdiff_idx, outdir, outstem)
 
 	% ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
-	%	  colloq_nm, sigdiff_idx, outdir, outstem)
+	%	  tit, colloq_nm, sigdiff_idx, outdir, outstem)
 	%
 	% Inputs:
 	%   - data: #splits x 3 x #behaviors matrix. Accuracy of group 1, 
@@ -59,6 +59,10 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 		text(sigdiff_idx, repmat(ylimvals(2), size(sigdiff_idx)), '*');
 	end
 	
+	if(~isempty(tit))
+		title(tit, 'fontsize', 16)
+	end
+
 	outname = fullfile(outdir, [outstem ]);
 	export_fig(outname, '-png', '-nofontswap', '-a1');
 	set(gcf, 'color', 'w');
