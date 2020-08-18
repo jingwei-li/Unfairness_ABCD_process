@@ -1,5 +1,5 @@
 function ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
-	full_FC, split_dir, split_fstem, AA_subdir, AAWA_stem)
+	full_FC, split_dir, split_fstem, AA_subdir, AAWA_subdir, outstem)
 
 %% default input arguments
 [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
@@ -25,8 +25,15 @@ for b = 1:nbhvr
 	fprintf('#%d behavior: %s\n', b, bhvr_nm{b});
 	% load fold splits of AA and WA
 	AA_fold = load(fullfile(split_dir, AA_subdir, [bhvr_nm{b} split_fstem '.mat']));
-	AAWA_fold = load(fullfile(split_dir, [AAWA_stem split_fstem '_' bhvr_nm{b} '.mat']));
-	allAA = CBIG_text2cell(fullfile(split_dir, AA_subdir, ['subj_' bhvr_nm{b} split_stem '.txt']));
+	AAWA_name = fullfile(split_dir, AAWA_subdir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
+	if(~exist(AAWA_name, 'file'))
+		AAWA_name = fullfile(split_dir, AAWA_subdir, [bhvr_nm{b} split_fstem '.mat']);
+		if(~exist(AAWA_name, 'file'))
+			error('Cannot find sub_fold file for WA based on split_dir = %s and AAWA_subdir = %s.', split_dir, AAWA_subdir)
+		end
+	end
+	AAWA_fold = load(AAWA_name);
+	allAA = CBIG_text2cell(fullfile(split_dir, AA_subdir, ['subj_' bhvr_nm{b} split_fstem '.txt']));
 	Nsplits = length(AA_fold.sub_fold);
 	if(length(AAWA_fold.sub_fold) ~= Nsplits)
 		error('Lengths of AA_fold and AAWA_fold are not equal.')
@@ -63,7 +70,7 @@ for b = 1:nbhvr
 		end
 	end
 	fprintf('\n')
-	save(fullfile(model_dir, bhvr_nm{b}, ['final_result_randWA_' bhvr_nm{b} '.mat']), ...
+	save(fullfile(model_dir, bhvr_nm{b}, ['final_result' outstem '_' bhvr_nm{b} '.mat']), ...
 		'optimal_acc', 'optimal_stats', 'yp_WA', 'yt_WA', 'y_WA', 'y_WA_resid')
 end
 
