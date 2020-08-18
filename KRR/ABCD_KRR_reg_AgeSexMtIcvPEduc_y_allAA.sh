@@ -51,9 +51,5 @@ for b in $behaviors; do
     echo $cmd | $CBIG_SCHEDULER_DIR/qsub -V -q circ-spool -l \
         walltime=25:00:00,mem=${memory}GB -m ae -N ABCD_KRR_${b}
 
-    if [ ! -f $outdir/confounds_age_sex_FD_DVARS_ICV_peduc_avg.mat ]; then
-		sleep 3m
-	else
-		sleep 3s
-	fi
+    sleep 3s
 done
