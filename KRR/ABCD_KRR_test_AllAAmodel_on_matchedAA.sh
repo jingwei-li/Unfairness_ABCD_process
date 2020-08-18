@@ -2,12 +2,8 @@
 
 DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-########################
-# setup for CIRC cluster
-########################
-curr_dir=$(pwd)
 
-cd $work_dir
+curr_dir=$(pwd)
 
 proj_dir="/data/users/jingweil/storage/MyProject/fairAI/ABCD_race"
 model_dir="$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_y_allAA"
