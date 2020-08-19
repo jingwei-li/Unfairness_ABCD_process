@@ -16,6 +16,7 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	%   - outstem: output name relative to outdir, without extension.
 	%
 
+	addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 	nbhvr = size(data, 3);
 
 	f = figure('visible', 'off');
@@ -33,6 +34,10 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	if(ylm(1)<-1)
 		ylm(1) = -1;
 		warning('There are behaviors with accuracy lower than -1.')
+	end
+	if(ylm(2)>2)
+		ylm(2) = 1;
+		warning('There are values higher than 1.')
 	end
 	set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
 	yl = ylabel(y_label);
@@ -68,4 +73,6 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	set(gcf, 'color', 'w');
 	hgexport(f, outname)
 	close
+
+	rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 end

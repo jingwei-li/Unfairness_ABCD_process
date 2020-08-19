@@ -33,7 +33,6 @@ function ABCD_whisker_AAvsWA(bhvr_ls, colloq_ls, group_diff, perm_fname, metric,
 %     '_pass_rs_pass_pheno'.
 %
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 %% figure utilities setup
 switch metric
@@ -98,8 +97,6 @@ ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
 %% plot the average
 avg_data = mean(data_sort, 3)';
 ABCD_whisker_2grp_avg(avg_data, colormat, y_label, legends, outdir, outstem)
-
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

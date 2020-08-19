@@ -12,6 +12,8 @@ function ABCD_whisker_2grp_avg(avg_data, colormat, y_label, x_labels, outdir, ou
 	%   - outstem: output filename stem. The full output filename will be
 	%              <outdir>/Mean_<outstem>.png(.eps)
 
+	addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+
 	f = figure('visible', 'off');
 	aboxplot(avg_data, 'colormap', colormat, 'colorrev', 1);
 	hold on
@@ -36,4 +38,5 @@ function ABCD_whisker_2grp_avg(avg_data, colormat, y_label, x_labels, outdir, ou
 	hgexport(f, outname)
 	close
 
+	rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 end
