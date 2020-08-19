@@ -1,6 +1,7 @@
-function ABCD_whiskerAA_trainAll_vs_trainAA(bhvr_ls, colloq_ls, acc_trainAll, model_trainAA, metric)
+function ABCD_whiskerYA_trainAll_vs_trainXA(YA, bhvr_ls, colloq_ls, acc_trainAll, ...
+	model_trainXA, metric, tit, outdir, outstem)
 
-% ABCD_whiskerAA_trainAll_vs_trainAA()
+% ABCD_whiskerYA_trainAll_vs_trainXA()
 %
 % Long description
 
@@ -8,18 +9,21 @@ switch metric
 case 'predictive_COD'
 	y_label = 'Cross-validated predictive COD';
 	y_label_avg = 'Mean cross-validated predictive COD';
-	AA_acc = 'pCOD_AA';
+	YA_acc = ['pCOD_' YA];
 case 'corr'
 	y_label = 'Cross-validated Pearson''s r';
 	y_label_avg = 'Mean cross-validated Pearson''s r';
-	AA_acc = 'corr_AA';
+	YA_acc = ['corr_' YA];
 otherwise
 	error('Unknown metric.')
 end
 
-colormat = [114 147 203； 40 50 149； 211 94 96]./255;
+if(strcmp(YA, 'AA'))
+	colormat = [114 147 203; 137 216 248; 211 94 96]./255;
+elseif (strcmp(YA, 'WA'))
+	colormat = [132 186 91; 177 231 179; 211 94 96]./255;
+end
 legends = {'whole-pop trained', 'AA trained', 'Difference'};
-tit = 'Compare '
 
 %% parse input arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
@@ -39,27 +43,27 @@ for b = 1:nbhvr
 end
 
 %% load accuracy trained on whole population
-trainAll = load(acc_trainAll);
-trainAll = trainAll.(AA_acc);
-CV = size(trainAll, 2);
+trainOnAll = load(acc_trainAll);
+trainOnAll = trainOnAll.(YA_acc);
+CV = size(trainOnAll, 2);
 
 %% load accuracy trained on AA
-trainAA = nan(size(trainAll));
+trainOnXA = nan(size(trainOnAll));
 for b = 1:nbhvr
-	opt = fullfile(model_trainAA, bhvr_nm{b}, ['final_result_' bhvr_nm{b} '.mat']);
-	trainAA(b,:) = opt.optimal_stats.(metric);
+	opt = load(fullfile(model_trainXA, bhvr_nm{b}, ['final_result_matched' YA '_' bhvr_nm{b} '.mat']));
+	trainOnXA(b,:) = opt.optimal_stats.(metric);
 end
 
-acc_diff = trainAA - trainAll;
-alldata = cat(1, reshape(trainAll', 1, CV, nbhvr), reshape(trainAA', 1, CV, nbhvr), ...
+acc_diff = trainOnXA - trainOnAll;
+alldata = cat(1, reshape(trainOnAll', 1, CV, nbhvr), reshape(trainOnXA', 1, CV, nbhvr), ...
 	reshape(acc_diff', 1, CV, nbhvr));
-[~, idx] = sort(mean(acc_diff, 1), 'descend');
+[~, idx] = sort(mean(acc_diff, 2), 'descend');
 data_sort = alldata(:,:,idx);
 bhvr_nm_sort = bhvr_nm(idx);
 colloq_nm_sort = colloq_nm(idx);
 
 %% plot for each behavior
 ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
-	tit, colloq_nm, sigdiff_idx, outdir, outstem)
+	tit, colloq_nm_sort, [], outdir, outstem)
 	
 end
