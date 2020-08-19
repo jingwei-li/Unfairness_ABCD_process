@@ -4,12 +4,19 @@ function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, al
 % [csvname, d, bhvr_nm, nbhvr, cfds_nm, ncfds, all_subj, full_subj_ls, corr_mat] = ...
 %	 ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, full_subj_ls, full_FC)
 %
+% Parse input arguments for the functions which test the models trained on grp1 using the subjects
+% in grp2.
+%
 % Inputs (all paths should be full paths):
 %   - csvname: Name of csv file containing all behavioral and confonding variables.
-%   - bhvr_ls: Behaviors list.
-%   - cfds_ls: Confounds list.
-%   - full_subj_ls: List of all subjects involved is project.
-%   - full_FC: Functional connectivity file corresponding to 'full_subj_ls'.
+%   - bhvr_ls: Behaviors list. Default:
+%         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%   - cfds_ls: Confounds list. Default:
+%         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+%   - full_subj_ls: List of all subjects involved is project. Default:
+%         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%   - full_FC: Functional connectivity file corresponding to 'full_subj_ls'. Default:
+%         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/mat/RSFC/pass_rs_pass_pheno_5351.mat'
 %
 % Outputs:
 %   - csvname: return default value if input 'csvname' is empty.

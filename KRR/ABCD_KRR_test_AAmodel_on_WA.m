@@ -1,6 +1,40 @@
 function ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
 	full_FC, split_dir, split_fstem, AA_subdir, AAWA_subdir, outstem)
 
+% ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
+%	 full_FC, split_dir, split_fstem, AA_subdir, AAWA_subdir, outstem)
+%
+% Test the KRR models trained on AA using WA subjects.
+%
+% Inputs:
+%   - csvname
+%     Name of csv file containing all confounds and behaviors (full path).
+%   - model_dir
+%     Directory of models trained on AA (full path). It contains a subfolder for each behavior.
+%   - bhvr_ls (optional)
+%     List of behaviors (full path). Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%   - cfds_ls (optional)
+%     List of confounding variable names (full path). Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+%   - full_subj_ls
+%     List of all subjects involved is project. Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%   - full_FC
+%     Functional connectivity file corresponding to 'full_subj_ls'. Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/mat/RSFC/pass_rs_pass_pheno_5351.mat'
+%   - split_dir
+%     Full path of the directory containing fold splits.
+%   - split_fstem
+%     Filename stem of fold splits.
+%   - AA_subdir
+%     Relative name of subdirectory containing fold splits of only AA subjects.
+%   - AAWA_subdir
+%     Relative name of subdirectory containing fold splits of the WA to be tested.
+%   - outstem
+%     Stem of output filename. The output filename will be 
+%     fullfile(model_dir, <behavior>, ['final_result' outstem '_' <behavior> '.mat'])
+
 %% default input arguments
 [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
 	ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, full_subj_ls, full_FC);

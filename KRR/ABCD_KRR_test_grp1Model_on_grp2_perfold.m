@@ -2,9 +2,28 @@ function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid] = ABCD_KRR_te
 	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
 
 % [yp_grp2, yt_grp2, acc, pred_stats, y_grp2_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
-%     split_grp1, y_fold_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, corr_mat, opt)
+%     f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
 %
-% Long description
+% Inputs:
+%   - f: scalar. Fold index.
+%   - model_dir: directory to the models trained on grp1 (full path). It contains a subfolder for each behavior.
+%   - behavior: behavior name.
+%   - split_grp1: a structure with lengths of total number of folds/splits. The splits of grp1 subjects. 
+%                 It contains a field fold_index, where split_grp1(f).fold_index == 0 means the corresponding 
+%                 subject was in the training set.
+%   - idx_grp1_all: indices of grp1 subjects in all subjects used for the whole project.
+%   - idx_grp2: indices of grp2 subjects in all subjects used for the whole project
+%   - cov_grp1: #grp1 subjects x #confounds matrix. Confounding variables of grp1 subjects.
+%   - all_cov: #all subjects x #confounds matrix. Confounding variables of all subjects used for the 
+%              whole project.
+%   - all_y: column vector with length = #all subjects. Raw behavioral scores of all subjects used 
+%            for the whole project.
+%   - corr_mat: (#ROI * (#ROI-1) / 2) x #all subjects matrix. Vectorized functional connectivity of
+%               all subjects used for the whole project.
+%   - opt: optimal results structure. Loaded from 
+%          fullfile(model_dir, behavior, ['final_result_' behavior '.mat'])
+%   - metrics: a cell containing the prediction statistics. 
+%              E.g. {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'}
 
 y_fold_grp1 = load(fullfile(model_dir, behavior, 'y', ['fold_' num2str(f)], ...
 	['y_regress_' behavior '.mat']));
