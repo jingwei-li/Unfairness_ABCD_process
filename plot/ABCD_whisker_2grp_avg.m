@@ -3,7 +3,7 @@ function ABCD_whisker_2grp_avg(avg_data, colormat, y_label, x_labels, outdir, ou
 	% ABCD_whisker_2grp_avg(avg_data, colormat, y_label, x_labels, outdir, outstem)
 	%
 	% Inputs:
-	%   - avg_data: 3 x #behaviors matrix. Average accuracy of group 1, group 2, 
+	%   - avg_data: 3 x #splits matrix. Average accuracy of group 1, group 2, 
 	%               and difference, respectively.
 	%   - colormat: 3 x 3 color mat, each row is the RGB of one group.
 	%   - y_label: Y-axis label.
