@@ -1,5 +1,5 @@
 function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
-	tit, colloq_nm, sigdiff_idx, outdir, outstem)
+	tit, colloq_nm, sigdiff_idx, outdir, outstem, metric)
 
 	% ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	%	  tit, colloq_nm, sigdiff_idx, outdir, outstem)
@@ -19,6 +19,10 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 	nbhvr = size(data, 3);
 
+	if(~exist('metric', 'var'))
+		metric = 'predictive_COD';
+	end
+
 	f = figure('visible', 'off');
 	aboxplot(data, 'colormap', colormat)
 	hold on
@@ -30,16 +34,18 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	set(gcf, 'position', [0 0 100+90*nbhvr 900])
 	set(gca, 'position', [0.35 0.4 0.6 0.5])
 	
-	ylm = get(gca, 'ylim');
-	if(ylm(1)<-1)
-		ylm(1) = -1;
-		warning('There are behaviors with accuracy lower than -1.')
+	if(strfind(metric, 'COD'))
+		ylm = get(gca, 'ylim');
+		if(ylm(1)<-1)
+			ylm(1) = -1;
+			warning('There are behaviors with accuracy lower than -1.')
+		end
+		if(ylm(2)>2)
+			ylm(2) = 1;
+			warning('There are values higher than 1.')
+		end
+		set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
 	end
-	if(ylm(2)>2)
-		ylm(2) = 1;
-		warning('There are values higher than 1.')
-	end
-	set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
 	yl = ylabel(y_label);
 	set(yl, 'fontsize', 16, 'linewidth', 2)
 	
