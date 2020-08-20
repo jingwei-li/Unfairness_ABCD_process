@@ -1,8 +1,30 @@
 function  ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_ls, metric, tit, outdir, outstem)
 
-% ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, bhvr_ls, colloq_ls)
+% ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_ls, metric, tit, outdir, outstem)
 %
-% Long description
+% Inputs:
+%   - XAmodel_dir
+%     Directory to KRR models trained on XA subjects (full path).
+%   - YA
+%     String, the label of YA group, e.g. matchedAA. The test results of YA should be stored in
+%     fullfile(XAmodel_dir, <behavior>, ['final_result_' YA '_' <behavior> '.mat'])
+%   - ZA 
+%     String, the label of ZA group, e.g. matchedWA. The test results of ZA should be stored in 
+%     fullfile(XAmodel_dir, <behavior>, ['final_result_' ZA '_' <behavior> '.mat'])
+%   - bhvr_ls (optional)
+%     Behavior list (full path). Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%   - colloq_ls (optional)
+%     List of collquial name of behaviors (full path). Default:
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%   - metric
+%     String, accuracy metric. Choose from 'predictive_COD', 'COD', 'corr', 'MSE' (capital sensitive).
+%   - tit
+%     Title of the plot.
+%   - outdir
+%     Output directory (full path).
+%   - outstem
+%     String, stem of output figure name.
 
 switch metric
     case 'predictive_COD'
