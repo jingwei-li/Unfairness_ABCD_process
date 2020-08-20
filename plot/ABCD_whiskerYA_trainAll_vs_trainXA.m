@@ -6,16 +6,16 @@ function ABCD_whiskerYA_trainAll_vs_trainXA(YA, bhvr_ls, colloq_ls, acc_trainAll
 % Long description
 
 switch metric
-case 'predictive_COD'
-	y_label = 'Cross-validated predictive COD';
-	y_label_avg = 'Mean cross-validated predictive COD';
-	YA_acc = ['pCOD_' YA];
-case 'corr'
-	y_label = 'Cross-validated Pearson''s r';
-	y_label_avg = 'Mean cross-validated Pearson''s r';
-	YA_acc = ['corr_' YA];
-otherwise
-	error('Unknown metric.')
+	case 'predictive_COD'
+		y_label = 'Cross-validated predictive COD';
+		y_label_avg = 'Mean cross-validated predictive COD';
+		YA_acc = ['pCOD_' YA];
+	case 'corr'
+		y_label = 'Cross-validated Pearson''s r';
+		y_label_avg = 'Mean cross-validated Pearson''s r';
+		YA_acc = ['corr_' YA];
+	otherwise
+		error('Unknown metric.')
 end
 
 if(strcmp(YA, 'AA'))
