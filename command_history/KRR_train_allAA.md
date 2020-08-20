@@ -1,5 +1,16 @@
 # Train KRR on all AA
 
+## Create `sub_fold` structure for all AA subjects
+
+```matlab
+proj_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race';
+ABCD_create_subfold_allAA(...
+    fullfile(proj_dir, 'scripts', 'lists', 'subjects_pass_rs_pass_pheno.txt'), ...
+    fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt'), ...
+    fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
+    '_pass_rs_pass_pheno')
+```
+
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
 ### Compare accuracy of matched AA between models trained on whole population and trained on all AA
