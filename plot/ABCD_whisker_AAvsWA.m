@@ -71,7 +71,9 @@ for b = 1:nbhvr
 end
 
 grpdif = load(group_diff);
-load(perm_fname);
+if(exist('perm_fname', 'var') && ~isempty(perm_fname))
+    load(perm_fname);
+end
 
 CV = size(grpdif.(AA_acc), 2);
 
@@ -84,7 +86,11 @@ bhvr_nm_sort = bhvr_nm(idx);
 colloq_nm_sort = colloq_nm(idx);
 
 % get indices of significant behaviors
-[~, IA, IB] = intersect(idx, sig_diff_idx, 'stable');
+if(exist('perm_fname', 'var') && ~isempty(perm_fname))
+    [~, IA, IB] = intersect(idx, sig_diff_idx, 'stable');
+else
+    IA = [];
+end
 
 if(~exist(outdir, 'dir'))
     mkdir(outdir)
