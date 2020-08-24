@@ -25,7 +25,7 @@ function ABCD_whisker_2grp_avg(avg_data, colormat, y_label, x_labels, outdir, ou
 	set(gcf, 'position', [0 0 300 800]);
 	set(gca, 'position', [0.3 0.3 0.6 0.6])
 	ylm = get(gca, 'ylim');
-	set(gca, 'ytick', ylm(1):0.2:ylm(2))
+	%set(gca, 'ytick', ylm(1):0.2:ylm(2))
 	yl = ylabel(y_label, 'fontsize', 16, 'linewidth', 2);
 	
 	set(gca, 'XTickLabel', x_labels, 'fontsize', 16, 'linewidth', 2)
