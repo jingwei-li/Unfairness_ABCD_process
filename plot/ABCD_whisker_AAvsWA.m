@@ -97,7 +97,7 @@ if(~exist(outdir, 'dir'))
 end
 
 %% plot for each behavior
-ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
+ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, [], ...
 	colloq_nm_sort, IA, outdir, outstem)
 
 %% plot the average
