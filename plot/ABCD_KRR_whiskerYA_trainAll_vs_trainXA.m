@@ -1,4 +1,4 @@
-function ABCD_whiskerYA_trainAll_vs_trainXA(YA, bhvr_ls, colloq_ls, acc_trainAll, ...
+function ABCD_whiskerYA_trainAll_vs_trainXA(XA, YA, bhvr_ls, colloq_ls, acc_trainAll, ...
 	model_trainXA, metric, tit, outdir, outstem)
 
 % ABCD_whiskerYA_trainAll_vs_trainXA()
@@ -23,7 +23,7 @@ if(strcmp(YA, 'AA'))
 elseif (strcmp(YA, 'WA'))
 	colormat = [132 186 91; 177 231 179; 211 94 96]./255;
 end
-legends = {'whole-pop trained', 'AA trained', 'Difference'};
+legends = {'whole-pop trained', [XA ' trained'], 'Difference'};
 
 %% parse input arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
@@ -63,6 +63,7 @@ bhvr_nm_sort = bhvr_nm(idx);
 colloq_nm_sort = colloq_nm(idx);
 
 %% plot for each behavior
+mkdir(outdir)
 ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
 	tit, colloq_nm_sort, [], outdir, outstem)
 	
