@@ -24,6 +24,29 @@ if(~exist('colloq_ls', 'var') || isempty(colloq_ls))
 end
 colloq_nm = CBIG_text2cell(colloq_ls);
 
+%% set default hyperparamters if not passed in
+if(~exist('ker_param', 'var') || strcmpi(ker_param, 'none'))
+    ker_param.type = 'corr';
+    ker_param.scale = NaN;
+end
+ker_param = struct2cell(ker_param);
+
+if(~exist('lambda_set', 'var') || strcmpi(lambda_set, 'none'))
+    lambda_set = [ 0 0.00001 0.0001 0.001 0.004 0.007 0.01 0.04 0.07 0.1 0.4 0.7 1 1.5 2 2.5 3 3.5 4 ...
+        5 10 15 20];
+end
+
+if(~exist('bin_flag', 'var') || isempty(bin_flag))
+    bin_flag = 0;
+end
+if(bin_flag==1)
+    if(~exist('threshold_set', 'var') || strcmpi(threshold_set, 'none') || isempty(threshold_set))
+        threshold_set = [-1:0.1:1];
+    end
+else
+    threshold_set = NaN;
+end
+
 rng('default'); rng(1);
 nperm = 1000;
 alpha = 0.05;
@@ -34,17 +57,32 @@ for b = 1:nbhvr
     fprintf('#%d behavior: %s ...\n', b, bhvr_nm{b})
     fold_file = fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
     load(fold_file)
-    krr_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
-    krr = load(krr_file);
+    opt_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
+    opt = load(opt_file);
     
     %% load original scores and predicted scores, and compute null distributions
     null_stats{b} = zeros(length(sub_fold), nperm);
     for f = 1:length(sub_fold)
         krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
-        test_idx = sub_fold(f).fold_index==0;
+        testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
+            ['acc_' bhvr_nm{b} '.mat']));
+        test_idx = sub_fold(f).fold_index==1;
         y_test = krry.y_resid(test_idx);
         y_train = krry.y_resid(~test_idx);
-        y_pred = krr.y_predict_concat(test_idx);
+
+        if(strcmp(opt.optimal_kernel(f).type, 'corr'))
+            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type);
+        else
+            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type) ...
+                & cell2mat(ker_param(2,:,:)) == opt.optimal_kernel(f).scale;
+        end
+        opt_lambda_idx = lambda_set == opt.optimal_lambda(f);
+        if(bin_flag==1)
+            opt_thres_idx = threshold_set == opt.optimal_threshold(f);
+        else
+            opt_thres_idx = 1;
+        end
+        y_pred = testcv.y_p{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1};
         
         % compute null distributions
         for n = 1:nperm
@@ -57,7 +95,7 @@ for b = 1:nbhvr
     end
     
     %% compute p values
-    avg_stats = mean(krr.optimal_stats.(metric), 1);
+    avg_stats = mean(opt.optimal_stats.(metric), 1);
     avg_null_stats = mean(null_stats{b}, 1);
     p_perm(b) = length(find(avg_null_stats > avg_stats)) ./ nperm;
     

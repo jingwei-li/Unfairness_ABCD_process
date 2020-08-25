@@ -49,6 +49,29 @@ if(~exist('Nsplits', 'var') || isempty(Nsplits))
     Nsplits = nchoosek(10, 3);
 end
 
+%% set default hyperparamters if not passed in
+if(~exist('ker_param', 'var') || strcmpi(ker_param, 'none'))
+    ker_param.type = 'corr';
+    ker_param.scale = NaN;
+end
+ker_param = struct2cell(ker_param);
+
+if(~exist('lambda_set', 'var') || strcmpi(lambda_set, 'none'))
+    lambda_set = [ 0 0.00001 0.0001 0.001 0.004 0.007 0.01 0.04 0.07 0.1 0.4 0.7 1 1.5 2 2.5 3 3.5 4 ...
+        5 10 15 20];
+end
+
+if(~exist('bin_flag', 'var') || isempty(bin_flag))
+    bin_flag = 0;
+end
+if(bin_flag==1)
+    if(~exist('threshold_set', 'var') || strcmpi(threshold_set, 'none') || isempty(threshold_set))
+        threshold_set = [-1:0.1:1];
+    end
+else
+    threshold_set = NaN;
+end
+
 %% compute predictive COD
 pCOD_AA = nan(nbhvr, Nsplits); pCOD_WA = pCOD_AA; pCOD_AAWA = pCOD_AA;
 ss_res_AA = pCOD_AA; ss_res_WA = pCOD_WA; ss_res_AAWA = pCOD_AA;
@@ -66,8 +89,8 @@ for b = 1:nbhvr
         error('Nsplits does not equal to length of sub_fold.')
     end
     
-    krr_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
-    krr = load(krr_file);
+    opt_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
+    opt = load(opt_file);
     
     for f = 1:Nsplits
         all_selAA{b} = [all_selAA{b}; sub_fold(f).selAA];
@@ -77,20 +100,34 @@ for b = 1:nbhvr
     for f = 1:Nsplits
         krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ...
             ['y_regress_' bhvr_nm{b} '.mat']));
+        testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
+            ['acc_' bhvr_nm{b} '.mat']));
 
         %% collect true & predicted scores of test AA or WA subjects
-        AAidx = zeros(nsub, 1);
-        WAidx = zeros(nsub, 1);
-        [~, idx] = intersect(subjects, sub_fold(f).selAA, 'stable');
+        AAidx = zeros(length(sub_fold(f).subject_list), 1);
+        WAidx = zeros(length(sub_fold(f).subject_list), 1);
+        [~, idx] = intersect(sub_fold(f).subject_list, sub_fold(f).selAA, 'stable');
         AAidx(idx) = 1;
-        [~, idx] = intersect(subjects, sub_fold(f).selWA, 'stable');
+        [~, idx] = intersect(sub_fold(f).subject_list, sub_fold(f).selWA, 'stable');
         WAidx(idx) = 1;
 
-        AA_pred{b,f} = krr.y_predict_concat(logical(AAidx));
-        WA_pred{b,f} = krr.y_predict_concat(logical(WAidx));
+        if(strcmp(opt.optimal_kernel(f).type, 'corr'))
+            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type);
+        else
+            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type) ...
+                & cell2mat(ker_param(2,:,:)) == opt.optimal_kernel(f).scale;
+        end
+        opt_lambda_idx = lambda_set == opt.optimal_lambda(f);
+        if(bin_flag==1)
+            opt_thres_idx = threshold_set == opt.optimal_threshold(f);
+        else
+            opt_thres_idx = 1;
+        end
+        AA_pred{b,f} = testcv.y_p{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1}(logical(AAidx));
+        WA_pred{b,f} = testcv.y_p{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1}(logical(WAidx));
         
-        AA_test{b,f} = krry.y_resid(logical(AAidx));
-        WA_test{b,f} = krry.y_resid(logical(WAidx));
+        AA_test{b,f} = testcv.y_t{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1}(logical(AAidx));
+        WA_test{b,f} = testcv.y_t{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1}(logical(WAidx));
 
         %% collect true scores of training AA or WA subjects
         trainAA = setdiff(all_selAA{b}, sub_fold(f).selAA);
