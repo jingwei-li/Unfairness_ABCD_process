@@ -9,7 +9,7 @@ model_dir="$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_y_allAA"
 bhvr_ls="$proj_dir/scripts/lists/behavior_list.txt"
 split_dir="$proj_dir/mat/matchANDsplit/20200719"
 split_fstem="_pass_rs_pass_pheno"
-AA_subdir="allAA"
+AA_subdir="train_allAA"
 AAWA_subdir=""
 outstem="_matchedWA"
 
