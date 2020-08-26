@@ -50,6 +50,7 @@ otherwise
 end
 
 for b = 1:nbhvr
+    fprintf('#%d behavior: %s\n', b, bhvr_nm{b})
     load(fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']))
     opt = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
     Nsplits = length(sub_fold);
