@@ -7,13 +7,37 @@ function ABCD_KRR_wholepopModel_XAacc(XA, model_dir, split_dir, split_fstem, out
 metrics = {'corr', 'COD', 'predictive_COD', 'MAE', 'MAE_norm', 'MSE', 'MSE_norm'};
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('cvsname', 'var') || isempty(csvname))
-    csvname = fullfile(ls_dir, 'phtnotypes_pass_rs.txt');
+    csvname = fullfile(ls_dir, 'phenotypes_pass_rs.txt');
 end
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
 [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
 
+%% set default hyperparamters if not passed in
+if(~exist('ker_param', 'var') || strcmpi(ker_param, 'none'))
+    ker_param.type = 'corr';
+    ker_param.scale = NaN;
+end
+ker_param = struct2cell(ker_param);
+
+if(~exist('lambda_set', 'var') || strcmpi(lambda_set, 'none'))
+    lambda_set = [ 0 0.00001 0.0001 0.001 0.004 0.007 0.01 0.04 0.07 0.1 0.4 0.7 1 1.5 2 2.5 3 3.5 4 ...
+        5 10 15 20];
+end
+
+if(~exist('bin_flag', 'var') || isempty(bin_flag))
+    bin_flag = 0;
+end
+if(bin_flag==1)
+    if(~exist('threshold_set', 'var') || strcmpi(threshold_set, 'none') || isempty(threshold_set))
+        threshold_set = [-1:0.1:1];
+    end
+else
+    threshold_set = NaN;
+end
+
+%% read csv file, configure race of XA
 d = readtable(csvname);
 races = d.race;
 switch XA
@@ -26,7 +50,7 @@ otherwise
 end
 
 for b = 1:nbhvr
-    load(fullfile(model_dir, ['sub_fold' split_fstem bhvr_nm{b} '.mat']))
+    load(fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']))
     opt = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
     Nsplits = length(sub_fold);
     % initialize optimal stats structure
@@ -34,10 +58,11 @@ for b = 1:nbhvr
         optimal_stats.(metrics{m}) = zeros(Nsplits, 1);
     end
 
+    y_pred = cell(Nsplits, 1); y_true = y_pred; y_train = y_pred;
     for f = 1:Nsplits
         % load regressed y
         krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ...
-            ['y_regress_' bhvr_n
+            ['y_regress_' bhvr_nm{b} '.mat']));
         % load test CV results
         testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
             ['acc_' bhvr_nm{b} '.mat']));
@@ -68,11 +93,13 @@ for b = 1:nbhvr
 
         % compute stats
         for m = 1:length(metrics)
-            optimal_stats.(metrics{m})(f) = CBIG_compute_prediction_acc_and_loss(curr_y_pred, curr_y_test, metrics{m}, curr_y_train);
+            optimal_stats.(metrics{m})(f) = CBIG_compute_prediction_acc_and_loss(curr_y_pred, curr_y_true, metrics{m}, curr_y_train);
         end
+        y_pred{f} = curr_y_pred; y_true{f} = curr_y_true; y_train{f} = curr_y_train;
     end
-    save(fullfile(model_dir, ['final_result' outstem '_' bhvr_nm{b} '.mat']))
-    clear sub_fold opt
+    save(fullfile(model_dir, ['final_result' outstem '_' bhvr_nm{b} '.mat']), ...
+        'optimal_stats', 'y_pred', 'y_true', 'y_train')
+    clear sub_fold opt y_pred y_true y_train
 end
     
 end
