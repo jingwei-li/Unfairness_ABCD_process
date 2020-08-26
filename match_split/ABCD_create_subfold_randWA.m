@@ -20,7 +20,7 @@ if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
 end
 [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
 
-mkdir(fullfile(split_dir, 'randWA'))
+mkdir(fullfile(split_dir, 'train_randWA'))
 for b = 1:nbhvr
     fprintf('#%d behavior: %s\n', b, bhvr_nm{b})
     fn = fullfile(split_dir, 'allAA_randWA', [bhvr_nm{b} split_fstem '.mat']);
@@ -34,14 +34,14 @@ for b = 1:nbhvr
     randWA = intersect(subjects, randWA, 'stable');
     length(randWA)
 
-    CBIG_cell2text(randWA, fullfile(split_dir, 'randWA', ['subj_' bhvr_nm{b} split_fstem '.txt']))
+    CBIG_cell2text(randWA, fullfile(split_dir, 'train_randWA', ['subj_' bhvr_nm{b} split_fstem '.txt']))
     for f = 1:length(AAWA.sub_fold)
         sub_fold(f).subject_list = AAWA.sub_fold(f).selWA;
         [~, idx] = intersect(randWA, AAWA.sub_fold(f).selWA, 'stable');
         sub_fold(f).fold_index = zeros(length(randWA), 1);
         sub_fold(f).fold_index(idx) = 1;
     end
-    save(fullfile(split_dir, 'randWA', [bhvr_nm{b} split_fstem '.mat']), 'sub_fold')
+    save(fullfile(split_dir, 'train_randWA', [bhvr_nm{b} split_fstem '.mat']), 'sub_fold')
     clear sub_fold
 end
 
