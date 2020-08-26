@@ -28,6 +28,8 @@ bhvr_ls=$proj_dir/scripts/lists/behavior_list.txt
 full_subj_ls=$proj_dir/scripts/lists/subjects_pass_rs_pass_pheno.txt
 full_FC_file=$proj_dir/mat/RSFC/pass_rs_pass_pheno_5351.mat
 outdir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_y_randWA
+split_dir=$proj_dir/mat/matchANDsplit/20200719/train_randWA
+split_fstem="_pass_rs_pass_pheno"
 mkdir -p $outdir/FC
 
 behaviors=$(cat $bhvr_ls)
@@ -39,9 +41,9 @@ for b in $behaviors; do
 		memory=8
 	fi
 
-    subj_ls=$proj_dir/mat/matchANDsplit/20200719/randWA/subj_${b}_pass_rs_pass_pheno.txt
+    subj_ls=$split_dir/subj_${b}${split_fstem}.txt
     FC_file=$outdir/FC/$b.mat
-    subfold_f=$proj_dir/mat/matchANDsplit/20200719/randWA/${b}_pass_rs_pass_pheno.mat
+    subfold_f=$split_dir/${b}${split_fstem}.mat
 
 	mkdir -p $outdir/$b
     cmd="$DIR/ABCD_KRR_in_subgroup.sh -bhvr_name $b -full_subj_ls $full_subj_ls "
