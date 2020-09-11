@@ -14,6 +14,14 @@ switch metric
 		y_label = 'Cross-validated Pearson''s r';
 		y_label_avg = 'Mean cross-validated Pearson''s r';
 		YA_acc = ['corr_' YA];
+	case 'MSE'
+		y_label = 'Cross-validated MSE';
+		y_label_avg = 'Mean cross-validated MSE';
+		YA_acc = ['MSE_' YA];
+	case 'MSE_norm'
+		y_label = 'Cross-validated MSE (normalized by training var)';
+		y_label_avg = 'Mean cross-validated MSE (normalized by training var)';
+		YA_acc = ['MSE_norm_' YA];
 	otherwise
 		error('Unknown metric.')
 end
@@ -26,7 +34,7 @@ end
 legends = {'whole-pop trained', [XA ' trained'], 'Difference'};
 
 %% parse input arguments
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
 	bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
@@ -62,9 +70,17 @@ data_sort = alldata(:,:,idx);
 bhvr_nm_sort = bhvr_nm(idx);
 colloq_nm_sort = colloq_nm(idx);
 
+%% if using MSE or MAE metrics: divide all values by the mean of YA MSE in the whole-population model
+if(strcmpi(metric, 'MSE') || strcmpi(metric, 'MAE'))
+	data_sort_plot = bsxfun(@times, data_sort, 1./mean(data_sort(1,:,:), 2));
+else
+	data_sort_plot = data_sort;
+end
+
 %% plot for each behavior
 mkdir(outdir)
-ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
-	tit, colloq_nm_sort, [], outdir, outstem)
+ABCD_whisker_2grp_indiv(data_sort_plot, colormat, y_label, legends, ...
+	tit, colloq_nm_sort, [], outdir, outstem, metric)
+save(fullfile(outdir, [outstem '.mat']), 'data_sort', 'data_sort_plot', 'bhvr_nm_sort', 'colloq_nm_sort')
 	
 end

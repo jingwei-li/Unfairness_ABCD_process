@@ -13,10 +13,10 @@ function  ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_l
 %     fullfile(XAmodel_dir, <behavior>, ['final_result_' ZA '_' <behavior> '.mat'])
 %   - bhvr_ls (optional)
 %     Behavior list (full path). Default:
-%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 %   - colloq_ls (optional)
 %     List of collquial name of behaviors (full path). Default:
-%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
 %   - metric
 %     String, accuracy metric. Choose from 'predictive_COD', 'COD', 'corr', 'MSE' (capital sensitive).
 %   - tit
@@ -53,7 +53,7 @@ legend2 = ZA; legend2(1) = upper(legend2(1));
 legends = {legend1, legend2, 'Difference'};
 
 %% parse input arguments
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
 	bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
@@ -80,7 +80,6 @@ end
 CV = size(YAacc, 1);
 
 acc_diff = ZAacc - YAacc;
-size(YAacc)
 alldata = cat(1, reshape(YAacc, 1, CV, nbhvr), reshape(ZAacc, 1, CV, nbhvr), ...
     reshape(acc_diff, 1, CV, nbhvr));
 [~, idx] = sort(mean(acc_diff, 1), 'descend');
@@ -88,16 +87,19 @@ data_sort = alldata(:,:,idx);
 bhvr_nm_sort = bhvr_nm(idx);
 colloq_nm_sort = colloq_nm(idx);
 
-[mean(YAacc(:,idx), 1); mean(ZAacc(:,idx), 1); mean(acc_diff(:,idx), 1)]'
-[max(YAacc(:,idx), [], 1); max(ZAacc(:,idx), [], 1); max(acc_diff(:,idx), [], 1)]'
-[min(YAacc(:,idx), [], 1); min(ZAacc(:,idx), [], 1); min(acc_diff(:,idx), [], 1)]'
+%% if using MSE or MAE metrics: divide all values by the mean of YA MSE in the whole-population model
+if(strcmpi(metric, 'MSE') || strcmpi(metric, 'MAE'))
+	data_sort_plot = bsxfun(@times, data_sort, 1./mean(data_sort(1,:,:), 2));
+else
+	data_sort_plot = data_sort;
+end
 
 %% plot for each behavior
-ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, ...
+ABCD_whisker_2grp_indiv(data_sort_plot, colormat, y_label, legends, ...
     tit, colloq_nm_sort, [], outdir, outstem, metric);
     
 %% plot average across behaviors
-avg_data = squeeze(mean(data_sort,2))';
+avg_data = squeeze(mean(data_sort_plot,2))';
 ABCD_whisker_2grp_avg(avg_data, colormat, y_label_avg, legends, outdir, outstem)
     
 end

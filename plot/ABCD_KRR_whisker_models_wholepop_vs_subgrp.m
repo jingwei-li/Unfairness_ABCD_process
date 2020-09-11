@@ -4,7 +4,7 @@ function ABCD_KRR_whisker_models_wholepop_vs_subgrp(wholepop_dir, subgrp_dir, le
 %
 % Long description
 
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
