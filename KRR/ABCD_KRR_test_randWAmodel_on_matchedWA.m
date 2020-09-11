@@ -53,7 +53,7 @@ for b = 1:nbhvr
         fprintf('%d..', f)
 		[~, ~, idx_matchedWA] = intersect(split_matched.sub_fold(f).selWA, all_subj, 'stable');
 
-		[yp, yt, optimal_acc(f), pred_stats, y_matchedWA{f}, y_matchedWA_resid{f}] = ...
+		[yp, yt, optimal_acc(f), pred_stats, y_matchedWA{f}, y_matchedWA_resid{f}, y_train_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, split_randWA.sub_fold, idx_randWA_all, ...
 			idx_matchedWA, covariates, all_cov, all_y, corr_mat, opt, metrics);
         yp_matchedWA(f) = yp;
@@ -64,7 +64,7 @@ for b = 1:nbhvr
     end
     fprintf('\n')
 	save(fullfile(model_dir, bhvr_nm{b}, ['final_result_matchedWA_' bhvr_nm{b} '.mat']), 'optimal_acc', 'optimal_stats', ...
-		'yp_matchedWA', 'yt_matchedWA', 'y_matchedWA', 'y_matchedWA_resid')
+		'yp_matchedWA', 'yt_matchedWA', 'y_matchedWA', 'y_matchedWA_resid', 'y_train_resid')
 end
 
 end

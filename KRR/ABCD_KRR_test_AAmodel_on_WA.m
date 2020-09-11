@@ -93,7 +93,7 @@ for b = 1:nbhvr
 		fprintf('%d..', f)
 		[~, ~, idx_WA] = intersect(AAWA_fold.sub_fold(f).selWA, all_subj, 'stable');
 
-		[yp, yt, optimal_acc(f), pred_stats, y_WA{f}, y_WA_resid{f}] = ...
+		[yp, yt, optimal_acc(f), pred_stats, y_WA{f}, y_WA_resid{f}, y_train_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, ...
 			AA_fold.sub_fold, idxAA_all, idx_WA, covariates, all_cov, all_y, ...
 			corr_mat, opt, metrics);
@@ -105,7 +105,7 @@ for b = 1:nbhvr
 	end
 	fprintf('\n')
 	save(fullfile(model_dir, bhvr_nm{b}, ['final_result' outstem '_' bhvr_nm{b} '.mat']), ...
-		'optimal_acc', 'optimal_stats', 'yp_WA', 'yt_WA', 'y_WA', 'y_WA_resid')
+		'optimal_acc', 'optimal_stats', 'yp_WA', 'yt_WA', 'y_WA', 'y_WA_resid', 'y_train_resid')
 end
 
 end
