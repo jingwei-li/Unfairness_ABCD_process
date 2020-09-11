@@ -1,4 +1,4 @@
-function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
+function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid, y_grp1_train_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
 	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
 
 % [yp_grp2, yt_grp2, acc, pred_stats, y_grp2_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
@@ -33,6 +33,7 @@ y_grp2 = all_y(idx_grp2);
 %% regression, if necessary
 if(strcmpi(cov_grp1, 'none'))
 	y_grp2_resid = y_grp2;
+	y_grp1_train_resid = y_grp1_train;
 else
 	if(isempty(cov_grp1))
 		cov_grp1_train = [];
