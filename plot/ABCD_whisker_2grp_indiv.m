@@ -16,7 +16,7 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	%   - outstem: output name relative to outdir, without extension.
 	%
 
-	addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+	addpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 	nbhvr = size(data, 3);
 
 	if(~exist('metric', 'var'))
@@ -80,5 +80,5 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	hgexport(f, outname)
 	close
 
-	rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+	rmpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 end
