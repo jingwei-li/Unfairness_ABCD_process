@@ -1,4 +1,4 @@
-function  ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_ls, metric, tit, outdir, outstem)
+function  ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_ls, metric, tit, outdir, outstem, perm_fname)
 
 % ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_ls, metric, tit, outdir, outstem)
 %
@@ -25,6 +25,9 @@ function  ABCD_whisker_trainXA_testYAvsZA(XAmodel_dir, YA, ZA, bhvr_ls, colloq_l
 %     Output directory (full path).
 %   - outstem
 %     String, stem of output figure name.
+%   - perm_fname
+%     A .mat file contains the permutation testing results of AA-WA accuracy difference (full path).
+%     It is the result of `ABCD_KRR_PermTest_trainXA_testYAvsZA.m`.
 
 switch metric
     case 'predictive_COD'
@@ -69,6 +72,10 @@ for b = 1:nbhvr
     colloq_nm{b} = strjoin(curr_colloq, ' ');
 end
 
+if(exist('perm_fname', 'var') && ~isempty(perm_fname))
+    load(perm_fname);
+end
+
 %% load accuracy trained on XA
 YAacc = []; ZAacc = [];
 for b = 1:nbhvr
@@ -94,9 +101,16 @@ else
 	data_sort_plot = data_sort;
 end
 
+% get indices of significant behaviors
+if(exist('perm_fname', 'var') && ~isempty(perm_fname))
+    [~, IA, IB] = intersect(idx, sig_diff_idx, 'stable');
+else
+    IA = [];
+end
+
 %% plot for each behavior
 ABCD_whisker_2grp_indiv(data_sort_plot, colormat, y_label, legends, ...
-    tit, colloq_nm_sort, [], outdir, outstem, metric);
+    tit, colloq_nm_sort, IA, outdir, outstem, metric);
     
 %% plot average across behaviors
 avg_data = squeeze(mean(data_sort_plot,2))';
