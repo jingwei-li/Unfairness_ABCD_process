@@ -31,6 +31,11 @@ switch metric
         WA_acc = 'corr_WA';
         grpdif.AA_train = cell(size(grpdif.corr_AA));
         grpdif.WA_train = cell(size(grpdif.corr_WA));
+    case 'MSE'
+        AA_acc = 'MSE_AA';
+        WA_acc = 'MSE_WA';
+        grpdif.AA_train = cell(size(grpdif.MSE_AA));
+        grpdif.WA_train = cell(size(grpdif.MSE_WA));
     otherwise
         error('Unknown metric.')
 end
@@ -38,7 +43,7 @@ end
 acc_diff = grpdif.(WA_acc) - grpdif.(AA_acc);
 
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
-    bhvr_ls = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt';
+    bhvr_ls = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt';
 end
 [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
 
@@ -76,11 +81,11 @@ avg_acc_diff = mean(acc_diff, 2);
 
 p_perm = nan(nbhvr,1);
 for b = 1:nbhvr
-    p_perm(b) = length(find( null_acc_diff(b,:) > abs(avg_acc_diff(b)) | ...
-        null_acc_diff < -abs(avg_acc_diff(b)) )) / nperm;
+    p_perm(b) = length(find( null_acc_diff(b,:) - mean(null_acc_diff(b,:)) > abs(avg_acc_diff(b)) | ...
+        null_acc_diff(b,:) - mean(null_acc_diff(b,:)) < -abs(avg_acc_diff(b)) )) / nperm;
 end
-p_perm(nbhvr+1) = length(find( mean(null_acc_diff,1) > abs(mean(avg_acc_diff)) | ...
-    mean(null_acc_diff,1) < -abs(mean(avg_acc_diff)) )) / nperm;
+p_perm(nbhvr+1) = length(find( mean(null_acc_diff,1) - mean(mean(null_acc_diff,1),2) > abs(mean(avg_acc_diff)) | ...
+    mean(null_acc_diff,1) - mean(mean(null_acc_diff,1),2) < -abs(mean(avg_acc_diff)) )) / nperm;
 
 H_perm_all = FDR(p_perm(:), alpha);
 H_perm = setdiff(H_perm_all, nbhvr+1);
@@ -107,7 +112,18 @@ switch metric
     case 'corr'
         null_acc_AA = CBIG_corr(null_yp_AA, null_yt_AA);
         null_acc_WA = CBIG_corr(null_yp_WA, null_yt_WA);
-    % remember to revert the sign if using MSE
+    case 'MAE'
+        null_acc_AA = mean(abs(null_yp_AA - null_yt_AA));
+        null_acc_WA = mean(abs(null_yp_WA - null_yt_WA));
+    case 'MAE_norm'
+        null_acc_AA = mean(abs(null_yp_AA - null_yt_AA))/std(y_train);
+        null_acc_WA = mean(abs(null_yp_WA - null_yt_WA))/std(y_train);
+    case 'MSE'
+        null_acc_AA = mean((null_yp_AA - null_yt_AA).^2);
+        null_acc_WA = mean((null_yp_WA - null_yt_WA).^2);
+    case 'MSE_norm'
+        null_acc_AA = mean((null_yp_AA - null_yt_AA).^2)/var(y_train);
+        null_acc_WA = mean((null_yp_WA - null_yt_WA).^2)/var(y_train);
     otherwise
         error('Unknown metric')
 end
