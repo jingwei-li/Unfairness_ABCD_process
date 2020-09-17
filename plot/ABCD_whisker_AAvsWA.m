@@ -6,12 +6,12 @@ function ABCD_whisker_AAvsWA(bhvr_ls, colloq_ls, group_diff, perm_fname, metric,
 %   - bhvr_ls (optional)
 %     Behavior list (full path, text file). Use the behaviors which passed
 %     predictability criteria. Default: 
-%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 % 
 %   - colloq_ls (optional)
 %     List of behaviors' colloquial names (full path). Use the same
 %     behaviors as in bhvr_ls. Default: 
-%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
 %
 %   - group_diff
 %     A .mat file contains the accuracy of each race group, and the
@@ -46,6 +46,11 @@ switch metric
         y_label_avg = 'Mean cross-validated Pearson''s r';
         AA_acc = 'corr_AA';
         WA_acc = 'corr_WA';
+    case 'MSE'
+        y_label = 'Cross-validated MSE';
+        y_label_avg = 'Mean cross-validated MSE';
+        AA_acc = 'MSE_AA';
+        WA_acc = 'MSE_WA';
     otherwise
         error('Unknown metric.')
 end
@@ -54,7 +59,7 @@ colormat = [114 147 203; 132 186 91; 211 94 96]./255;
 legends = {'AA', 'Matched WA', 'Difference'};
 
 %% parse input arguments, collect data
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
@@ -92,16 +97,23 @@ else
     IA = [];
 end
 
+%% if using MSE or MAE metrics: divide all values by the mean of AA MSE
+if(strcmpi(metric, 'MSE') || strcmpi(metric, 'MAE'))
+	data_sort_plot = bsxfun(@times, data_sort, 1./mean(data_sort(1,:,:), 2));
+else
+	data_sort_plot = data_sort;
+end
+
 if(~exist(outdir, 'dir'))
     mkdir(outdir)
 end
 
 %% plot for each behavior
-ABCD_whisker_2grp_indiv(data_sort, colormat, y_label, legends, [], ...
+ABCD_whisker_2grp_indiv(data_sort_plot, colormat, y_label, legends, [], ...
 	colloq_nm_sort, IA, outdir, outstem)
 
 %% plot the average
-avg_data = mean(data_sort, 3)';
+avg_data = mean(data_sort_plot, 3)';
 ABCD_whisker_2grp_avg(avg_data, colormat, y_label, legends, outdir, outstem)
 
 end
