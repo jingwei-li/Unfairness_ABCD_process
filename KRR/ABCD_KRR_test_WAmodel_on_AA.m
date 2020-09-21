@@ -88,24 +88,33 @@ for b = 1:nbhvr
     
     [~, ~, idxWA_all] = intersect(WA, all_subj, 'stable');
 	yp_AA = cell(Nsplits, 1);  yt_AA = yp_AA;
-	y_AA = yp_AA;  y_AA_resid = yp_AA;
+	y_AA = yp_AA;  y_AA_resid = yp_AA;   y_matchedWA_resid = yp_AA;
 	for f = 1:Nsplits
 		fprintf('%d..', f)
 		[~, ~, idx_AA] = intersect(AAWA_fold.sub_fold(f).selAA, all_subj, 'stable');
+		[~, ~, idx_matchedWA] = intersect(AAWA_fold.sub_fold(f).selWA, all_subj, 'stable');
 
-		[yp, yt, optimal_acc(f), pred_stats, y_AA{f}, y_AA_resid{f}, y_train_resid{f}] = ...
+		[yp, yt, optimal_acc(f), pred_stats, y_AA{f}, y_AA_resid{f}, y_train_resid{f}, y_matchedWA_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, ...
 			WA_fold.sub_fold, idxWA_all, idx_AA, covariates, all_cov, all_y, ...
-			corr_mat, opt, metrics);
+			corr_mat, opt, metrics, idx_matchedWA);
+
+		ssr = sum((yt{1} - yp{1}).^2) ./ length(yt{1});
+		sst = sum(([y_AA_resid{f}; y_matchedWA_resid{f}] - mean(y_train_resid{f})).^2) ...
+			./ length([y_AA_resid{f}; y_matchedWA_resid{f}]);
+		pred_stats(length(metrics) + 1) = bsxfun(@minus, 1, ssr./sst);
+		fprintf('ssr = %f, sst = %f\n', ssr, sst)
+
 		yp_AA(f) = yp;
 		yt_AA(f) = yt;
 		for midx = 1:length(metrics)
 			optimal_stats.(metrics{midx})(f,1) = pred_stats(midx);
 		end
+		optimal_stats.pCOD(f,1) = pred_stats(length(metrics) + 1);
 	end
 	fprintf('\n')
 	save(fullfile(model_dir, bhvr_nm{b}, ['final_result' outstem '_' bhvr_nm{b} '.mat']), ...
-		'optimal_acc', 'optimal_stats', 'yp_AA', 'yt_AA', 'y_AA', 'y_AA_resid', 'y_train_resid')
+		'optimal_acc', 'optimal_stats', 'yp_AA', 'yt_AA', 'y_AA', 'y_AA_resid', 'y_train_resid', 'y_matchedWA_resid')
 end
     
 end

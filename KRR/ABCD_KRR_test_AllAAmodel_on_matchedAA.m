@@ -51,25 +51,34 @@ for b = 1:nbhvr
 
 	[~, ~, idx_allAA_all] = intersect(allAA, all_subj, 'stable');
 	yp_matchedAA = cell(Nsplits, 1);  yt_matchedAA = yp_matchedAA;
-	y_matchedAA = yp_matchedAA;   y_matchedAA_resid = yp_matchedAA;
+	y_matchedAA = yp_matchedAA;   y_matchedAA_resid = yp_matchedAA;   y_matchedWA_resid = yp_matchedAA;
 	optimal_acc = nan(Nsplits, 1);
     fprintf('Fold = ')
     for f = 1:Nsplits
-        fprintf('%d..', f)
+        fprintf('%d..\n', f)
 		[~, ~, idx_matchedAA] = intersect(split_matched.sub_fold(f).selAA, all_subj, 'stable');
+		[~, ~, idx_matchedWA] = intersect(split_matched.sub_fold(f).selWA, all_subj, 'stable');
 
-		[yp, yt, optimal_acc(f), pred_stats, y_matchedAA{f}, y_matchedAA_resid{f}, y_train_resid{f}] = ...
+		[yp, yt, optimal_acc(f), pred_stats, y_matchedAA{f}, y_matchedAA_resid{f}, y_train_resid{f}, y_matchedWA_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, split_allAA.sub_fold, idx_allAA_all, ...
-			idx_matchedAA, covariates, all_cov, all_y, corr_mat, opt, metrics);
+			idx_matchedAA, covariates, all_cov, all_y, corr_mat, opt, metrics, idx_matchedWA);
+		
+		ssr = sum((yt{1} - yp{1}).^2) ./ length(yt{1});
+		sst = sum(([y_matchedAA_resid{f}; y_matchedWA_resid{f}] - mean(y_train_resid{f})).^2) ...
+			./ length([y_matchedAA_resid{f}; y_matchedWA_resid{f}]);
+		pred_stats(length(metrics) + 1) = bsxfun(@minus, 1, ssr./sst);
+		fprintf('ssr = %f, sst = %f\n', ssr, sst)
+
         yp_matchedAA(f) = yp;
         yt_matchedAA(f) = yt;
         for midx = 1:length(metrics)
 			optimal_stats.(metrics{midx})(f,1) = pred_stats(midx);
-        end
+		end
+		optimal_stats.pCOD(f,1) = pred_stats(length(metrics) + 1);
     end
     fprintf('\n')
 	save(fullfile(model_dir, bhvr_nm{b}, ['final_result_matchedAA_' bhvr_nm{b} '.mat']), 'optimal_acc', 'optimal_stats', ...
-		'yp_matchedAA', 'yt_matchedAA', 'y_matchedAA', 'y_matchedAA_resid', 'y_train_resid')
+		'yp_matchedAA', 'yt_matchedAA', 'y_matchedAA', 'y_matchedAA_resid', 'y_train_resid'. 'y_matchedWA_resid{f}')
 end
 	
 end

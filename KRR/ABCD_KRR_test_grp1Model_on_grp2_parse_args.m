@@ -32,7 +32,7 @@ function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, al
 %               of 'all_subj'.
 %
 
-proj_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race';
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
 ls_dir = fullfile(proj_dir, 'scripts', 'lists');
 if(~exist('csvname', 'var') || isempty(csvname))
 	csvname = fullfile(ls_dir, 'phenotypes_pass_rs.txt');

@@ -46,25 +46,34 @@ for b = 1:nbhvr
     
     [~, ~, idx_randWA_all] = intersect(randWA, all_subj, 'stable');
 	yp_matchedWA = cell(Nsplits, 1);  yt_matchedWA = yp_matchedWA;
-	y_matchedWA = yp_matchedWA;   y_matchedWA_resid = yp_matchedWA;
+	y_matchedWA = yp_matchedWA;   y_matchedWA_resid = yp_matchedWA;   y_matchedAA_resid = yp_matchedWA;
 	optimal_acc = nan(Nsplits, 1);
     fprintf('Fold = ')
     for f = 1:Nsplits
         fprintf('%d..', f)
 		[~, ~, idx_matchedWA] = intersect(split_matched.sub_fold(f).selWA, all_subj, 'stable');
+		[~, ~, idx_matchedAA] = intersect(split_matched.sub_fold(f).selAA, all_subj, 'stable');
 
-		[yp, yt, optimal_acc(f), pred_stats, y_matchedWA{f}, y_matchedWA_resid{f}, y_train_resid{f}] = ...
+		[yp, yt, optimal_acc(f), pred_stats, y_matchedWA{f}, y_matchedWA_resid{f}, y_train_resid{f}, y_matchedAA_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, split_randWA.sub_fold, idx_randWA_all, ...
-			idx_matchedWA, covariates, all_cov, all_y, corr_mat, opt, metrics);
+			idx_matchedWA, covariates, all_cov, all_y, corr_mat, opt, metrics, idx_matchedAA);
+
+		ssr = sum((yt{1} - yp{1}).^2) ./ length(yt{1});
+		sst = sum(([y_matchedAA_resid{f}; y_matchedWA_resid{f}] - mean(y_train_resid{f})).^2) ...
+			./ length([y_matchedAA_resid{f}; y_matchedWA_resid{f}]);
+		pred_stats(length(metrics) + 1) = bsxfun(@minus, 1, ssr./sst);
+		fprintf('ssr = %f, sst = %f\n', ssr, sst)
+
         yp_matchedWA(f) = yp;
         yt_matchedWA(f) = yt;
         for midx = 1:length(metrics)
 			optimal_stats.(metrics{midx})(f,1) = pred_stats(midx);
-        end
+		end
+		optimal_stats.pCOD(f,1) = pred_stats(length(metrics) + 1);
     end
     fprintf('\n')
 	save(fullfile(model_dir, bhvr_nm{b}, ['final_result_matchedWA_' bhvr_nm{b} '.mat']), 'optimal_acc', 'optimal_stats', ...
-		'yp_matchedWA', 'yt_matchedWA', 'y_matchedWA', 'y_matchedWA_resid', 'y_train_resid')
+		'yp_matchedWA', 'yt_matchedWA', 'y_matchedWA', 'y_matchedWA_resid', 'y_train_resid', 'y_matchedAA_resid')
 end
 
 end

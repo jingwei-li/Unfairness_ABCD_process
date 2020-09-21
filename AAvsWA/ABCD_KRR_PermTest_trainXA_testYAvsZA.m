@@ -18,7 +18,11 @@ function ABCD_KRR_PermTest_trainXA_testYAvsZA(XAmodel_dir, YA, YA_yvar, ZA, ZA_y
 %     List of collquial name of behaviors (full path). Default:
 %     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
 %   - metric
-%     String, accuracy metric. Choose from 'predictive_COD', 'COD', 'corr', 'MSE' (capital sensitive).
+%     String, accuracy metric. Choose from 'predictive_COD' (or 'pCOD'), 'COD', 'corr', 'MSE' (capital sensitive).
+
+if(strcmpi(metric, 'predictive_COD'))
+    metric = 'pCOD';
+end
 
 if(strfind(YA, 'AA') && strfind(ZA, 'WA'))
     colormat = [114 147 203; 132 186 91; 211 94 96]./255;
@@ -102,7 +106,7 @@ function [null_acc_AA, null_acc_WA] = compute_null(null_yt_AA, null_yt_WA, null_
     null_yp_WA, metric, y_train)
 
 switch metric
-    case 'predictive_COD'
+    case {'predictive_COD', 'pCOD'}
         ss_res_AA = sum((null_yt_AA - null_yp_AA).^2, 1) ./ length(null_yt_AA);
         ss_res_WA = sum((null_yt_WA - null_yp_WA).^2, 1) ./ length(null_yt_WA);
         ss_total = sum(([null_yt_AA; null_yt_WA] - mean(y_train)).^2, 1) ./ ...

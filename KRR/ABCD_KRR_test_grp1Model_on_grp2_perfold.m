@@ -1,5 +1,5 @@
-function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid, y_grp1_train_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
-	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
+function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid, y_grp1_train_resid, y_grp3_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
+	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics, idx_grp3)
 
 % [yp_grp2, yt_grp2, acc, pred_stats, y_grp2_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
 %     f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
@@ -29,25 +29,41 @@ y_fold_grp1 = load(fullfile(model_dir, behavior, 'y', ['fold_' num2str(f)], ...
 	['y_regress_' behavior '.mat']));
 y_grp1_train = y_fold_grp1.y_orig(split_grp1(f).fold_index == 0);
 y_grp2 = all_y(idx_grp2);
+if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
+	y_grp3 = all_y(idx_grp3);
+end
 
 %% regression, if necessary
+y_grp3_resid = [];
 if(strcmpi(cov_grp1, 'none'))
 	y_grp2_resid = y_grp2;
 	y_grp1_train_resid = y_grp1_train;
+	if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
+		y_grp3_resid = y_grp3;
+	end
 else
 	if(isempty(cov_grp1))
 		cov_grp1_train = [];
 		cov_grp2 = [];
+		if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
+			cov_grp3 = [];
+		end
 	else
 		cov_grp1_train = cov_grp1(split_grp1(f).fold_index == 0, :);
 		cov_grp2 = all_cov(idx_grp2, :);
+		if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
+			cov_grp3 = all_cov(idx_grp3, :);
+		end
 	end
 
 	[y_grp1_train_resid, beta] = CBIG_regress_X_from_y_train(y_grp1_train, cov_grp1_train);
-	if(~isequal(y_grp1_train_resid, y_fold_grp1.y_resid(split_grp1(f).fold_index == 0)));
-		error('Regression in training sample was not replicated.')
+	if(max(abs(y_grp1_train_resid - y_fold_grp1.y_resid(split_grp1(f).fold_index == 0))) > 1e-6);
+		error('Regression in training sample was not replicated. Max diff: %f', max(abs(y_grp1_train_resid - y_fold_grp1.y_resid(split_grp1(f).fold_index == 0))) )
 	end
 	y_grp2_resid = CBIG_regress_X_from_y_test(y_grp2, cov_grp2, beta);
+	if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
+		y_grp3_resid = CBIG_regress_X_from_y_test(y_grp3, cov_grp3, beta);
+	end
 end
 
 %% compute kernel between training subjects in grp1 and testing subjects in grp2.

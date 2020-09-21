@@ -81,8 +81,13 @@ YAacc = []; ZAacc = [];
 for b = 1:nbhvr
     optYA = load(fullfile(XAmodel_dir, bhvr_nm{b}, ['final_result_' YA '_' bhvr_nm{b} '.mat']));
     optZA = load(fullfile(XAmodel_dir, bhvr_nm{b}, ['final_result_' ZA '_' bhvr_nm{b} '.mat']));
-    YAacc = [YAacc optYA.optimal_stats.(metric)];
-    ZAacc = [ZAacc optZA.optimal_stats.(metric)];
+    if(strcmpi(metric, 'predictive_COD'))
+        YAacc = [YAacc optYA.optimal_stats.pCOD];
+        ZAacc = [ZAacc optZA.optimal_stats.pCOD];
+    else
+        YAacc = [YAacc optYA.optimal_stats.(metric)];
+        ZAacc = [ZAacc optZA.optimal_stats.(metric)];
+    end
 end
 CV = size(YAacc, 1);
 
