@@ -90,6 +90,7 @@ for b = 1:nbhvr
             yname = fullfile(model_dir, bhvr_nm{b}, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']);
         else
             yname = fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']);
+        end
         y = load(yname);
         y = y.y_resid;
 
