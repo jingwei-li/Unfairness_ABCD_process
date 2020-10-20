@@ -1,6 +1,6 @@
 function [BISBAS, BISBAS_hdr, BISBAS_colloquial] = ABCD_read_BISBAS(subj_list, race, dohist, hist_dir, hist_fstem)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( fullfile(getenv('HOME'), 'storage', 'from_HOME', 'code', 'plotting_functions') ))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -111,7 +111,7 @@ end
 
 
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( fullfile(getenv('HOME'), 'storage', 'from_HOME', 'code', 'plotting_functions')))
 
 end
 
