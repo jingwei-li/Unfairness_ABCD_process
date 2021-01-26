@@ -3,23 +3,23 @@ function [race, race_hdr] = ABCD_read_race(subj_list, dohist, hist_fname)
 % [race, race_hdr] = ABCD_read_race(subj_list, dohist, hist_fname)
 %
 % Example:
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 %
-% race = ABCD_read_race('/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt',...
-%    [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs_pass_pheno.png');
+% race = ABCD_read_race('/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt',...
+%    [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs_pass_pheno.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-race_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/acspsw03.txt';
+race_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/acspsw03.txt';
 race_hdr = 'race_ethnicity';
 subj_hdr = 'subjectkey';
 
 if(~exist('subj_list', 'var') || isempty(subj_list))
-    subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
+    subj_list = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
 end
 [subjects, nsub] = CBIG_text2cell(subj_list);
 
@@ -71,7 +71,7 @@ if(dohist)
     close
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 
 end

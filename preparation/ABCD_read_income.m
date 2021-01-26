@@ -1,22 +1,22 @@
 function income = ABCD_read_income(subj_list, race, dohist, hist_fname)
 
 % Example:
-% income = ABCD_read_income([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/income_pass_rs.png');
+% income = ABCD_read_income([], race, [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/income_pass_rs.png');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-income_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/pdem02.txt';
+income_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/pdem02.txt';
 income_hdr = 'demo_comb_income_v2';
 subj_hdr = 'subjectkey';
 
 if(~exist('subj_list', 'var') || isempty(subj_list))
-    subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
+    subj_list = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
 end
 [subjects, nsub] = CBIG_text2cell(subj_list);
 
@@ -36,7 +36,9 @@ for s = 1:nsub
     end
 end
 empty_idx = cellfun(@isempty, income);
-income{empty_idx} = '999';
+if(any(empty_idx))
+    income{empty_idx} = '999';
+end
 
 if(dohist==1)
     % 1= Less than $5,000; 2=$5,000 through $11,999; 3=$12,000 through $15,999; 4=$16,000 through $24,999; 
@@ -96,7 +98,7 @@ if(dohist==1)
     close(gcf)
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

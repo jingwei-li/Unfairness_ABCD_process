@@ -16,6 +16,7 @@ end
 [colloq_nm, ncolloq] = CBIG_text2cell(colloq_ls);
 
 mkdir(hist_dir)
+facecolor = [218,160,61; 97,98,71]./255;
 
 %% load AAWA_file
 % AAWA_file should contain variables: 
@@ -55,7 +56,9 @@ for b = 1:ncolloq
     xloc = E(1:end-1) + diff(E)/2;
     
     % plot
-    bar(xloc, [hc_WA; hc_AA]')
+    bh = bar(xloc, [hc_WA; hc_AA]');
+    bh(1).FaceColor = facecolor(1,:);   bh(1).EdgeColor = 'none';
+    bh(2).FaceColor = facecolor(2,:);   bh(2).EdgeColor = 'none';
     box off
     set(gcf, 'Position', [0 0 1600 600])
     
