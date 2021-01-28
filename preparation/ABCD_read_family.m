@@ -1,10 +1,11 @@
-function [fam_id, fam_mem] = ABCD_read_family(subj_list)
+function [fam_id, fam_mem, grp_id] = ABCD_read_family(subj_list)
 
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 
-fam_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/acspsw03.txt';
+fam_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/acspsw03.txt';
 fam_hdr = 'rel_family_id';
+grp_hdr = 'rel_group_id';
 subj_hdr = 'subjectkey';
 event_hdr = 'eventname';
 
@@ -23,14 +24,17 @@ end
 d = readtable(fam_csv);
 base_event = strcmp(d.(event_hdr), 'baseline_year_1_arm_1');
 fam_id_read = d.(fam_hdr);
+grp_id_read = d.(grp_hdr);
 
 % select only the rows corresponding to required subjects
 fam_id = cell(nsub, 1);
+grp_id = cell(nsub, 1);
 for s = 1:nsub
     tmp_idx = strcmp(d.(subj_hdr), subjects_csv{s});
     if(any(tmp_idx==1))
         tmp_idx = tmp_idx & base_event;
         fam_id(s) = fam_id_read(tmp_idx,:);
+        grp_id(s) = grp_id_read(tmp_idx,:);
     end
 end
 empty_idx = cellfun(@isempty, fam_id);

@@ -6,7 +6,7 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-BISBAS_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
+BISBAS_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
 BISBAS_hdr = {'bis_y_ss_bis_sum', 'bis_y_ss_bas_rr', 'bis_y_ss_bas_drive', 'bis_y_ss_bas_fs'};
 BISBAS_colloquial = {'Behavioral inhibition ', 'BAS - Reward responsiveness', 'BAS - Drive', 'BAS - Fun seeking'};
 for c = 1:length(BISBAS_colloquial)

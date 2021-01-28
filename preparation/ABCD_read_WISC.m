@@ -9,13 +9,13 @@ function [WISC, WISC_hdr, WISC_colloquial] = ABCD_read_WISC(subj_list, race, doh
 % where "race" is obtained from
 % race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-WISC_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_ps01.txt';
+WISC_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_ps01.txt';
 WISC_hdr = {'pea_wiscv_trs'};
 WISC_colloquial = {'Matrix reasoning'};
 for c = 1:length(WISC_colloquial)
@@ -109,7 +109,7 @@ if(dohist==1)
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

@@ -9,13 +9,13 @@ function [RAVLT, RAVLT_hdr, RAVLT_colloquial] = ABCD_read_RAVLT(subj_list, race,
 % where "race" is obtained from
 % race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-RAVLT_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_ps01.txt';
+RAVLT_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_ps01.txt';
 RAVLT_hdr = {'pea_ravlt_sd_trial_vi_tc', 'pea_ravlt_ld_trial_vii_tc'};
 RAVLT_colloquial = {'Short delay recall', 'Long delay recall'};
 for c = 1:length(RAVLT_colloquial)
@@ -109,7 +109,7 @@ if(dohist==1)
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

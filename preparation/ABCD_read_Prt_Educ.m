@@ -21,13 +21,13 @@ function [peduc, peduc_comb, peduc_avg, peduc_hdr, peduc_colloquial] = ABCD_read
 % [peduc, peduc_comb, peduc_avg, peduc_hdr, peduc_colloquial] = ABCD_read_Prt_Educ([], race, [], ...
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/Prt_Educ_avg_pass_rs.png')
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-peduc_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/pdem02.txt';
+peduc_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/pdem02.txt';
 peduc_hdr = {'demo_prnt_ed_v2', 'demo_prtnr_ed_v2'};
 peduc_colloquial = {'Parental degree', 'Parterner''s degree'};
 subj_hdr = 'subjectkey';

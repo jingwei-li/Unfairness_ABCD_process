@@ -13,7 +13,7 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-site_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
+site_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
 site_hdr = 'site_id_l';
 event_hdr = 'eventname';
 subj_hdr = 'subjectkey';

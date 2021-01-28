@@ -6,7 +6,7 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-sex_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
+sex_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
 sex_hdr = 'gender';
 event_hdr = 'eventname';
 subj_hdr = 'subjectkey';

@@ -5,17 +5,17 @@ function [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS(subj_list, race, doh
 % Read and plot histograms of the mecessary measures from Modified UPPS-P for Children from PhenX
 %
 % Example:
-% [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [UPPS, UPPS_hdr, UPPS_colloquial] = ABCD_read_UPPS([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-UPPS_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
+UPPS_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
 UPPS_hdr = {'upps_y_ss_negative_urgency', 'upps_y_ss_positive_urgency', 'upps_y_ss_lack_of_planning', ...
     'upps_y_ss_lack_of_perseverance', 'upps_y_ss_sensation_seeking'};
 UPPS_colloquial = {'Negative urgency', 'Positive urgency', 'Lack of planning', ...
@@ -122,7 +122,7 @@ end
 
 
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

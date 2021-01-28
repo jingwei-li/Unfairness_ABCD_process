@@ -5,15 +5,15 @@ function [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL(subj_list, race, doh
 % Read and plot histograms of the necessary measures from Achenbach Child Behavior Check List
 %
 % Example:
-% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL([], race, [], '~/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-CBCL_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_cbcls01.txt';
+CBCL_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_cbcls01.txt';
 CBCL_hdr = {'cbcl_scr_syn_anxdep_r', 'cbcl_scr_syn_withdep_r', 'cbcl_scr_syn_somatic_r', ...
     'cbcl_scr_syn_social_r', 'cbcl_scr_syn_thought_r', 'cbcl_scr_syn_attention_r', ...
     'cbcl_scr_syn_rulebreak_r', 'cbcl_scr_syn_aggressive_r'};
@@ -121,7 +121,7 @@ if(dohist==1)
 end
 
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

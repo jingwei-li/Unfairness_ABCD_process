@@ -5,17 +5,17 @@ function [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan(subj_list, race, d
 % Read necessary measures from Little Man Task.
 % 
 % Example:
-% [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-LMT_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/lmtp201.txt';
+LMT_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/lmtp201.txt';
 LMT_hdr = {'lmt_scr_perc_correct', 'lmt_scr_rt_correct', 'lmt_scr_efficiency'};
 LMT_colloquial = {'Visuospatial accuracy', 'Visuospatial reaction time', 'Visuospatial efficiency'};
 for c = 1:length(LMT_colloquial)
@@ -115,7 +115,7 @@ if(dohist==1)
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

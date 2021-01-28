@@ -1,7 +1,7 @@
 function [FD, DVARS] = ABCD_read_motion(fmri_dir, subj_list, dosave, out_dir, out_fstem)
 
 if(~exist('fmri_dir', 'var') || isempty(fmri_dir))
-    fmri_dir = '/mnt/eql/yeo13/data/ABCD/rs_GSR';
+    fmri_dir = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/rs_GSR';
 end
 
 if(~exist('subj_list', 'var') || isempty(subj_list))

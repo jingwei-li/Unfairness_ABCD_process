@@ -5,16 +5,16 @@ function [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI(subj_list, race, doh
 % Read and plot histogram of the necessary measures from Parent General Behavior Inventory
 %
 % Example:
-% [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-PGBI_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mhp02.txt';
+PGBI_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_mhp02.txt';
 PGBI_hdr = {'pgbi_p_ss_score'};
 PGBI_colloquial = {'Mania'};
 for c = 1:length(PGBI_colloquial)
@@ -117,7 +117,7 @@ if(dohist==1)
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

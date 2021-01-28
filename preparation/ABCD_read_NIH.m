@@ -9,13 +9,13 @@ function [NIH, NIH_hdr, NIH_colloquial] = ABCD_read_NIH(subj_list, race, dohist,
 % where "race" is obtained from
 % race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-NIH_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_tbss01.txt';
+NIH_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_tbss01.txt';
 NIH_hdr = {'nihtbx_flanker_uncorrected', 'nihtbx_list_uncorrected', 'nihtbx_cardsort_uncorrected', ...
     'nihtbx_reading_uncorrected', 'nihtbx_pattern_uncorrected', 'nihtbx_picture_uncorrected', ...
     'nihtbx_picvocab_uncorrected', 'nihtbx_fluidcomp_uncorrected', 'nihtbx_cryst_uncorrected', ...
@@ -118,7 +118,7 @@ if(dohist==1)
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

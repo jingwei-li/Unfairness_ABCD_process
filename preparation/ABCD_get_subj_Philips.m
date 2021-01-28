@@ -12,7 +12,7 @@ for s = 1:nsub
     subjects_csv{s} = [subjects{s}(1:4) '_' subjects{s}(5:end)];
 end
 
-mri_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mri01.txt';
+mri_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_mri01.txt';
 subj_hdr = 'subjectkey';
 scanner_hdr = 'mri_info_manufacturer';
 event_hdr = 'eventname';

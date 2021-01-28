@@ -1,12 +1,12 @@
 function ICV = ABCD_read_ICV(subj_list, race, dohist, hist_fname)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-FSdir = '/mnt/eql/yeo13/data/ABCD/recon_all';
+FSdir = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/recon_all';
 
 if(~exist('subj_list', 'var') || isempty(subj_list))
     subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
@@ -72,7 +72,7 @@ if(dohist==1)
     close(gcf)
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

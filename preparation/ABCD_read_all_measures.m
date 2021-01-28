@@ -3,8 +3,8 @@ function ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
 % ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
 %
 % Example:
-% ABCD_read_all_measures([], '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
-%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
+% ABCD_read_all_measures([], '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
+%    '~/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
 
 dohist = 0;
 subjectkey = CBIG_text2cell(subj_list);
@@ -31,7 +31,7 @@ site_empty = cellfun(@isempty, site);
 fprintf('Empty site: %d subjects.\n', length(find(site_empty)));
 
 % 4. family ID
-[family_id, fam_mem] = ABCD_read_family(subj_list);
+[family_id, fam_mem, rel_grp_id] = ABCD_read_family(subj_list);
 
 % 5. motion
 [FD, DVARS] = ABCD_read_motion(fmri_dir, subj_list, 1, outdir, outstem);
@@ -47,7 +47,7 @@ peduc_empty = isnan(peduc_avg);
 fprintf('Empty parental education: %d subjects.\n', length(find(peduc_empty)));
 
 subjectkey = subjectkey';
-d = table(subjectkey, race, age, sex, site, family_id, FD, DVARS, ICV, peduc_avg);
+d = table(subjectkey, race, age, sex, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg);
 for i = 1:length(peduc_hdr)
     d.(peduc_hdr{i}) = peduc(:,i);
 end

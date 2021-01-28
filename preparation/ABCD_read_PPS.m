@@ -5,17 +5,17 @@ function [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS(subj_list, race, dohist,
 % Read and plot histogram of necessary mesures from Pediatric Psychosis Questionnaire 
 %
 % Example:
-% [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from 
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-PPS_csv = '/mnt/eql/yeo12/data/ABCD/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
+PPS_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_mhy02.txt';
 PPS_hdr = {'pps_y_ss_number', 'pps_y_ss_severity_score'};
 PPS_colloquial = {'Total prodromal psychosis symptoms', 'Prodromal psychosis severity'};
 for c = 1:length(PPS_colloquial)
@@ -119,7 +119,7 @@ if(dohist==1)
 end
 
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 
 end
