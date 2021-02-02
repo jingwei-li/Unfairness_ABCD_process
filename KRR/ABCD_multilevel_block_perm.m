@@ -41,6 +41,7 @@ function [Pset, B] = ABCD_multilevel_block_perm(site, family, grp, Nperm)
         % column3: scalar, number of twin groups with 3 subjects; ...
         fam_struct = zeros(length(uniq_fam), max(N_perfam));
         has_singleton = 0;
+        count_singleton = 1;
         for f = 1:length(uniq_fam)
             idx_currfam = idx_currsite(curr_fam == uniq_fam(f));
             curr_grp = grp(idx_currfam);
@@ -55,7 +56,9 @@ function [Pset, B] = ABCD_multilevel_block_perm(site, family, grp, Nperm)
             end
             
             if(~any(fam_struct(f, 2:end)) && fam_struct(f,1) == 1)    % singleton
-                B(idx_currfam, 3:5) = 1;        % singletons are defined as block 1 in the third to the fifth levels
+                B(idx_currfam, [3 5]) = 1;        % singletons are defined as block 1 in the third and the fifth levels
+                B(idx_currfam, 4) = count_singleton;
+                count_singleton = count_singleton + 1;
                 has_singleton = 1;
             end
         end

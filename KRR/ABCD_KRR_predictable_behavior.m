@@ -1,124 +1,168 @@
-function ABCD_KRR_predictable_behavior(bhvr_ls, colloq_ls, model_dir, split_dir, split_fstem, metric, outmat)
+function ABCD_KRR_predictable_behavior(model_dir, folds_dir, folds_fstem, Nperm, test_metric, outmat, bhvr_ls, colloq_ls, subj_ls, csvname)
 
-% ABCD_KRR_predictable_behavior(bhvr_ls, model_dir, split_dir, split_fstem, metric, outmat)
-% 
-% Perform permutation test (shullfing predicted scores) to obtain behaviors
-% with statistically significant accuracy.
+% ABCD_KRR_predictable_behavior(model_dir, cov_stem, folds_dir, folds_fstem, outmat, bhvr_ls, subj_ls, csvname)
 %
-% Example:
-% ABCD_KRR_predictable_behavior([], [], ...
-%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/models/KRR/20200721/reg_AgeSexMtIcvPEduc_fr_y', ...
-%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/mat/matchANDsplit/20200719', ...
-%    '_pass_rs_pass_pheno', 'predictive_COD', ...
-%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/mat/predictability/pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat')
+% Permute behavioral scores across subjects within each site, to test the predictability
+% of the original kernal regression model.
+%
+% Inputs:
+%   - model_dir
+%     Directory of KRR results.
+%   - folds_dir
+%     Directory containing all mat files of fold splits.
+%   - folds_fstem
+%     Filename prefix of the fold splits mat files.
+%   - Nperm
+%     Number of permutations.
+%   - test_metric
+%     The metric used to perform statistical testing.
+%   - outmat
+%     Output mat file containing the behaviors predicted more than chance.
+%   - bhvr_ls  (optional)
+%     List of behavioral measures.
+%     Default: /home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt
+%   - colloq_ls (optional)
+%     List of colloquial names.
+%     Default: /home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt
+%   - subj_ls  (optional)
+%     Subject list.
+%     Default: /home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt
+%   - csvname  (optional)
+%     Name of the csv file containing site information.
+%     Default: /home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/phenotypes_pass_rs.txt
+%
 
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
-
+%% setup default parameters
+ls_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race', 'scripts', 'lists');
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
-[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
-
 if(~exist('colloq_ls', 'var') || isempty(colloq_ls))
     colloq_ls = fullfile(ls_dir, 'colloquial_list.txt');
 end
-colloq_nm = CBIG_text2cell(colloq_ls);
-
-%% set default hyperparamters if not passed in
-if(~exist('ker_param', 'var') || strcmpi(ker_param, 'none'))
-    ker_param.type = 'corr';
-    ker_param.scale = NaN;
+if(~exist('subj_ls', 'var') || isempty(subj_ls))
+    subj_ls = fullfile(ls_dir, 'subjects_pass_rs_pass_pheno.txt');
 end
-ker_param = struct2cell(ker_param);
-
-if(~exist('lambda_set', 'var') || strcmpi(lambda_set, 'none'))
-    lambda_set = [ 0 0.00001 0.0001 0.001 0.004 0.007 0.01 0.04 0.07 0.1 0.4 0.7 1 1.5 2 2.5 3 3.5 4 ...
-        5 10 15 20];
+if(~exist('csvname', 'var') || isempty(csvname))
+    csvname = fullfile(ls_dir, 'phenotypes_pass_rs.txt');
 end
+alpha_FDR = 0.05;
 
-if(~exist('bin_flag', 'var') || isempty(bin_flag))
-    bin_flag = 0;
+%% read shared files
+[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+[colloq_nm, ncolloq] = CBIG_text2cell(colloq_ls);
+if(nbhvr ~= ncolloq)
+    error('Number of behavioral names and number of colloquial names are not equal.')
 end
-if(bin_flag==1)
-    if(~exist('threshold_set', 'var') || strcmpi(threshold_set, 'none') || isempty(threshold_set))
-        threshold_set = [-1:0.1:1];
+[subjects, nsub] = CBIG_text2cell(subj_ls);
+d = readtable(csvname);
+subj_hdr = 'subjectkey';
+site_hdr = 'site';
+fam_hdr = 'family_id';
+grp_hdr = 'rel_grp_id';
+
+[~, ~, idx] = intersect(subjects, d.(subj_hdr), 'stable');
+site = d.(site_hdr)(idx);
+fam = d.(fam_hdr)(idx);
+grp = d.(grp_hdr)(idx);
+
+mkdir(fullfile(model_dir, 'perm'))
+
+%% generate exchangeable blocks and permutations
+idx_perm_out = fullfile(model_dir, 'perm', 'Pset.mat');
+if(~exist(idx_perm_out, 'file'))
+    [Pset, B] = ABCD_multilevel_block_perm(site, fam, grp, Nperm+1);
+    N_uq_perm = size(unique(Pset', 'rows'), 1);
+    if (N_uq_perm-1 < Nperm)
+        warning('Number of required permutations is higher than maximal possible permutations.')
     end
+    save(idx_perm_out, 'Pset', 'B')
 else
-    threshold_set = NaN;
+    load(idx_perm_out)
 end
 
-rng('default'); rng(1);
-nperm = 1000;
-alpha = 0.05;
-
-null_stats = cell(nbhvr, 1);
-p_perm = nan(nbhvr, 1);
+%% load data for KRR; calculate permuted KRR accuracies
+metrics = {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'};
+p_perm = zeros(nbhvr, 1);
 for b = 1:nbhvr
-    fprintf('#%d behavior: %s ...\n', b, bhvr_nm{b})
-    fold_file = fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
-    load(fold_file)
-    opt_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
-    opt = load(opt_file);
-    
-    %% load original scores and predicted scores, and compute null distributions
-    null_stats{b} = zeros(length(sub_fold), nperm);
-    for f = 1:length(sub_fold)
-        krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
-        testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
-            ['acc_' bhvr_nm{b} '.mat']));
-        test_idx = sub_fold(f).fold_index==1;
-        y_test = krry.y_resid(test_idx);
-        y_train = krry.y_resid(~test_idx);
+    load(fullfile(folds_dir, ['sub_fold' folds_fstem '_' bhvr_nm{b} '.mat']))
+    Nfolds = length(sub_fold);
+    opt = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
 
-        if(strcmp(opt.optimal_kernel(f).type, 'corr'))
-            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type);
-        else
-            opt_kernel_idx = strcmp(ker_param(1,:,:), opt.optimal_kernel(f).type) ...
-                & cell2mat(ker_param(2,:,:)) == opt.optimal_kernel(f).scale;
-        end
-        opt_lambda_idx = lambda_set == opt.optimal_lambda(f);
-        if(bin_flag==1)
-            opt_thres_idx = threshold_set == opt.optimal_threshold(f);
-        else
-            opt_thres_idx = 1;
-        end
-        y_pred = testcv.y_p{opt_kernel_idx, opt_lambda_idx, opt_thres_idx}{1};
-        
-        % compute null distributions
-        for n = 1:nperm
-            null_idx = datasample(1:length(y_test), length(y_test), 'replace', false);
-            null_y_pred = y_pred(null_idx);
-            
-            null_stats{b}(f,n) = CBIG_compute_prediction_acc_and_loss(null_y_pred, y_test, ...
-                metric, y_train);
-        end
+    for i = 1:length(metrics)
+        stats_perm.(metrics{i}) = zeros(Nfolds, Nperm);
     end
-    
-    %% compute p values
-    avg_stats = mean(opt.optimal_stats.(metric), 1);
-    avg_null_stats = mean(null_stats{b}, 1);
-    p_perm(b) = length(find(avg_null_stats > avg_stats)) ./ nperm;
-    
-    clear sub_fold krr
+
+    acc_out = fullfile(model_dir, 'perm', [bhvr_nm{b} '.mat']);
+    if(exist(acc_out, 'file'))
+        load(acc_out)
+    else
+        
+        
+        for f = 1:Nfolds
+            y_reg = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
+            load(fullfile(model_dir, 'FSM', 'FSM_corr.mat'))
+
+            opt_lambda = opt.optimal_lambda(f);
+
+            test_ind = sub_fold(f).fold_index==1;
+            train_ind = ~test_ind;
+            N_train = length(find(train_ind));
+            N_test = length(find(test_ind));
+
+            K_train = FSM(train_ind, train_ind);
+            K_test = FSM(test_ind, train_ind);
+
+            % compute the part of parameters that are not dependent on y
+            % so that they are be shared across all permutations
+            K_r = K_train + opt_lambda*eye(N_train);
+            X = ones(N_train,1);
+            inv_K_r = inv(K_r);
+            beta_stable = (X' * (inv_K_r * X)) \ X' * inv_K_r;
+        
+            % for each permutation, calculate prediction accuracies
+            for p = 2:Nperm+1
+                y_perm = y_reg.y_resid(Pset(:,p));
+                y_train = y_perm(train_ind);
+                y_test = y_perm(test_ind);
+
+                beta = beta_stable * y_train;
+                alpha = inv_K_r * (y_train - X * beta);
+            
+                y_p = K_test * alpha + ones(N_test,1) .* beta;
+                for k = 1:length(metrics)
+                    stats_perm.(metrics{k})(f,p) = ...
+                        CBIG_compute_prediction_acc_and_loss(y_p, y_test, metrics{k}, y_train);
+                end
+            end
+
+        end
+        save(acc_out, 'stats_perm')
+
+    end
+
+    avg_stats = mean(opt.optimal_stats.(test_metric), 1);
+    avg_null_stats = mean(stats_perm.(test_metric), 1);
+    p_perm(b) = length(find(avg_null_stats > avg_stats)) ./ Nperm;
+
+    clear stats_perm
 end
 
-H_perm_FDR = FDR(p_perm, alpha);
+%% multiple comparisons correction
+H_perm_FDR = FDR(p_perm, alpha_FDR);
 sig_perm_idx = sort(H_perm_FDR);
 sig_perm_bhvr = bhvr_nm(sig_perm_idx);
 sig_perm_colloq = colloq_nm(sig_perm_idx);
 
-%% output
 outdir = fileparts(outmat);
 if(~exist(outdir, 'dir'))
     mkdir(outdir)
 end
-save(outmat, 'null_stats', 'alpha', 'p_perm', 'H_perm_FDR', 'sig_perm_idx', 'sig_perm_bhvr', ...
+save(outmat, 'alpha_FDR', 'p_perm', 'H_perm_FDR', 'sig_perm_idx', 'sig_perm_bhvr', ...
     'sig_perm_colloq')
-
-mkdir(fullfile(model_dir, 'lists'))
-outtxt = fullfile(model_dir, 'lists', ['predictable_behaviors_' metric '.txt']);
-% CBIG_cell2text(sig_perm_bhvr, outtxt);
-% outtxt = fullfile(model_dir, 'lists', ['predictable_colloquial_' metric '.txt']);
-% CBIG_cell2text(sig_perm_colloq, outtxt);
     
 end
+
+
+
+
