@@ -1,5 +1,5 @@
 function ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
-    predictable_stats, outmat)
+    predictable_stats, r_th_ls, outmat)
 
 % ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
 %     predictable_stats, outmat)
@@ -36,6 +36,9 @@ function ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 %   - predictable_stats
 %     Filename of the permutation test result of predictability (full
 %     path).
+%
+%   - r_th_ls
+%     Filename of the list of behaviors whose correlation accuracy across all participants is above a threshold.
 %
 %   - outmat
 %     Output filename (full path).
@@ -153,22 +156,31 @@ save(outmat, 'corr_AA', 'corr_WA', 'corr_AAWA', 'AA_pred', 'WA_pred', ...
 
 %% select behaviors with significant Pearson's r, 
 % and positive in either AA or WA
+% and whose correlation accuracy across all participants is above a threshold (e.g. 0.15)
 stats = load(predictable_stats);
 sig_idx = zeros(nbhvr,1);
 sig_idx(stats.sig_perm_idx) = 1;
 idx = sig_idx==1 & (mean(corr_AA,2)>0 | mean(corr_WA,2)>0);
 predictable = bhvr_nm(idx);
+r_th_bhvr = CBIG_text2cell(r_th_ls);
+[~, rth_idx] = intersect(predictable, r_th_bhvr, 'stable');
+predictable = predictable(rth_idx);
 if(~exist(fullfile(model_dir, 'lists'), 'dir'))
     mkdir(fullfile(model_dir, 'lists'))
 end
 CBIG_cell2text(predictable, fullfile(model_dir, 'lists', 'corr_predictable.txt'))
 predictable = colloq_nm(idx);
+predictable = predictable(rth_idx);
 CBIG_cell2text(predictable, fullfile(model_dir, 'lists', 'corr_predictable_colloquial.txt'))
 
 [outdir, outname, outext] = fileparts(outmat);
 corr_AA = corr_AA(idx,:);  corr_WA = corr_WA(idx,:); corr_AAWA = corr_AAWA(idx,:);
 AA_pred = AA_pred(idx,:);  WA_pred = WA_pred(idx,:);
 AA_test = AA_test(idx,:);  WA_test = WA_test(idx,:);
+
+corr_AA = corr_AA(rth_idx,:);  corr_WA = corr_WA(rth_idx,:); corr_AAWA = corr_AAWA(rth_idx,:);
+AA_pred = AA_pred(rth_idx,:);  WA_pred = WA_pred(rth_idx,:);
+AA_test = AA_test(rth_idx,:);  WA_test = WA_test(rth_idx,:);
 save(fullfile(outdir, [outname '_predictable' outext]), ...
     'corr_AA', 'corr_WA', 'corr_AAWA', 'AA_pred', 'WA_pred', 'AA_test', 'WA_test')
 

@@ -1,5 +1,5 @@
 function ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
-    predictable_stats, outmat, bin_flag)
+    predictable_stats, r_th_ls, outmat, bin_flag)
 
 % ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
 %     predictable_stats, outmat)
@@ -36,6 +36,9 @@ function ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 %   - predictable_stats
 %     Filename of the permutation test result of predictability (full
 %     path).
+%
+%   - r_th_ls
+%     Filename of the list of behaviors whose correlation accuracy across all participants is above a threshold.
 %
 %   - outmat
 %     Output filename (full path).
@@ -165,16 +168,21 @@ save(outmat, 'pCOD_AA', 'pCOD_WA', 'pCOD_AAWA', 'ss_res_AA', 'ss_res_WA', 'ss_re
 
 %% selecte behaviors with significant predictive COD,
 % and positive in either AA or WA
+% and whose correlation accuracy is above a threshold (e.g. 0.15)
 stats = load(predictable_stats);
 sig_idx = zeros(nbhvr,1);
 sig_idx(stats.sig_perm_idx) = 1;
 idx = sig_idx==1 & (mean(pCOD_AA,2)>0 | mean(pCOD_WA,2)>0);
 predictable = bhvr_nm(idx);
+r_th_bhvr = CBIG_text2cell(r_th_ls);
+[~, rth_idx] = intersect(predictable, r_th_bhvr, 'stable');
+predictable = predictable(rth_idx);
 if(~exist(fullfile(model_dir, 'lists'), 'dir'))
     mkdir(fullfile(model_dir, 'lists'))
 end
 CBIG_cell2text(predictable, fullfile(model_dir, 'lists', 'pCOD_predictable.txt'))
 predictable = colloq_nm(idx);
+predictable = predictable(rth_idx);
 CBIG_cell2text(predictable, fullfile(model_dir, 'lists', 'pCOD_predictable_colloquial.txt'))
 
 [outdir, outname, outext] = fileparts(outmat);
@@ -183,6 +191,12 @@ ss_res_AA = ss_res_AA(idx,:);  ss_res_WA = ss_res_WA(idx,:);  ss_res_AAWA = ss_r
 ss_total = ss_total(idx,:);  AA_pred = AA_pred(idx,:);  WA_pred = WA_pred(idx,:);
 AA_test = AA_test(idx,:);  WA_test = WA_test(idx,:);
 AA_train = AA_train(idx,:);  WA_train = WA_train(idx,:);
+
+pCOD_AA = pCOD_AA(rth_idx,:);  pCOD_WA = pCOD_WA(rth_idx,:);  pCOD_AAWA = pCOD_AAWA(rth_idx,:);
+ss_res_AA = ss_res_AA(rth_idx,:);  ss_res_WA = ss_res_WA(rth_idx,:);  ss_res_AAWA = ss_res_AAWA(rth_idx,:);
+ss_total = ss_total(rth_idx,:);  AA_pred = AA_pred(rth_idx,:);  WA_pred = WA_pred(rth_idx,:);
+AA_test = AA_test(rth_idx,:);  WA_test = WA_test(rth_idx,:);
+AA_train = AA_train(rth_idx,:);  WA_train = WA_train(rth_idx,:);
 save(fullfile(outdir, [outname '_predictable' outext]), ...
     'pCOD_AA', 'pCOD_WA', 'pCOD_AAWA', 'ss_res_AA', 'ss_res_WA', 'ss_res_AAWA', ...
     'ss_total', 'AA_pred', 'WA_pred', 'AA_test', 'WA_test', 'AA_train', 'WA_train')
