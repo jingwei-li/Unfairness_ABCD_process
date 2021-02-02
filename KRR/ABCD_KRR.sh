@@ -3,7 +3,7 @@
 # Jingwei Li, 20200721
 
 DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-ls_dir=/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists
+ls_dir=$HOME/storage/MyProject/fairAI/ABCD_race/scripts/lists
 csvname=$ls_dir/phenotypes_pass_rs.txt
 cfds_ls=$ls_dir/confounds_list.txt
 N_inner_folds=10
