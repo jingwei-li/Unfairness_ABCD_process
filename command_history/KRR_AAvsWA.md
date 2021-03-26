@@ -23,6 +23,17 @@ ABCD_match_and_split(...
    '_pass_rs_pass_pheno')
 ```
 
+### Compare the behavioral variances between matched AA & WA
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+ABCD_pheno_var_AAvsWA_matched(...
+   fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719', 'sel_AAWA_pass_rs_pass_pheno.mat'), ...
+   fullfile(proj_dir, 'scripts', 'lists', 'subjects_pass_rs_pass_pheno.txt'), ...
+   fullfile(proj_dir, 'scripts', 'lists', 'phenotypes_pass_rs.txt'), ...
+   fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719', 'AAvsWA_var_Levene.mat'))
+```
+
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
 ### Run KRR (bash)
@@ -31,35 +42,78 @@ ABCD_match_and_split(...
 ../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_y.sh
 ```
 
+### Plot correlation and predictive COD accuracy of all behaviors on all test subjects
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
+   'corr', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
+   'corr_allsubj')
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
+   'predictive_COD', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
+   'pCOD_allsubj')
+```
+
 ### Permutation test of predictability
 
 1. metric: predictive COD
 
-   ```matlab
-   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
-   ABCD_KRR_predictable_behavior(...
-      fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt'), ...
-      fullfile(proj_dir, 'scripts', 'lists', 'colloquial_list.txt'), ...
-      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
-      fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
-      '_pass_rs_pass_pheno', 'predictive_COD', ...
-      fullfile(proj_dir, 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'))
+   ```bash
+   ssh headnode
+   proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
+   cmd="matlab -nodesktop -nodisplay -nojvm -r \" cd('$proj_dir/scripts/Unfairness_ABCD_process');\
+      ABCD_addpath; ABCD_KRR_predictable_behavior(\
+      fullfile('$proj_dir', 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), \
+      fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
+      '_pass_rs_pass_pheno', 1000, 'predictive_COD', \
+      fullfile('$proj_dir', 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'));  exit; \" "
+   work_dir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_fr_y/logs
+   jname=perm_pCOD_predictability
+   $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 30:00:00 -mem 12G \
+      -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
    ```
 
 2. metric: Pearson's correlation
 
-   ```matlab
-   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
-   ABCD_KRR_predictable_behavior(...
-      fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt'), ...
-      fullfile(proj_dir, 'scripts', 'lists', 'colloquial_list.txt'), ...
-      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), ...
-      fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
-      '_pass_rs_pass_pheno', 'corr', ...
-      fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'))
+   ```bash
+   ssh headnode
+   proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
+   cmd="matlab -nodesktop -nodisplay -nojvm -r \" cd('$proj_dir/scripts/Unfairness_ABCD_process'); \
+      ABCD_addpath; ABCD_KRR_predictable_behavior(\
+      fullfile('$proj_dir', 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), \
+      fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
+      '_pass_rs_pass_pheno', 1000, 'corr', \
+      fullfile('$proj_dir', 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'));  exit; \" "
+   work_dir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_fr_y/logs
+   jname=perm_corr_predictability
+   $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 00:30:00 -mem 12G \
+      -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
    ```
 
 ### Compute accuracy metric per race group; get predictable behaviors
+
+Get behavioral measures with >0.15 correlation accuracy across all test subjects:
+
+```matlab
+clear
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+bhvr_ls = fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt');
+colloq_ls = fullfile(proj_dir, 'scripts', 'lists', 'colloquial_list.txt');
+[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+colloq_nm = CBIG_text2cell(colloq_ls);
+model_dir = fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y');
+opt = zeros(nbhvr, 1);
+for b = 1:nbhvr
+   load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']))
+   opt(b) = mean(optimal_stats.corr);
+end
+idx = find(opt > 0.15);
+bhvr_nm = bhvr_nm(idx);
+colloq_nm = colloq_nm(idx);
+mkdir(fullfile(model_dir, 'lists'))
+CBIG_cell2text(bhvr_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(length(idx)) 'behaviors.txt']))
+CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(length(idx)) 'colloquial.txt']))
+```
 
 1. metric: predictive COD
 
@@ -73,6 +127,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
       '_pass_rs_pass_pheno', 120, ...
       fullfile(proj_dir, 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'), ...
+      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y', 'lists', 'R_thres0.15_12behaviors.txt'), ...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'))
    ```
 
@@ -88,6 +143,7 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
       '_pass_rs_pass_pheno', 120, ...
       fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_y.mat'), ...
+      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y', 'lists', 'R_thres0.15_12behaviors.txt'), ...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'))
    ```
 3. metric: MSE (all behaviors)
@@ -155,6 +211,17 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_predictable.mat') )
    ```
 
+   All behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_PermTest_AAvsWA( ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'), ...
+      [], ...
+      'corr', ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat') )
+   ```
+
 3. metric: MSE
 
    All behaviors:
@@ -211,6 +278,18 @@ ABCD_match_and_split(...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), 'corr')
    ```
 
+   Plot all behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_whisker_AAvsWA(...
+      [],  [], ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'), ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y.mat'), ...
+      'corr', ...
+      fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y'), 'corr_allbehaviors')
+   ```
+
 3. metric: MSE
 
    All behaviors:
@@ -245,31 +324,78 @@ ABCD_regress_cfds_from_FC(...
 ../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_FC.sh
 ```
 
+### Plot correlation and predictive COD accuracy of all behaviors on all test subjects
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
+   'corr', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
+   'corr_allsubj')
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
+   'predictive_COD', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
+   'pCOD_allsubj')
+```
+
 ### Permutation test of predictability 
 
 1. metric: predictive COD
 
-   ```matlab
-   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
-   ABCD_KRR_predictable_behavior([], [], ...
-      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
-      fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
-      '_pass_rs_pass_pheno', 'predictive_COD', ...
-      fullfile(proj_dir, 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'))
+   ```bash
+   ssh headnode
+   proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
+   cmd="matlab -nodesktop -nodisplay -nojvm -r \" cd('$proj_dir/scripts/Unfairness_ABCD_process');\
+      ABCD_addpath; ABCD_KRR_predictable_behavior(\
+      fullfile('$proj_dir', 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), \
+      fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
+      '_pass_rs_pass_pheno', 1000, 'predictive_COD', \
+      fullfile('$proj_dir', 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'));  exit; \" "
+   work_dir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_fr_FC/logs
+   jname=perm_pCOD_predictability
+   $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 30:00:00 -mem 12G \
+      -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
    ```
 
 2. metric: Pearson's correlation
 
-   ```matlab
-   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
-   ABCD_KRR_predictable_behavior([], [], ...
-      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), ...
-      fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
-      '_pass_rs_pass_pheno', 'corr', ...
-      fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'))
+   ```bash
+   ssh headnode
+   proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
+   cmd="matlab -nodesktop -nodisplay -nojvm -r \" cd('$proj_dir/scripts/Unfairness_ABCD_process');\
+      ABCD_addpath; ABCD_KRR_predictable_behavior(\
+      fullfile('$proj_dir', 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), \
+      fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
+      '_pass_rs_pass_pheno', 1000, 'corr', \
+      fullfile('$proj_dir', 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'));  exit; \" "
+   work_dir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_fr_FC/logs
+   jname=perm_corr_predictability
+   $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 00:30:00 -mem 12G \
+      -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
    ```
 
 ### Compute accuracy metric per race group; get predictable behaviors
+
+Get behavioral measures with >0.1 correlation accuracy across all test subjects:
+
+```matlab
+clear
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+bhvr_ls = fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt');
+colloq_ls = fullfile(proj_dir, 'scripts', 'lists', 'colloquial_list.txt');
+[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+colloq_nm = CBIG_text2cell(colloq_ls);
+model_dir = fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC');
+opt = zeros(nbhvr, 1);
+for b = 1:nbhvr
+   load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']))
+   opt(b) = mean(optimal_stats.corr);
+end
+idx = find(opt > 0.1);
+bhvr_nm = bhvr_nm(idx);
+colloq_nm = colloq_nm(idx);
+mkdir(fullfile(model_dir, 'lists'))
+CBIG_cell2text(bhvr_nm, fullfile(model_dir, 'lists', ['R_thres0.1_' num2str(length(idx)) 'behaviors.txt']))
+CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.1_' num2str(length(idx)) 'colloquial.txt']))
+```
 
 1. metric: predictive COD
 
@@ -283,6 +409,7 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
       '_pass_rs_pass_pheno', 120, ...
       fullfile(proj_dir, 'mat', 'predictability', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'), ...
+      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC', 'lists', 'R_thres0.1_15behaviors.txt'), ...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'))
    ```
 
@@ -298,6 +425,7 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719'), ...
       '_pass_rs_pass_pheno', 120, ...
       fullfile(proj_dir, 'mat', 'predictability', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPEduc_fr_FC.mat'), ...
+      fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC', 'lists', 'R_thres0.1_15behaviors.txt'), ...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'))
    ```
 
@@ -314,6 +442,16 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC_predictable.mat') )
    ```
 
+   All behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_PermTest_AAvsWA( ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      [], 'predictive_COD', ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat') )
+   ```
+
 2. metric: Pearson's correlation
 
    ```matlab
@@ -323,6 +461,16 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC', 'lists', ...
       'corr_predictable.txt'), 'corr', ...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC_predictable.mat') )
+   ```
+
+   All behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_PermTest_AAvsWA( ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      [], 'corr', ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat') )
    ```
 
 ### Whisker plot
@@ -341,6 +489,18 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), 'pCOD')
    ```
 
+   Plot all behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_whisker_AAvsWA(...
+      [],  [], ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      'predictive_COD', ...
+      fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), 'pCOD_allbehaviors')
+   ```
+
 2. metric: Pearson's correlation
 
    ```matlab
@@ -353,4 +513,16 @@ ABCD_regress_cfds_from_FC(...
       fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC_predictable.mat'), ...
       'corr', ...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), 'corr')
+   ```
+
+   Plot all behaviors:
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_whisker_AAvsWA(...
+      [],  [], ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      fullfile(proj_dir, 'mat', 'AAvsWA', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_FC.mat'), ...
+      'corr', ...
+      fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_FC'), 'corr_allbehaviors')
    ```
