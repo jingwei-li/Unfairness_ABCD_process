@@ -142,7 +142,7 @@ for b = 1:nbhvr
     end
 
     avg_stats = mean(opt.optimal_stats.(test_metric), 1);
-    avg_null_stats = mean(stats_perm.(test_metric), 1);
+    avg_null_stats = mean(stats_perm.(test_metric)(:, 2:end), 1);
     p_perm(b) = length(find(avg_null_stats > avg_stats)) ./ Nperm;
 
     clear stats_perm
