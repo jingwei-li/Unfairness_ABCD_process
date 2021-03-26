@@ -24,11 +24,20 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	end
 
 	f = figure('visible', 'off');
-	aboxplot(data, 'colormap', colormat)
+	if(nbhvr == 1)
+		aboxplot(cat(3, data, zeros(size(data))), 'colormap', colormat);
+		colloq_nm = [colloq_nm {'N.A.'}];
+	else
+		aboxplot(data, 'colormap', colormat)
+	end
 	hold on
 	xlimit = get(gca, 'xlim');
 	plot(xlimit, [0 0], ':k');
 	hold off
+
+	if(nbhvr == 1)
+		set(gca, 'xlim', [xlimit(1) xlimit(2)*0.6])
+	end
 	
 	pf = get(gcf, 'position');
 	set(gcf, 'position', [0 0 100+90*nbhvr 900])
@@ -53,7 +62,9 @@ function ABCD_whisker_2grp_indiv(data, colormat, y_label, legends, ...
 	set(l, 'fontsize', 12, 'linewidth', 2, 'location', 'best', 'box', 'off')
 	
 	set(gca, 'xticklabel', colloq_nm, 'fontsize', 16, 'linewidth', 2);
-	rotateXLabels( gca(), 45 );
+	if(nbhvr>1)
+		rotateXLabels( gca(), 45 );
+	end
 	set(gca, 'tickdir', 'out', 'box', 'off')
 	
 	% plot * on the significant behaviors
