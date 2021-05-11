@@ -2,10 +2,27 @@ function pass_subj = ABCD_check_RSFC_NaN(fmri_dir, subj_list, outname)
 
 % pass_subj = ABCD_check_RSFC_NaN(fmri_dir, subj_list, outname)
 %
+% Check if the resting-state functional connectivity of the subjects listed in 
+% `subj_list` contains NaN. Concatenate the RSFC of all subjects into a 3D matrix.
+%
+% Inputs:
+% - fmri_dir
+%   Full path of the directory storing the preprocessed resting-state fMRI
+%   data using the CBIG preprocessing pipeline.
+%
+% - subj_list
+%   List of subjects with all required phenotypes, and passed rs-fMRI quality 
+%   control (full path).
+%
+% - outname
+%   Full path of output .mat file which contains the 3D RSFC matrix. 
+%
 % Example:
 %   pass_subj = ABCD_check_RSFC_NaN([], ...
 %      '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt', ...
 %      '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/mat/RSFC/pass_rs_pass_pheno_5351.mat');
+% 
+% Author: Jingwei Li
 
 if(~exist('fmri_dir', 'var') || isempty(fmri_dir))
     fmri_dir = '/mnt/eql/yeo13/data/ABCD/rs_GSR';

@@ -1,5 +1,28 @@
 function [subj_philips, isPhilips] = ABCD_get_subj_Philips(subj_list)
 
+% [subj_philips, isPhilips] = ABCD_get_subj_Philips(subj_list)
+%
+% Subjects collected on Philips scanners were problematic:
+% https://github.com/ABCD-STUDY/fMRI-cleanup.
+% These subjects need to be excluded from the study.
+% This function checks if any subject in the given list was collected on
+% Philips scanners.
+%
+% Inputs:
+% - subj_list
+%   List of subjects with all required phenotypes, and passed rs-fMRI quality 
+%   control (full path).
+%
+% Outputs:
+% - subj_philips
+%   The subject IDs which were collected on Philips scanners, if any.
+%
+% - isPhilips
+%   A #subjects x 1 boolean vector. An entry of True indicates that this 
+%   subject was collected on Philips scanners.
+%
+% Author: Jingwei Li 
+
 if(~exist('subj_list', 'var') || isempty(subj_list))
     subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
 end
