@@ -1,4 +1,4 @@
-function [sex, sex_hdr] = ABCD_read_sex(subj_list, race, dohist, hist_fname)
+function [gender, gender_hdr] = ABCD_read_gender(subj_list, race, dohist, hist_fname)
 
 addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
@@ -6,8 +6,8 @@ if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-sex_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
-sex_hdr = 'gender';
+gender_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/abcd_lt01.txt';
+gender_hdr = 'gender';
 event_hdr = 'eventname';
 subj_hdr = 'subjectkey';
 
@@ -23,25 +23,25 @@ for s = 1:nsub
     subjects_csv{s} = [subjects{s}(1:4) '_' subjects{s}(5:end)];
 end
 
-d = readtable(sex_csv);
+d = readtable(gender_csv);
 base_event = strcmp(d.(event_hdr), 'baseline_year_1_arm_1');
-sex = cell(nsub,1);
+gender = cell(nsub,1);
 for s = 1:nsub
     tmp_idx = strcmp(d.(subj_hdr), subjects_csv{s});
     if(any(tmp_idx==1))
         tmp_idx = tmp_idx & base_event;
-        sex(s) = d.(sex_hdr)(tmp_idx);
+        gender(s) = d.(gender_hdr)(tmp_idx);
     end
 end
 
 if(dohist==1)
-    %% plot pure sex distribution, without considering raes
-    sex_plot = sex;
-    sex_plot = strcmp(sex_plot, 'F');
+    %% plot pure gender distribution, without considering raes
+    gender_plot = gender;
+    gender_plot = strcmp(gender_plot, 'F');
     xtl = {'F', 'M'};
     
     E = [-0.5 0.5 1.5];
-    hc = histcounts(sex_plot, E);
+    hc = histcounts(gender_plot, E);
     bar(E(1:end-1) + diff(E)/2, hc');
     
     box off
@@ -59,14 +59,14 @@ if(dohist==1)
     [imageData, alpha] = export_fig(hist_fname, '-png', '-nofontswap', '-a1');
     close(gcf)
     
-    %% plot AA/WA histograms across sexs
+    %% plot AA/WA histograms across genders
     WA_filter = strcmp(race, '1');
     AA_filter = strcmp(race, '2');
-    WA_sex = sex_plot(WA_filter);
-    AA_sex = sex_plot(AA_filter);
+    WA_gender = gender_plot(WA_filter);
+    AA_gender = gender_plot(AA_filter);
     
-    hc_WA = histcounts(WA_sex, E);
-    hc_AA = histcounts(AA_sex, E);
+    hc_WA = histcounts(WA_gender, E);
+    hc_AA = histcounts(AA_gender, E);
     bar(E(1:end-1) + diff(E)/2, [hc_WA; hc_AA]')
     box off
     set(gcf, 'Position', [0 0 800 600])
@@ -74,7 +74,7 @@ if(dohist==1)
     legend({'WA', 'AA'}, 'FontSize', 13)
     legend boxoff
     
-    xloc_txt = min(sex_plot):1:max(sex_plot);
+    xloc_txt = min(gender_plot):1:max(gender_plot);
     text(xloc_txt-0.4, hc_WA+15, string(hc_WA), 'FontSize', 13)
     text(xloc_txt, hc_AA+15, string(hc_AA), 'FontSize', 13)
     xticklabels(xtl)
