@@ -17,11 +17,43 @@ function [peduc, peduc_comb, peduc_avg, peduc_hdr, peduc_colloquial] = ABCD_read
 % peduc_avg. Histogram of peduc_avg are plotted for the whole population,
 % and for WA or AA separately.
 %
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - peduc
+%   A #subjects x 2 matrix. Each row is the education level of subject's parents.
+% 
+% - peduc_comb
+%   A #subjects x 1 vector. Concatenatation of the two columns in "peduc".
+%
+% - peduc_avg
+%   A #subjects x 1 vector. Average of the parents' education levels.
+%
+% - peduc_hdr
+%   Header of the two education measures in ABCD csv files.
+%
+% - peduc_colloquial
+%   Collquial names of the two education measures.
+%
 % Example:
 % [peduc, peduc_comb, peduc_avg, peduc_hdr, peduc_colloquial] = ABCD_read_Prt_Educ([], race, [], ...
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/Prt_Educ_avg_pass_rs.png')
-
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
+% 
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -138,6 +170,5 @@ if(dohist == 1)
     [imageData, alpha] = export_fig(fname2, '-png', '-nofontswap', '-a1');
     close(gcf)
 end
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end

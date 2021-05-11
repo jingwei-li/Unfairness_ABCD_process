@@ -2,12 +2,42 @@ function [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL(subj_list, race, doh
 
 % [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read and plot histograms of the necessary measures from Achenbach Child Behavior Check List
+% Read and plot histograms of the necessary measures from Achenbach Child Behavior Check List.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - CBCL
+%   A #subjects x 8 matrix. Each row is the behavioral scores of a subject. The 8 columns 
+%   correspond to Anxious,Depressed, Withdrawn,Depressed, Somatic complaints, Social problems, 
+%   Thought problems, Attention problems, Rule-breaking behavior, Aggressive behavior
+%
+% - CBCL_hdr
+%   A 1x8 cell. Headers of these 8 measures in ABCD csv file.
+%
+% - CBCL_colloquial
+%   A 1x8 cell. Colloquial names of these 8 measures.
 %
 % Example:
-% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL([], race, [], '~/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [CBCL, CBCL_hdr, CBCL_colloquial] = ABCD_read_CBCL([], race, [], ...
+%     '~/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+%
+% Author: Jingwei Li
 
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -120,8 +150,6 @@ if(dohist==1)
     end
 end
 
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

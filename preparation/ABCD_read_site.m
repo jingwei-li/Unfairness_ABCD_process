@@ -2,12 +2,39 @@ function [site, site_hdr] = ABCD_read_site(subj_list, race, dohist, hist_fname)
 
 % [site, site_hdr] = ABCD_read_site(subj_list, race, dohist, hist_fname)
 %
+% Read site ID for each subject. Plot the distribution of site.
+%
+% Input:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - site
+%   A #subjects x 1 cell. Each entry is the site ID where the data of a subject was collected.
+%
+% - site_hdr
+%   A string. Header of the site information column in ABCD csv file.
+%
 % Example:
-% site = ABCD_read_site([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/site_pass_rs.png');
+% site = ABCD_read_site([], race, [], ...
+%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/site_pass_rs.png');
 % "race" is calculated using 
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
-
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+% race = ABCD_read_race([], [], ...
+%    '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% 
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;

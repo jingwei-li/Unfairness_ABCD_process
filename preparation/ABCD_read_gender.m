@@ -1,6 +1,34 @@
 function [gender, gender_hdr] = ABCD_read_gender(subj_list, race, dohist, hist_fname)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+% [gender, gender_hdr] = ABCD_read_gender(subj_list, race, dohist, hist_fname)
+%
+% Read genders of subjects from ABCD csv files. Create historgrams of gender distributions
+% by race.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. creat plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - gender
+%   A #subjects x 1 cell. Each array is the gender of a subject.
+%
+% - gender_hdr
+%   Header of the gender column in ABCD csv file.
+%
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -85,8 +113,6 @@ if(dohist==1)
     close(gcf)
 end
 
-
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

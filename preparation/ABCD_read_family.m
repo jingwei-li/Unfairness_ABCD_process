@@ -1,7 +1,28 @@
 function [fam_id, fam_mem, grp_id] = ABCD_read_family(subj_list)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
-
+% [fam_id, fam_mem, grp_id] = ABCD_read_family(subj_list)
+%
+% Read family IDs of each subject from ABCD csv file.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% Outputs:
+% - fam_id
+%   A #subjects x 1 vector. Each array is the family ID of a subject.
+% 
+% - fam_mem
+%   A cell array whose length is the number of unique families. Each array contains the 
+%   subject IDs belong to the current family.
+%
+% - grp_id
+%   A #subjects x 1 cell. Each subject was given a group id by ABCD to specify the 
+%   twins/sibling relationships with the other members of the same family. This variable
+%   will be used for multi-level block permutation test later.
+%
+% Author: Jingwei Li
 
 fam_csv = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/raw/documents/release2.0/ABCDstudyNDA/acspsw03.txt';
 fam_hdr = 'rel_family_id';
@@ -48,8 +69,6 @@ for f = 1:length(uniq_fam)
     fam_mem{f} = subjects(fam_id == uniq_fam(f));
     fam_size(f) = length(fam_mem{f});
 end
-
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

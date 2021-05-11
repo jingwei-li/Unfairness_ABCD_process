@@ -2,14 +2,44 @@ function [RAVLT, RAVLT_hdr, RAVLT_colloquial] = ABCD_read_RAVLT(subj_list, race,
 
 % [RAVLT, RAVLT_hdr, RAVLT_colloquial] = ABCD_read_RAVLT(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read necessary Rey Auditory Verbal Learning Test scores
+% Read necessary Rey Auditory Verbal Learning Test scores.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - RAVLT
+%   A #subjects x 2 matrix. Each row corresponds to the behavioral scores of a subject.
+%   The 2 columns correspond to Short delay recall, Long delay recall.
+%   
+% - RAVLT_hdr
+%   A 1x2 cell. Headers of these 2 measures in ABCD csv file.
+%
+% - RAVLT_colloquial
+%   A 1x2 cell. Colloquial names of these 2 measures.
 %
 % Example:
-% RAVLT = ABCD_read_RAVLT([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% RAVLT = ABCD_read_RAVLT([], race, [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% Author: Jingwei Li
 
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -108,8 +138,6 @@ if(dohist==1)
         close(gcf)
     end
 end
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

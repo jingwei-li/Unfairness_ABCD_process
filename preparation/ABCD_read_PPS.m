@@ -2,14 +2,44 @@ function [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS(subj_list, race, dohist,
 
 % [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read and plot histogram of necessary mesures from Pediatric Psychosis Questionnaire 
+% Read and plot histogram of necessary mesures from Pediatric Psychosis Questionnaire.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - PPS
+%   A #subjects x 2 matrix. Each row corresponds to the behavioral scores of a subject.
+%   The 2 columns correspond to Total prodromal psychosis symptoms, Prodromal psychosis severity.
+%
+% - PPS_hdr
+%   A 1x2 cell. Headers of these 2 measures in ABCD csv file.
+%
+% - PPS_colloquial
+%   A 1x2 cell. Colloquial names of these 2 measures.
 %
 % Example:
-% [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [PPS, PPS_hdr, PPS_colloquial] = ABCD_read_PPS([], race, [], ...
+%     '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from 
-% race = ABCD_read_race([], [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], ...
+%     '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% Author: Jingwei Li
 
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -117,9 +147,6 @@ if(dohist==1)
         close(gcf)
     end
 end
-
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 
 end

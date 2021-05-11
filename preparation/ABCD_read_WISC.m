@@ -2,12 +2,40 @@ function [WISC, WISC_hdr, WISC_colloquial] = ABCD_read_WISC(subj_list, race, doh
 
 % [WISC, WISC_hdr, WISC_colloquial] = ABCD_read_WISC(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read necessary measures from Wechsler Intelligence Scale for Children-V
+% Read necessary measures from Wechsler Intelligence Scale for Children-V.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+% 
+% Outputs:
+% - WISC
+%   A #subjects x 1 vector. Each row corresponds to the Matrix reasoning score of a subject.
+%
+% - WISC_hdr
+%   A 1x1 cell. Header of the behavioral measure in ABCD csv file.
+%  
+% - WISC_colloquial
+%   A 1x1 cell. Colloquial name of the behavioral measure.
 %
 % Example:
-% [WISC, WISC_hdr, WISC_colloquial] = ABCD_read_WISC([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [WISC, WISC_hdr, WISC_colloquial] = ABCD_read_WISC([], race, [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 
 addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 

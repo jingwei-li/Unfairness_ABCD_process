@@ -1,10 +1,41 @@
-function ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
+function ABCD_read_all_measures(fmri_dir, FSdir, subj_list, outdir, outstem)
 
 % ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
 %
+% Read (behavioral, demographic, morphological) phenotypes from 
+% ABCD csv files. Censor out the subjects with none of the required 
+% measures. Combine these measures into one csv file.
+%
+% Inputs:
+% - fmri_dir
+%   Full path of the directory storing the preprocessed resting-state fMRI
+%   data using the CBIG preprocessing pipeline. Measures of head motion 
+%   need to be read from this directory.
+%   1. FD: [fmri_dir '/' subj_ID '/bold/mc/' subj_ID '_bld' run_ID '_rest_mc_motion_outliers_FDRMS']
+%   2. DVARS: [fmri_dir '/' subj_ID '/bold/mc/' subjects{s} '_bld' run_ID '_rest_mc_motion_outliers_DVARS']
+%   Default: '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/rs_GSR'
+%
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path).
+%
+% - outdir
+%   Full path of output directory
+%
+% - outstem
+%   A shared string attached to all output files. There will be 5 output files:
+%   1. [outdir '/FD' outstem '.txt']   -- collection of all subjects' FD
+%   2. [outdir '/DV' outstem '.txt']   -- collection of all subjects' DVARS
+%   3. [outdir '/subjects' outstem '_pass_pheno.txt']  
+%      -- Subject IDs with non-empty records for any of the required measures
+%   4. [outdir '/behavior_list.txt']   -- summary of all required behavioral names
+%   5. [outdir '/colloquial_list.txt']  -- summary of colloquial names of the behavioral measures
+%
 % Example:
-% ABCD_read_all_measures([], '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
+% ABCD_read_all_measures([], [], ...
+%    '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
 %    '~/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
+%
+% Author: Jingwei Li
 
 dohist = 0;
 subjectkey = CBIG_text2cell(subj_list);
@@ -20,10 +51,10 @@ fprintf('Empty race: %d subjects.\n', length(find(race_empty)))
 age_empty = cellfun(@isempty, age);
 fprintf('Empty age: %d subjects.\n', length(find(age_empty)));
 
-% 2. sex
-[sex, sex_hdr] = ABCD_read_sex(subj_list, race, dohist);
-sex_empty = cellfun(@isempty, sex);
-fprintf('Empty sex: %d subjects.\n', length(find(sex_empty)));
+% 2. gender
+[gender, gender_hdr] = ABCD_read_gender(subj_list, race, dohist);
+gender_empty = cellfun(@isempty, gender);
+fprintf('Empty gender: %d subjects.\n', length(find(gender_empty)));
 
 % 3. site
 [site, site_hdr] = ABCD_read_site(subj_list, race, dohist);
@@ -37,7 +68,7 @@ fprintf('Empty site: %d subjects.\n', length(find(site_empty)));
 [FD, DVARS] = ABCD_read_motion(fmri_dir, subj_list, 1, outdir, outstem);
 
 % 6. brain volume
-[ICV] = ABCD_read_ICV(subj_list, race, dohist);
+[ICV] = ABCD_read_ICV(subj_list, race, dohist, FSdir);
 ICV_empty = isnan(ICV);
 fprintf('Empty ICV: %d subjects.\n', length(find(ICV_empty)));
 
@@ -47,7 +78,7 @@ peduc_empty = isnan(peduc_avg);
 fprintf('Empty parental education: %d subjects.\n', length(find(peduc_empty)));
 
 subjectkey = subjectkey';
-d = table(subjectkey, race, age, sex, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg);
+d = table(subjectkey, race, age, gender, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg);
 for i = 1:length(peduc_hdr)
     d.(peduc_hdr{i}) = peduc(:,i);
 end
@@ -153,7 +184,7 @@ colloquial = [colloquial BISBAS_colloquial];
 
 
 %% integrate results
-any_empty = race_empty | age_empty | sex_empty | site_empty | ICV_empty | peduc_empty | ...
+any_empty = race_empty | age_empty | gender_empty | site_empty | ICV_empty | peduc_empty | ...
     RAVLT_empty | WISC_empty | NIH_empty | LMT_empty | CBCL_empty | PGBI_empty | ...
     PPS_empty | UPPS_empty | BISBAS_empty;
 any_empty = any_empty | isPhilips;

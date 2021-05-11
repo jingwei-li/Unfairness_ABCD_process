@@ -1,6 +1,38 @@
 function [BISBAS, BISBAS_hdr, BISBAS_colloquial] = ABCD_read_BISBAS(subj_list, race, dohist, hist_dir, hist_fstem)
 
-addpath(genpath( fullfile(getenv('HOME'), 'storage', 'from_HOME', 'code', 'plotting_functions') ))
+% [BISBAS, BISBAS_hdr, BISBAS_colloquial] = ABCD_read_BISBAS(subj_list, race, dohist, hist_dir, hist_fstem)
+% 
+% Read BIS/BAS scales from ABCD csv file. Create histograms of BIS/BAS scores by race.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - BIABAS
+%   A #subjects x 4 matrix. Each row is the behavioral scores of a subject. The 4 columns correspond
+%   to Behavioral inhibition, BAS - Reward responsiveness, BAS - Drive, BAS - Fun seeking.
+% 
+% - BISBAS_hdr
+%   A 1x4 cell. Headers of these 4 measures in ABCD csv file.
+%
+% - BISBAS_colloquial
+%   A 1x4 cell. Colloquial names of these 4 measures.
+%
+% Author: Jingwei Li
+
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -109,9 +141,6 @@ if(dohist==1)
     end
 end
 
-
-
-rmpath(genpath( fullfile(getenv('HOME'), 'storage', 'from_HOME', 'code', 'plotting_functions')))
 
 end
 

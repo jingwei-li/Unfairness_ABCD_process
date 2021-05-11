@@ -2,14 +2,46 @@ function [NIH, NIH_hdr, NIH_colloquial] = ABCD_read_NIH(subj_list, race, dohist,
 
 % [NIH, NIH_hdr, NIH_colloquial] = ABCD_read_NIH(subj_list, race, dohist, hist_dir, hist_fstem)
 % 
-% Read necessary NIH Toolbox scores
+% Read necessary NIH Toolbox scores. Create histograms of behavioral distributions by race.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - NIH
+%   A #subjects x 11 matrix. Each row corresponds to the behavioral scores of a subject.
+%   The 11 columns correspond to Cognitive control/Attention (Flanker), Working memory (list sort),
+%   Executive function (card sort), Reading (pronunciation), Processing speed, 
+%   Visual episodic memory, Picture vocabulary, Fluid cognition, Crystallized cognition',
+%   Overall cognition.
+%
+% - NIH_hdr
+%   A 1x11 cell. Headers of these 11 measures in ABCD csv file.
+%
+% - NIH_colloquial
+%   A 1x11 cell. Colloquial names of these 11 measures.
 % 
 % Example:
-% [NIH, NIH_hdr, NIH_colloquial] = ABCD_read_NIH([], race, [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [NIH, NIH_hdr, NIH_colloquial] = ABCD_read_NIH([], race, [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
-
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
+% race = ABCD_read_race([], [], ...
+%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -117,8 +149,6 @@ if(dohist==1)
         close(gcf)
     end
 end
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

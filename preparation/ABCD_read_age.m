@@ -1,6 +1,32 @@
 function [age, age_hdr] = ABCD_read_age(subj_list, race, dohist, hist_fname)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
+% [age, age_hdr] = ABCD_read_age(subj_list, race, dohist, hist_fname)
+%
+% Read ages of subjects from ABCD csv file. Plot histograms of age by ethnicity/race.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path).
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - age
+%   A #subjects x 1 cell. Each array is the age of a subject.
+%
+% - age_hdr
+%   The header of age column in the ABCD csv file.
+%
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -83,8 +109,6 @@ if(dohist==1)
     close(gcf)
 end
 
-
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 
 end

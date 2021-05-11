@@ -1,11 +1,39 @@
 function income = ABCD_read_income(subj_list, race, dohist, hist_fname)
 
+% income = ABCD_read_income(subj_list, race, dohist, hist_fname)
+% 
+% Read household income from ABCD csv file. Create histograms of income distributions
+% by race.
+% 
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - income
+%   A #subjects x 1 cell. Each entry is the household income of a subject.
+%
 % Example:
-% income = ABCD_read_income([], race, [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/income_pass_rs.png');
+% income = ABCD_read_income([], race, [], ...
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/income_pass_rs.png');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], 
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% Author: Jingwei Li
 
-addpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -97,8 +125,6 @@ if(dohist==1)
     [imageData, alpha] = export_fig(fname2, '-png', '-nofontswap', '-a1');
     close(gcf)
 end
-
-rmpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 

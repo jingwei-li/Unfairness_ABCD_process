@@ -2,13 +2,35 @@ function [race, race_hdr] = ABCD_read_race(subj_list, dohist, hist_fname)
 
 % [race, race_hdr] = ABCD_read_race(subj_list, dohist, hist_fname)
 %
+% Read ethnicities/races of all subjects. Plot the distribution of ethnicity/race.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - race
+%   A #subjects x 1 cell. Each entry contains the ethnicity/race of a subject.
+%   
+% - race_hdr
+%   A string. Header of the ethnicity/race column in ABCD csv file.
+%
 % Example:
-% race = ABCD_read_race([], [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], ...
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
 %
 % race = ABCD_read_race('/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt',...
 %    [], '/home/jingweil/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs_pass_pheno.png');
-
-addpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
+%
+% Author: Jingwei Li
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -70,9 +92,6 @@ if(dohist)
     [imageData, alpha] = export_fig(hist_fname, '-png', '-nofontswap', '-a1');
     close
 end
-
-rmpath(genpath( '/home/jingweil/storage/from_HOME/code/plotting_functions/'))
-
 
 end
 

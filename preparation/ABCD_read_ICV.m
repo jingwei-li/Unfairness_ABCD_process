@@ -1,12 +1,43 @@
-function ICV = ABCD_read_ICV(subj_list, race, dohist, hist_fname)
+function ICV = ABCD_read_ICV(subj_list, race, dohist, hist_fname, FSdir)
 
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
+% ICV = ABCD_read_ICV(subj_list, race, dohist, hist_fname, FSdir)
+%
+% Read intracranial volume of all subjects from FreeSurfer recon-all results.
+% 
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% - FSdir
+%   Full path of the directory storing all output files from FreeSurfer recon-all
+%   when preprocessing structural MRI.
+%
+% Outputs:
+% - ICV
+%   A #subjects x 1 vector. Each entry is the intracranial volume of a subject.
+%
+% Author: Jingwei Li
+
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
 end
 
-FSdir = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/recon_all';
+if(~exist('FSdir', 'var') || isempty(FSdir))
+    FSdir = '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/recon_all';
+end
 
 if(~exist('subj_list', 'var') || isempty(subj_list))
     subj_list = '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt';
@@ -71,8 +102,6 @@ if(dohist==1)
     [imageData, alpha] = export_fig(fname2, '-png', '-nofontswap', '-a1');
     close(gcf)
 end
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

@@ -2,13 +2,40 @@ function [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI(subj_list, race, doh
 
 % [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI(subj_list, race, dohist, hist_dir, hist_fstem)
 %
-% Read and plot histogram of the necessary measures from Parent General Behavior Inventory
+% Read and plot histogram of the necessary measures from Parent General Behavior Inventory.
+%
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - PGBI
+%   A #subjects x 1 vector. Each entry corresponds to the Mania scores of a subject.
+%
+% - PGBI_hdr
+%   A 1x1 cell. Header of the behavioral measure in ABCD csv file.
+%
+% - PGBI_colloquial
+%   A 1x1 cell. The colloquial name of the behavioral measure.
 %
 % Example:
-% [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [PGBI, PGBI_hdr, PGBI_colloquial] = ABCD_read_PGBI([], race, [], ...
+%     '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+%
+% Author: Jingwei Li
 
-
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -116,8 +143,6 @@ if(dohist==1)
         close(gcf)
     end
 end
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 

@@ -2,14 +2,45 @@ function [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan(subj_list, race, d
 
 % [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan(subj_list, race, dohist, hist_dir, hist_fstem)
 % 
-% Read necessary measures from Little Man Task.
+% Read necessary measures from Little Man Task. Create histograms of behavioral distributions
+% by race.
+% 
+% Inputs:
+% - subj_list
+%   List of subjects which passed fMRI prepreocessing quality control (full path). Default:
+%   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt'
+%
+% - race
+%   A cell of strings. Each cell array corresponds to the ethnicity/race of one subject.
+%   This cell can be obtained by `ABCD_read_race.m`.
+% 
+% - dohist
+%   A 1/0 value determining whether the histograms are created or not. 
+%   Default: 1, i.e. create plots.
+%
+% - hist_fname
+%   Full path of output histogram filename.
+%
+% Outputs:
+% - LMT
+%   A #subjects x 3 matrix. Each row is the behavioral scores of a subject. The 3 columns 
+%   correspond to Visuospatial accuracy, Visuospatial reaction time, Visuospatial efficiency.
+%
+% - LMT_hdr
+%   A 1x3 cell. Headers of these 3 measures in ABCD csv file.
+%
+% - LMT_colloquial
+%   A 1x3 cell. Colloquial names of these 3 measures.
 % 
 % Example:
-% [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan([], race, [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
+% [LMT, LMT_hdr, LMT_colloquial] = ABCD_read_LittleMan([], race, [], ...
+%     '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist', '_pass_rs');
 % where "race" is obtained from
-% race = ABCD_read_race([], [], '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+% race = ABCD_read_race([], [], 
+%     '~/storage/MyProject/fairAI/ABCD_race/figures/demo_hist/race_pass_rs.png');
+%
+% Author: Jingwei Li
 
-addpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 if(~exist('dohist', 'var') || isempty(dohist))
     dohist = 1;
@@ -114,8 +145,6 @@ if(dohist==1)
         close(gcf)
     end
 end
-
-rmpath(genpath( '~/storage/from_HOME/code/plotting_functions/'))
 
 end
 
