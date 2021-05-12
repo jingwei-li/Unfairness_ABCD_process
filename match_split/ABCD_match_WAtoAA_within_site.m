@@ -1,4 +1,55 @@
-function [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter, cost_ceil)
+function [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site( ...
+    subjects, race, site, bhvr_zn, cfds_zn, niter, cost_ceil)
+
+% [selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site( ...
+%     subjects, race, site, bhvr_zn, cfds_zn, niter, cost_ceil)
+%
+% For each single site, match African Americans (AA) with white Americans (WA) 
+% using Hungarian matching.
+%
+% Inputs:
+% - subjects
+%   A cell array containing all subject IDs.
+%
+% - race
+%   A column vector with the ethnicity/race label of each subject.
+%
+% - site
+%   A column vector with the site ID of each subject.
+%
+% - bhvr_zn
+%   A #subjects x #behaviors matrix, z-score normalized behavioral scores.
+%
+% - cfds_zn
+%   A #subjects x #confounds matrix, z-score normalized confounding variables.
+% 
+% - niter
+%   Maximal number of iterations used to exclude AA with highest matching cost.
+% 
+% - cost_ceil
+%   The upper bound for matching cost. `niter` and `cost_ceil` work together to 
+%   stop the iterations of subjects exclusion.
+%
+% Outputs:
+% - selAA
+%   A #behaviors x #sites cell. Each entry is the selected AA IDs which can be 
+%   matched for a certain behavioral measure within a certain site.
+%
+% - selWA 
+%   A #behaviors x #sites cell. Each entry is the selected WA IDs which can be 
+%   matched for a certain behavioral measure within a certain site.
+%
+% - sel_mAA
+%   A cell array with a length: number of behavioral measures. Each entry is a 
+%   matrix (dimension: #confounds+1 x #AA) containing the confounds and the scores of
+%   a certain behavioral measure of all matched AA concatenated across sites.
+%
+% - sel_mWA
+%   A cell array with a length: number of behavioral measures. Each entry is a 
+%   matrix (dimension: #confounds+1 x #WA) containing the confounds and the scores of
+%   a certain behavioral measure of all matched WA concatenated across sites.
+%
+% Author: Jingwei Li
 
 WArace = 1;
 AArace = 2;

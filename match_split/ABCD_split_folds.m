@@ -1,4 +1,33 @@
 function [fold_subj, fold_sites] = ABCD_split_folds(subjects, site, fam_id, Nfolds)
+    
+% [fold_subj, fold_sites] = ABCD_split_folds(subjects, site, fam_id, Nfolds)
+%
+% Integrate all sites into `Nfolds` folds. The integration depends on the number of matched
+% AA-WA pairs in each site (i.e. the total number of matched pairs will be kept as balanced
+% as possible across folds).
+%
+% Inputs:
+% - subjects
+%   A cell with a length equals to the total number of matched AA. Each entry is one
+%   subject ID.
+%
+% - site
+%   A column vector with the site ID of each AA subject.
+%
+% - fam_id
+%   A column vector with the family ID of each AA subject.
+%
+% - Nfolds (optional)
+%   Number of folds to be split into. Default: 10.
+%
+% Outputs:
+% - fold_subj
+%   A `Nfolds` x 1 cell. Each entry contains the subject IDs of a certain fold.
+%
+% - fold_site
+%   A `Nfolds` x 1 cell. Each entry contains the site IDs of a certain fold.
+%
+% Author: Jingwei Li
 
 if(~exist('Nfolds', 'var') || isempty(Nfolds))
     Nfolds = 10;
