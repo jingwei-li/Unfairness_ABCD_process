@@ -1,6 +1,42 @@
 function ABCD_KRR_corr_allAA_vs_randWA(model_dir, bhvr_ls, subj_ls, split_dir, split_fstem, ...
     Nsplits, outmat)
 
+% ABCD_KRR_corr_allAA_vs_randWA(model_dir, bhvr_ls, subj_ls, split_dir, split_fstem, ...
+%     Nsplits, outmat)
+%
+% Calculate out-of-sample Pearson's correlation of all AA and randomly selected WA for the KRR models
+% trained on whole population.
+%
+% Input:
+%   - model_dir
+%     The directory storing kernel regression results (full path).
+%
+%   - bhvr_ls (optional)
+%     Behavior list (full path, text file).
+%     Default: '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+% 
+%   - subj_ls (optional)
+%     Subject list (full path). Default: 
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%
+%   - split_dir
+%     The directory storing the data split (full path). It contains a file
+%     called ['sel_AAWA' split_fstem '.mat']. For each behaviors, there
+%     should be a file called ['sub_fold' split_fstem '_' <behavior name>
+%     '.mat'].
+%
+%   - split_fstem
+%     The string that was attached to the filenames of the data split
+%     files.
+%
+%   - Nsplits (optional)
+%     Number of splits. Default: 120 (10 choose 3).
+%
+%   - outmat
+%     Output filename (full path).
+%
+% Author: Jingwei Li
+
 %% default arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))

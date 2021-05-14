@@ -4,6 +4,9 @@ function ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 % ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
 %     predictable_stats, outmat)
 % 
+% Calculate Pearson's correlation between predicted behavioral scores and true behavioral scores of
+% matched AA and WA for the kernel ridge regression models trained on whole population.
+%
 % Input:
 %   - model_dir
 %     The directory storing kernel regression results (full path).
@@ -42,6 +45,8 @@ function ABCD_KRR_corr_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 %
 %   - outmat
 %     Output filename (full path).
+%
+% Author: Jingwei Li
 
 %% default arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';

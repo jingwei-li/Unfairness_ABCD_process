@@ -4,6 +4,9 @@ function ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 % ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
 %     predictable_stats, outmat)
 %
+% Calculate predictive COD of matched AA and WA for the kernel ridge regression models trained on 
+% whole population.
+%
 % Input:
 %   - model_dir
 %     The directory storing kernel regression results (full path).
@@ -42,6 +45,11 @@ function ABCD_KRR_pCOD_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir,
 %
 %   - outmat
 %     Output filename (full path).
+%
+%   - bin_flag
+%     A 1/0 value, whether the behavioral measure to be predicted is binary or not.
+%
+% Author: Jingwei Li
 
 %% default arguments
 ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';

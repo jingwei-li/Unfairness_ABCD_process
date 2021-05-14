@@ -4,7 +4,48 @@ function ABCD_KRR_errors_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_di
 % ABCD_KRR_errors_AAvsWA(model_dir, bhvr_ls, colloq_ls, subj_ls, split_dir, split_fstem, Nsplits, ...
 %     metric, outmat, bin_flag)
 %
+% Calculate prediction errors (e.g. mean-squre error) of matched AA and WA for kernel ridge regression
+% models trained on whole population.
+%
+% Input:
+%   - model_dir
+%     The directory storing kernel regression results (full path).
+%
+%   - bhvr_ls (optional)
+%     Behavior list (full path, text file).
+%     Default: '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 % 
+%   - colloq_ls (optional)
+%     List of behaviors' colloquial name (full path).
+%     Default: '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/colloquial_list.txt'
+%
+%   - subj_ls (optional)
+%     Subject list (full path). Default: 
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%
+%   - split_dir
+%     The directory storing the data split (full path). It contains a file
+%     called ['sel_AAWA' split_fstem '.mat']. For each behaviors, there
+%     should be a file called ['sub_fold' split_fstem '_' <behavior name>
+%     '.mat'].
+%
+%   - split_fstem
+%     The string that was attached to the filenames of the data split
+%     files.
+%
+%   - Nsplits (optional)
+%     Number of splits. Default: 120 (10 choose 3).
+%  
+%   - metric
+%     Choose from `MSE`, `MSE_norm`, `MAE`, `MAE_norm`, the error metric.
+%
+%   - outmat
+%     Output filename (full path).
+%
+%   - bin_flag
+%     A 1/0 value, whether the behavioral measure to be predicted is binary or not.
+%
+% Author: Jingwei Li
 
 %% default arguments
 ls_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';

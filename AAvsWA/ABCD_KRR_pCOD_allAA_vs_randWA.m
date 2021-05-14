@@ -4,17 +4,20 @@ function ABCD_KRR_pCOD_allAA_vs_randWA(model_dir, bhvr_ls, subj_ls, ...
 % ABCD_KRR_pCOD_allAA_vs_randWA(model_dir, bhvr_ls, subj_ls, ...
 %     split_dir, split_fstem, Nsplits, outmat)
 %
+% Calculate out-of-sample predictive COD of all AA and randomly selected WA for the KRR models
+% trained on whole population.
+%
 % Input:
 %   - model_dir
 %     The directory storing kernel regression results (full path).
 %
 %   - bhvr_ls (optional)
 %     Behavior list (full path, text file).
-%     Default: '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%     Default: '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 % 
 %   - subj_ls (optional)
 %     Subject list (full path). Default: 
-%  '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
+%     '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
 %
 %   - split_dir
 %     The directory storing the data split (full path). It contains a file
@@ -31,9 +34,11 @@ function ABCD_KRR_pCOD_allAA_vs_randWA(model_dir, bhvr_ls, subj_ls, ...
 %
 %   - outmat
 %     Output filename (full path).
+%
+% Author: Jingwei Li
 
 %% default arguments
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race', 'scripts', 'lists');
 
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, '/behavior_list.txt');
