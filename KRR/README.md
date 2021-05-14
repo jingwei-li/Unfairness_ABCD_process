@@ -43,6 +43,8 @@ ABCD_KRR_predictable_behavior('/path/to/KRR/output/', '/path/to/split/folds/', .
 
 ### Test the subpopulation-trained model on matched AA
 
+Calculate predicted behavioral scores and prediction accuracy of matched AA for the KRR models trained only on all AA + random WA.
+
 ```bash
 ./ABCD_KRR_test_allAArandWAmodel_on_matchedAA.sh -csvname <path_to_lists>/phenotypes_pass_rs.txt \
     -bhvr_ls <path_to_lists>/behavior_list.txt -cfds_ls <path_to_lists>/confounds_list.txt \
@@ -54,6 +56,8 @@ ABCD_KRR_predictable_behavior('/path/to/KRR/output/', '/path/to/split/folds/', .
 `/.../matchANDsplit/` is the directory containing split folds of the whole population. It is the output directory of `../match_split/ABCD_match_and_split.m`. `train_allAA_randWA` is the name of a subdirectory under `/.../matchANDsplit/` which contains split folds of all AA + random WA. This subdirectory is the output directory of `../match_split/ABCD_create_subfold_allAA_randWA.m`.
 
 ### Test the subopopulation-trained model on matched WA
+
+Calculate predicted behavioral scores and prediction accuracy of matched WA for the KRR models trained only on all AA + random WA.
 
 Use `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` to calculate out-of-sample prediction accuracy of matched WA when KRR models were trained on all AA + random WA. Input arguments of `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` are the same with that of `ABCD_KRR_test_allAArandWAmodel_on_matchedAA.sh`.
 
@@ -73,6 +77,8 @@ Use `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` to calculate out-of-sample 
 
 ### Test the subpopulation-trained model on matched AA
 
+Calculate predicted behavioral scores and prediction accuracy of matched AA for the KRR models trained only on all AA.
+
 ```bash
 ./ABCD_KRR_test_AllAAmodel_on_matchedAA.sh -csvname <path_to_lists>/phenotypes_pass_rs.txt \
     -bhvr_ls <path_to_lists>/behavior_list.txt -cfds_ls <path_to_lists>/confounds_list.txt \
@@ -84,6 +90,8 @@ Use `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` to calculate out-of-sample 
 `train_allAA` is the name of a subdirectory under `/.../matchANDsplit/` which contains split folds of all AA. This subdirectory is the output directory of `../match_split/ABCD_create_subfold_allAA.m`.
 
 ### Test the subopopulation-trained model on matched WA
+
+Calculate predicted behavioral scores and prediction accuracy of matched WA for the KRR models trained only on all AA.
 
 ```bash
 ./ABCD_KRR_test_AllAAmodel_on_matchedWA.sh -csvname <path_to_lists>/phenotypes_pass_rs.txt \
@@ -109,6 +117,8 @@ Use `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` to calculate out-of-sample 
 
 ### Test the subpopulation-trained model on matched AA
 
+Calculate predicted behavioral scores and prediction accuracy of matched AA for the KRR models trained only on random WA.
+
 ```bash
 ./ABCD_KRR_test_randWAmodel_on_matchedAA.sh -csvname <path_to_lists>/phenotypes_pass_rs.txt \
     -bhvr_ls <path_to_lists>/behavior_list.txt -cfds_ls <path_to_lists>/confounds_list.txt \
@@ -120,6 +130,8 @@ Use `ABCD_KRR_test_allAArandWAmodel_on_matchedWA.sh` to calculate out-of-sample 
 `train_randWA` is the name of a subdirectory under `/.../matchANDsplit/` which contains split folds of random WA. This subdirectory is the output directory of `../match_split/ABCD_create_subfold_randWA.m`.
 
 ### Test the subopopulation-trained model on matched WA
+
+Calculate predicted behavioral scores and prediction accuracy of matched WA for the KRR models trained only on random WA.
 
 ```bash
 ./ABCD_KRR_test_randWAmodel_on_matchedWA.sh -csvname <path_to_lists>/phenotypes_pass_rs.txt \
