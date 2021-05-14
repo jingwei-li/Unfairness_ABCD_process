@@ -4,7 +4,7 @@ function ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_
 % ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
 %	 full_FC, split_dir, split_fstem, AA_subdir, AAWA_subdir, outstem)
 %
-% Test the KRR models trained on AA using WA subjects.
+% Check the performance of KRR models trained on AA when they are tested on WA subjects.
 %
 % Inputs:
 %   - csvname
@@ -12,8 +12,8 @@ function ABCD_KRR_test_AAmodel_on_WA(csvname, model_dir, bhvr_ls, cfds_ls, full_
 %   - model_dir
 %     Directory of models trained on AA (full path). It contains a subfolder for each behavior.
 %   - bhvr_ls (optional)
-%     List of behaviors (full path). Default:
-%     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
+%     List of behavioral measures (full path). If you only want to test for one behavioral measure, 
+%     this behavioral name can be directly passed in as a string.
 %   - cfds_ls (optional)
 %     List of confounding variable names (full path). Default:
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'

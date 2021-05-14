@@ -1,6 +1,6 @@
 function ABCD_KRR_wholepopModel_XAacc(XA, model_dir, split_dir, split_fstem, outstem, csvname, bhvr_ls)
 
-% Syntax: ABCD_KRR_wholepopModel_XAacc(XA, model_dir, bhvr_ls, outmat)
+% ABCD_KRR_wholepopModel_XAacc(XA, model_dir, split_dir, split_fstem, outstem, csvname, bhvr_ls)
 %
 % 
 

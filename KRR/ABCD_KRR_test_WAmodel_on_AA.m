@@ -4,7 +4,7 @@ function  ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full
 % ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
 %	 full_FC, split_dir, split_fstem, WA_subdir, AAWA_subdir, outstem)
 %
-% Test the KRR models trained on WA using AA subjects.
+% Check the performance of KRR models trained on WA when they are tested on AA subjects.
 %
 % Inputs:
 %   - csvname
