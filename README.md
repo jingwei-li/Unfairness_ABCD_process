@@ -18,6 +18,12 @@ After that, this repository should be used as the following steps:
 
 2. Follow the README in `preparation` folder to collect all the necessary phenotypes and resting-state functional connectivity matrices.
 
-3. 
+3. Follow the README in `match_split` folder to find matched AA and WA pairs and split subjects into training versus test folds.
 
-4. 
+4. Follow the README in `KRR` folder to perform kernel ridge regression.
+
+5. Follow the README in `AAvsWA` folder to calculate prediction accuracies of matched AA and WA for the KRR models trained on whole populations.
+
+6. Follow the README in `Interpretation` folder to calculate model-learned brain-behavioral associations and true brain-behavioral associations.
+
+7. Use the scripts in `plot` folder to create whisker plots, scatter plots, etc.
