@@ -29,7 +29,7 @@ main() {
 #############################
 usage() { GREEN='\033[0;32m'; NOCOLOR='\033[0m'; echo -e "
 NAME:
-
+    ABCD_KRR_true_BWAS_AAvsWA_reg_AgeSexMtIcvPEduc_fr_y.sh
 DESCRIPTION:
     Calculate true brain-behavioral association patterns of matched AA and WA separately.
 

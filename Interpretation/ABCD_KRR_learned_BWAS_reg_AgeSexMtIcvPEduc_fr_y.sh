@@ -33,6 +33,7 @@ main() {
 #############################
 usage() { GREEN='\033[0;32m'; NOCOLOR='\033[0m'; echo -e "
 NAME:
+    ABCD_KRR_learned_BWAS_reg_AgeSexMtIcvPEduc_fr_y.sh
 
 DESCRIPTION:
     Calculate model-learned brain-behavioral association patterns
