@@ -100,6 +100,7 @@ while [[ $# -gt 0 ]]; do
         -split_dir) split_dir=$1; shift ;;
         -split_fstem) split_fstem; shift ;;
         -AA_subdir) AA_subdir=$1; shift ;;
+        *) echo "Unknown flag: $flag"; usage; 1>&2; exit 1 
     esac
 done
 
