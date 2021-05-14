@@ -26,6 +26,8 @@ subfold_stem=_pass_rs_pass_pheno
 
 main() {
     behaviors=$(cat $bhvr_ls)
+    work_dir=$outdir/logs/HPC
+	mkdir -p $work_dir
 
     for b in $behaviors; do
 	    if [ -f $outdir/final_result_${b}.mat ]; then
@@ -43,7 +45,7 @@ main() {
 -subfold_f $subfold_f -FC_file $FC_file -outdir $outdir -outstem $b -csvname $csvname"
 
 	    jname=ABCD_KRR_${b}
-		$CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime=28:00:00,mem=${memory}G \
+		$CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 28:00:00 -mem ${memory}G \
 -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
 	    if [ ! -f $outdir/confounds_none.mat ]; then
 		    sleep 3m
