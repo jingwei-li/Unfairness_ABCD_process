@@ -34,6 +34,14 @@ ABCD_pheno_var_AAvsWA_matched(...
    fullfile(proj_dir, 'mat', 'matchANDsplit', '20200719', 'AAvsWA_var_Levene.mat'))
 ```
 
+## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from both behaviors and RSFC ------
+
+### Run KRR (bash)
+
+```bash
+../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_y_FC.sh
+```
+
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
 ### Run KRR (bash)

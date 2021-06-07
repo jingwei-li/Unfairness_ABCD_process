@@ -1,6 +1,6 @@
-function ABCD_KRR(csvname, bhvr_nm, cfds_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
+function ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
 
-% ABCD_KRR(csvname, bhvr_nm, cfds_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
+% ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
 %
 % Wrapper function to apply CBIG kernel ridge regression package in the ABCD dataset.
 %
@@ -14,8 +14,12 @@ function ABCD_KRR(csvname, bhvr_nm, cfds_ls, subj_ls, subfold_f, FC_file, N_inne
 %   Behavioral measure to be predicted.
 %
 % - cfds_ls
-%   List of confounding variables which need to be matched (full path).
+%   List of confounding variables which need to be regressed from behavioral measures (full path).
 %   Default: '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+%
+% - cfds_X_ls 
+%   List of confounding variables which need to be regressed from RSFC (full path). Pass in 'NONE' if
+%   nothing needs to be regressed from RSFC.
 %
 % - subj_ls
 %   List of subjects who have passed all quality controls and had all required phenotypes (full path).
@@ -54,6 +58,15 @@ else
     [cfds_nm, Ncfds] = CBIG_text2cell(cfds_ls);
 end
 
+if(~exist('cfds_X_ls', 'var') || isempty(cfds_X_ls))
+    cfds_ls = 'NONE';
+end
+if(strcmpi(cfds_X_ls, 'none'))
+    cfds_X_nm = {'none'};
+else
+    [cfds_X_nm, Ncfds_X] = CBIG_text2cell(cfds_X_ls);
+end
+
 if(~exist('subj_ls', 'var') || isempty(subj_ls))
     subj_ls = fullfile(ls_dir, 'subjects_pass_rs_pass_pheno.txt');
 end
@@ -70,7 +83,7 @@ if(~exist(y_file, 'file'))
     CBIG_read_y_from_csv( {csvname}, subj_hdr, {bhvr_nm}, {'continuous'}, subj_ls, y_file, ',' );
 end
 
-%% grab covariates, save to a .mat file
+%% grab covariates which need to be regressed from behaviors, save to a .mat file
 cfds_file = fullfile(outdir, ['confounds_' strjoin(cfds_nm, '_'), '.mat']);
 if(~exist(cfds_file, 'file'))
     if(strcmpi(cfds_ls, 'none'))
@@ -88,11 +101,27 @@ if(~exist(cfds_file, 'file'))
     save(cfds_file, 'covariates')
 end
 
-%%
+%% grab covariates which need to be regressed from RSFC, save to a .mat file
+cfds_X_file = fullfile(outdir, ['confounds_X_' strjoin(cfds_X_nm, '_'), '.mat']);
+if(~exist(cfds_X_file, 'file'))
+    if(strcmpi(cfds_X_ls, 'none'))
+        fprintf('No regressor to be regressed from RSFC.\n')
+        cov_X = [];
+    else
+        cfds_types = repmat({'continuous'}, 1, Ncfds_X);
+        sex_idx = strcmpi(cfds_nm, 'sex');
+        if(any(sex_idx))
+            cfds_types{sex_idx} = 'categorical';
+        end
+
+        cov_X = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_X_nm, cfds_types, subj_ls, 'NONE', ',' );
+    end
+    save(cfds_X_file, 'cov_X')
+end
 
 
-CBIG_KRR_workflow_LITE( [], 0, subfold_f, y_file, ...
-    cfds_file, FC_file, N_inner_folds, outdir, outstem )
+CBIG_KRR_workflow( [], 0, subfold_f, y_file, ...
+    cfds_file, FC_file, N_inner_folds, outdir, outstem, 'cov_X_file', cfds_X_file )
 
 end
 
