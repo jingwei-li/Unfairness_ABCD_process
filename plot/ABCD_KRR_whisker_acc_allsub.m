@@ -22,8 +22,13 @@ if(length(colloq_nm) ~= nbhvr)
 end
 
 data = [];
+[flag, msg] = system(['ls ' fullfile(model_dir, 'final_result_*.mat')]);
 for b = 1:nbhvr
-    final_result = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
+    if(flag==0)
+        final_result = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
+    else
+        final_result = load(fullfile(model_dir, bhvr_nm{b}, ['final_result_' bhvr_nm{b} '.mat']));
+    end
     data = [data final_result.optimal_stats.(metric)];
 end
 [~, idx] = sort(mean(data,1), 'descend');
@@ -60,6 +65,9 @@ set(gca, 'xticklabel', colloq_nm, 'fontsize', 16, 'linewidth', 2);
 rotateXLabels( gca(), 45 );
 set(gca, 'tickdir', 'out', 'box', 'off')
 
+if(~exist(outdir, 'dir'))
+    mkdir(outdir)
+end
 outname = fullfile(outdir, [outstem ]);
 export_fig(outname, '-png', '-nofontswap', '-a1');
 set(gcf, 'color', 'w');
