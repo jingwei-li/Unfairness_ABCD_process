@@ -5,8 +5,8 @@
 ### Collection of confounds and behaviors; filter unsatisfactory subjects
 
 ```matlab
-ABCD_read_all_measures('/mnt/eql/yeo13/data/ABCD/rs_GSR', [], ...
-   '/mnt/eql/yeo13/data/ABCD/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
+ABCD_read_all_measures('/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/rs_GSR', [], ...
+   '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
    '/home/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists', '_pass_rs')
 ```
 
@@ -40,6 +40,18 @@ ABCD_pheno_var_AAvsWA_matched(...
 
 ```bash
 ../KRR/ABCD_KRR_reg_AgeSexMtIcvPEduc_from_y_FC.sh
+```
+
+### Plot correlation and predictive COD accuracy of all behaviors on all test subjects
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+   'corr', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+   'corr_allsubj')
+ABCD_KRR_whisker_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+   'predictive_COD', fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+   'pCOD_allsubj')
 ```
 
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
