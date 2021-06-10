@@ -1,3 +1,0 @@
-[submodule "external_packages/fig_util/Violinplot-Matlab"]
-	path = external_packages/fig_util/Violinplot-Matlab
-	url = https://github.com/bastibe/Violinplot-Matlab.git
