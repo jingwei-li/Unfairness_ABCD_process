@@ -33,11 +33,11 @@ main() {
   matlab -nodesktop -nosplash -nodisplay -r "addpath $DIR; ABCD_KRR('$csvname', '$bhvr_name', '$cfds_ls', '$cfds_X_ls', \
     '$subj_ls', '$subfold_f', '$FC_file', $N_inner_folds, '$outdir', '$outstem'); exit;" >> $LF 2>&1
 
-  if [ "$outstem" != "" ]; then stem="_$outstem"; fi
-  if [ -f $outdir/final_result$stem.mat ]; then
-    rm $outdir/FSM_innerloop/fold_*/FSM*.mat
-    rm $outdir/FSM_test/fold_*/FSM*.mat
-  fi
+  #if [ "$outstem" != "" ]; then stem="_$outstem"; fi
+  #if [ -f $outdir/final_result$stem.mat ]; then
+  #  rm $outdir/FSM_innerloop/fold_*/FSM*.mat
+  #  rm $outdir/FSM_test/fold_*/FSM*.mat
+  #fi
 }
 
 

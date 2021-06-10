@@ -84,10 +84,15 @@ end
 %% load data for KRR; calculate permuted KRR accuracies
 metrics = {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'};
 p_perm = zeros(nbhvr, 1);
+[flag, msg] = system(['ls ' fullfile(model_dir, 'final_result*.mat')])
 for b = 1:nbhvr
     load(fullfile(folds_dir, ['sub_fold' folds_fstem '_' bhvr_nm{b} '.mat']))
     Nfolds = length(sub_fold);
-    opt = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
+    if(~flag)
+        opt = load(fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']));
+    else
+        opt = load(fullfile(model_dir, bhvr_nm{b}, ['final_result_' bhvr_nm{b}, '.mat']));
+    end
 
     for i = 1:length(metrics)
         stats_perm.(metrics{i}) = zeros(Nfolds, Nperm);
@@ -97,21 +102,33 @@ for b = 1:nbhvr
     if(exist(acc_out, 'file'))
         load(acc_out)
     else
-        
-        
         for f = 1:Nfolds
-            y_reg = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
-            load(fullfile(model_dir, 'FSM', 'FSM_corr.mat'))
-
-            opt_lambda = opt.optimal_lambda(f);
-
             test_ind = sub_fold(f).fold_index==1;
             train_ind = ~test_ind;
             N_train = length(find(train_ind));
             N_test = length(find(test_ind));
 
-            K_train = FSM(train_ind, train_ind);
-            K_test = FSM(test_ind, train_ind);
+            if(~flag)
+                y_reg = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
+            else
+                y_reg = load(fullfile(model_dir, bhvr_nm{b}, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']));
+            end
+
+            if(~flag)
+                load(fullfile(model_dir, 'FSM', 'FSM_corr.mat'))
+                K_train = FSM(train_ind, train_ind);
+                K_test = FSM(test_ind, train_ind);
+                clear FSM
+            else
+                load(fullfile(model_dir, bhvr_nm{b}, 'FSM_innerloop', ['fold_' num2str(f)], 'FSM_corr.mat'))
+                K_train = FSM;
+                clear FSM
+                load(fullfile(model_dir, bhvr_nm{b}, 'FSM_test', ['fold_' num2str(f)], 'FSM_corr.mat'))
+                K_test = FSM(test_ind, train_ind);
+                clear FSM
+            end
+
+            opt_lambda = opt.optimal_lambda(f);
 
             % compute the part of parameters that are not dependent on y
             % so that they are be shared across all permutations
