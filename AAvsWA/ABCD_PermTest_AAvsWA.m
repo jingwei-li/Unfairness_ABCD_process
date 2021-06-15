@@ -57,17 +57,20 @@ null_acc_WA = nan(nbhvr, size(acc_diff,2), nperm);
 for b = 1:nbhvr
     for f = 1:size(acc_diff, 2)
         for i = 1:nperm
+            % indices of subjects to exchange ethnic/racial group labels
             idx = round(rand(length(grpdif.AA_test{b, f}), 1));
+            % randomly shuffle the ordering of WA subjects
+            shuffle = datasample(1:length(grpdif.WA_test{b,f}), length(grpdif.WA_test{b,f}), 'replace', false);
             
             null_yt_AA = grpdif.AA_test{b,f};
-            null_yt_AA(idx==1) = grpdif.WA_test{b,f}(idx==1);
+            null_yt_AA(idx==1) = grpdif.WA_test{b,f}(shuffle(idx==1));
             null_yp_AA = grpdif.AA_pred{b,f};
-            null_yp_AA(idx==1) = grpdif.WA_pred{b,f}(idx==1);
+            null_yp_AA(idx==1) = grpdif.WA_pred{b,f}(shuffle(idx==1));
             
             null_yt_WA = grpdif.WA_test{b,f};
-            null_yt_WA(idx==1) = grpdif.AA_test{b,f}(idx==1);
+            null_yt_WA(shuffle(idx==1)) = grpdif.AA_test{b,f}(idx==1);
             null_yp_WA = grpdif.WA_pred{b,f};
-            null_yp_WA(idx==1) = grpdif.AA_pred{b,f}(idx==1);
+            null_yp_WA(shuffle(idx==1)) = grpdif.AA_pred{b,f}(idx==1);
             
             [null_acc_AA(b,f,i), null_acc_WA(b,f,i)] = compute_null(null_yt_AA, null_yt_WA, ...
                 null_yp_AA, null_yp_WA, metric, grpdif.AA_train{b,f}, grpdif.WA_train{b,f});
@@ -83,6 +86,8 @@ p_perm = nan(nbhvr,1);
 for b = 1:nbhvr
     p_perm(b) = length(find( null_acc_diff(b,:) - mean(null_acc_diff(b,:)) > abs(avg_acc_diff(b)) | ...
         null_acc_diff(b,:) - mean(null_acc_diff(b,:)) < -abs(avg_acc_diff(b)) )) / nperm;
+    %p_perm(b) = length(find( null_acc_diff(b,:)  > abs(avg_acc_diff(b)) | ...
+    %    null_acc_diff(b,:)  < -abs(avg_acc_diff(b)) )) / nperm;
 end
 p_perm(nbhvr+1) = length(find( mean(null_acc_diff,1) - mean(mean(null_acc_diff,1),2) > abs(mean(avg_acc_diff)) | ...
     mean(null_acc_diff,1) - mean(mean(null_acc_diff,1),2) < -abs(mean(avg_acc_diff)) )) / nperm;
