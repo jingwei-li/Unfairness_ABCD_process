@@ -59,7 +59,7 @@ else
 end
 
 if(~exist('cfds_X_ls', 'var') || isempty(cfds_X_ls))
-    cfds_ls = 'NONE';
+    cfds_X_ls = 'NONE';
 end
 if(strcmpi(cfds_X_ls, 'none'))
     cfds_X_nm = {'none'};
