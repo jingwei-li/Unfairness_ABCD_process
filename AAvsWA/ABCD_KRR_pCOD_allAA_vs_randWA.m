@@ -77,6 +77,8 @@ else
     threshold_set = NaN;
 end
 
+[flag, msg] = system(['ls ' model_dir '/final_result*.mat']);
+
 %% compute predictive COD
 pCOD_AA = nan(nbhvr, Nsplits); pCOD_WA = pCOD_AA; pCOD_AAWA = pCOD_AA;
 ss_res_AA = pCOD_AA; ss_res_WA = pCOD_WA; ss_res_AAWA = pCOD_AA;
@@ -94,7 +96,11 @@ for b = 1:nbhvr
         error('Nsplits does not equal to length of sub_fold.')
     end
     
-    opt_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
+    if(flag==0)
+        opt_file = fullfile(model_dir, ['final_result_' bhvr_nm{b} '.mat']);
+    else
+        opt_file = fullfile(model_dir, bhvr_nm{b}, ['final_result_' bhvr_nm{b} '.mat']);
+    end
     opt = load(opt_file);
     
     for f = 1:Nsplits
@@ -103,10 +109,17 @@ for b = 1:nbhvr
     end
 
     for f = 1:Nsplits
-        krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ...
-            ['y_regress_' bhvr_nm{b} '.mat']));
-        testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
-            ['acc_' bhvr_nm{b} '.mat']));
+        if(flag==0)
+            krry = load(fullfile(model_dir, 'y', ['fold_' num2str(f)], ...
+                ['y_regress_' bhvr_nm{b} '.mat']));
+            testcv = load(fullfile(model_dir, 'test_cv', ['fold_' num2str(f)], ...
+                ['acc_' bhvr_nm{b} '.mat']));
+        else
+            krry = load(fullfile(model_dir, bhvr_nm{b}, 'y', ['fold_' num2str(f)], ...
+                ['y_regress_' bhvr_nm{b} '.mat']));
+            testcv = load(fullfile(model_dir, bhvr_nm{b}, 'test_cv', ['fold_' num2str(f)], ...
+                ['acc_' bhvr_nm{b} '.mat']));
+        end
 
         %% collect true & predicted scores of test AA or WA subjects
         AAidx = zeros(length(sub_fold(f).subject_list), 1);
