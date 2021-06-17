@@ -21,7 +21,7 @@ cfds_ls=$ls_dir/confounds_list.txt
 cfds_X_ls=$cfds_ls
 
 full_FC_file=$proj_dir/mat/RSFC/pass_rs_pass_pheno_5351.mat
-outdir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_y_allAA_randWA
+outdir=$proj_dir/models/KRR/20200721/reg_AgeSexMtIcvPEduc_y_FC_allAA_randWA
 split_dir=$proj_dir/mat/matchANDsplit/20200719/train_allAA_randWA
 split_fstem="_pass_rs_pass_pheno"
 
@@ -42,7 +42,7 @@ main() {
 	    mkdir -p $outdir/$b
         cmd="$DIR/ABCD_KRR_in_subgroup.sh -bhvr_name $b -full_subj_ls $full_subj_ls "
         cmd="$cmd -subj_ls $subj_ls -subfold_f $subfold_f -full_FC_file $full_FC_file "
-	    cmd="$cmd -FC_file $FC_file -outdir $outdir/$b -csvname $csvname -cfds_ls $cfds_ls"
+	    cmd="$cmd -FC_file $FC_file -outdir $outdir/$b -csvname $csvname -cfds_ls $cfds_ls -LITE 1"
         cmd="$cmd -cfds_X_ls $cfds_X_ls"
 
         jname=ABCD_KRR_${b}
