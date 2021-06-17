@@ -1,6 +1,6 @@
-function ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
+function ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem, LITE)
 
-% ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem)
+% ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_file, N_inner_folds, outdir, outstem, LITE)
 %
 % Wrapper function to apply CBIG kernel ridge regression package in the ABCD dataset.
 %
@@ -41,6 +41,9 @@ function ABCD_KRR(csvname, bhvr_nm, cfds_ls, cfds_X_ls, subj_ls, subfold_f, FC_f
 % - outstem
 %   A discrimitive string to be attached to output filenames.
 %
+% - LITE
+%   0 or 1, whether to use the LITE version of KRR. Default is 0.
+%
 % Author: Jingwei Li
 
 ls_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race', 'scripts', 'lists');
@@ -75,6 +78,10 @@ subj_hdr = 'subjectkey';
 
 if(ischar(N_inner_folds))
     N_inner_folds = str2double(N_inner_folds);
+end
+
+if(~exist('LITE', 'var') || isempty(LITE))
+    LITE = 0;
 end
 
 %% grab behavior, write to a .mat file
@@ -119,9 +126,13 @@ if(~exist(cfds_X_file, 'file'))
     save(cfds_X_file, 'cov_X')
 end
 
-
-CBIG_KRR_workflow( [], 0, subfold_f, y_file, ...
-    cfds_file, FC_file, N_inner_folds, outdir, outstem, 'cov_X_file', cfds_X_file )
+if(LITE==0)
+    CBIG_KRR_workflow( [], 0, subfold_f, y_file, ...
+        cfds_file, FC_file, N_inner_folds, outdir, outstem, 'cov_X_file', cfds_X_file )
+else
+    CBIG_KRR_workflow_LITE( [], 0, subfold_f, y_file, ...
+        cfds_file, FC_file, N_inner_folds, outdir, outstem )
+end
 
 end
 

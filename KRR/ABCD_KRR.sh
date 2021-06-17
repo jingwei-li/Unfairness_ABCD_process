@@ -10,6 +10,7 @@ ls_dir=$HOME/storage/MyProject/fairAI/ABCD_race/scripts/lists
 csvname=$ls_dir/phenotypes_pass_rs.txt
 cfds_ls=$ls_dir/confounds_list.txt
 cfds_X_ls=NONE
+LITE=0
 N_inner_folds=10
 outstem=
 
@@ -31,7 +32,7 @@ main() {
   
   ############ Call matlab function
   matlab -nodesktop -nosplash -nodisplay -r "addpath $DIR; ABCD_KRR('$csvname', '$bhvr_name', '$cfds_ls', '$cfds_X_ls', \
-    '$subj_ls', '$subfold_f', '$FC_file', $N_inner_folds, '$outdir', '$outstem'); exit;" >> $LF 2>&1
+    '$subj_ls', '$subfold_f', '$FC_file', $N_inner_folds, '$outdir', '$outstem', $LITE); exit;" >> $LF 2>&1
 
   #if [ "$outstem" != "" ]; then stem="_$outstem"; fi
   #if [ -f $outdir/final_result$stem.mat ]; then
@@ -121,6 +122,7 @@ while [[ $# -gt 0 ]]; do
 		-outstem)     # optional
 			outstem=$1
 			shift;;
+        -LITE) LITE=$1; shift;;
 		*) 
 			echo "Unknown flag $flag"
 			usage; 1>&2; exit 1

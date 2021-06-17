@@ -7,6 +7,7 @@
 
 DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cfds_X_ls=NONE
+LITE=0
 
 ########################################
 # main commands to be submitted to jobs
@@ -21,7 +22,7 @@ main(){
     fi
 
     $DIR/ABCD_KRR.sh -csvname $csvname -bhvr_name $bhvr_name -subj_ls $subj_ls -subfold_f \
-$subfold_f -FC_file $FC_file -outdir $outdir -outstem $bhvr_name -cfds_ls $cfds_ls -cfds_X_ls $cfds_X_ls
+$subfold_f -FC_file $FC_file -outdir $outdir -outstem $bhvr_name -cfds_ls $cfds_ls -cfds_X_ls $cfds_X_ls -LITE $LITE
 
     if [ -f $outdir/final_result_${bhvr_name}.mat ]; then
         echo "KRR run successfully. FC file deleted. :)" >> $LF
@@ -55,6 +56,7 @@ REQUIRED ARGUMENTS:
 OPTIONAL ARGUMENTS:
     -cfds_X_ls     <cfds_X_ls>    : List of confounding variables which need to be regressed out 
                                     from RSFC (full path). Default: 'NONE'.
+    -LITE          <0 or 1>       : whether to use the LITE version of KRR
 
 EXAMPLE:
 	$DIR/ABCD_KRR_in_subgroup.sh \\
@@ -80,6 +82,7 @@ while [[ $# -gt 0 ]]; do
         -csvname) csvname=$1; shift;;
         -cfds_ls) cfds_ls=$1; shift;;
         -cfds_X_ls) cfds_X_ls=$1; shift;;
+        -LITE) LITE=$1; shift;;
 		-bhvr_name)
 			bhvr_name=$1
 			shift;;
