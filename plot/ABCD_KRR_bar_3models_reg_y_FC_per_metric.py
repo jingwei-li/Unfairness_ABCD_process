@@ -69,6 +69,6 @@ plt.ylabel('Number of behaviors', fontsize=20)
 plt.xlabel('Accuracy metric: ' + xstr, fontsize=19)
 plt.legend((h3, h2, h1), ('WA better than AA', 'AA better than WA', 'No significant difference'), fontsize=16, frameon=False, bbox_to_anchor=(-0.2, 1.16), loc='upper left')
 
-fname = '/Users/jli/Documents/Research/my_projects/fairAI/ABCD_race/compare_3models_' + metric
+fname = '/Users/jli/Documents/Research/my_projects/fairAI/ABCD_race/compare_3models_' + metric + '_reg_y_FC'
 plt.savefig(fname+'.png', format='png', transparent=True)
 plt.savefig(fname+'.eps', format='eps', transparent=True)
