@@ -1,8 +1,8 @@
 function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid, y_grp1_train_resid, y_grp3_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
-	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics, idx_grp3)
+	f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov_y, all_cov_X, all_y, corr_mat, opt, metrics, idx_grp3)
 
 % [yp_grp2, yt_grp2, acc, pred_stats, y_grp2_resid] = ABCD_KRR_test_grp1Model_on_grp2_perfold( ...
-%     f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov, all_y, corr_mat, opt, metrics)
+%     f, model_dir, behavior, split_grp1, idx_grp1_all, idx_grp2, cov_grp1, all_cov_y, all_cov_X, all_y, corr_mat, opt, metrics)
 %
 % Inputs:
 %   - f: scalar. Fold index.
@@ -14,8 +14,10 @@ function [yp_grp2, yt_grp2, acc, pred_stats, y_grp2, y_grp2_resid, y_grp1_train_
 %   - idx_grp1_all: indices of grp1 subjects in all subjects used for the whole project.
 %   - idx_grp2: indices of grp2 subjects in all subjects used for the whole project
 %   - cov_grp1: #grp1 subjects x #confounds matrix. Confounding variables of grp1 subjects.
-%   - all_cov: #all subjects x #confounds matrix. Confounding variables of all subjects used for the 
-%              whole project.
+%   - all_cov_y: #all subjects x #confounds matrix. Confounding variables of all subjects used for the 
+%                whole project, which need to be regressed from behavioral scores.
+%   - all_cov_X: #all subjects x #confounds matrix. Confounding variables which need to be regressed out
+%                from RSFC.
 %   - all_y: column vector with length = #all subjects. Raw behavioral scores of all subjects used 
 %            for the whole project.
 %   - corr_mat: (#ROI * (#ROI-1) / 2) x #all subjects matrix. Vectorized functional connectivity of
@@ -33,7 +35,7 @@ if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
 	y_grp3 = all_y(idx_grp3);
 end
 
-%% regression, if necessary
+%% regresss confounds from behaviors, if necessary
 y_grp3_resid = [];
 if(strcmpi(cov_grp1, 'none'))
 	y_grp2_resid = y_grp2;
@@ -50,9 +52,9 @@ else
 		end
 	else
 		cov_grp1_train = cov_grp1(split_grp1(f).fold_index == 0, :);
-		cov_grp2 = all_cov(idx_grp2, :);
+		cov_grp2 = all_cov_y(idx_grp2, :);
 		if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
-			cov_grp3 = all_cov(idx_grp3, :);
+			cov_grp3 = all_cov_y(idx_grp3, :);
 		end
 	end
 
@@ -67,9 +69,18 @@ else
 end
 
 %% compute kernel between training subjects in grp1 and testing subjects in grp2.
+% regress confounds from RSFC, if necessary
 idx_grp1_train = idx_grp1_all(split_grp1(f).fold_index == 0);
 FC_grp1_train = corr_mat(:, idx_grp1_train);
 FC_grp2 = corr_mat(:, idx_grp2);
+if(~isempty(all_cov_X))
+    [FC_grp1_train, beta] = CBIG_regress_X_from_y_train(...
+        FC_grp1_train', all_cov_X(idx_grp1_train, :));
+    FC_grp1_train = FC_grp1_train';
+
+    FC_grp2 = CBIG_regress_X_from_y_test(FC_grp2', all_cov_X(idx_grp2, :), beta);
+    FC_grp2 = FC_grp2';
+end
 FSM = CBIG_crossvalid_kernel_with_scale(FC_grp1_train, FC_grp2, ...
 	[], [], opt.optimal_kernel(f).type, opt.optimal_kernel(f).scale);
 FSM = FSM( (length(idx_grp1_train)+1):end, 1:length(idx_grp1_train) );
@@ -79,8 +90,14 @@ FSM_train_nm = ['FSM_' opt.optimal_kernel(f).type];
 if(~strcmpi(opt.optimal_kernel(f).type, 'corr'))
 	FSM_train_nm = [FSM_train_nm '_' num2str(opt.optimal_kernel(f).scale)];
 end
-FSM_train = load(fullfile(model_dir, behavior, 'FSM', [FSM_train_nm '.mat']));
-FSM_train = FSM_train.FSM(split_grp1(f).fold_index == 0, split_grp1(f).fold_index == 0);
+if(exist(fullfile(model_dir, behavior, 'FSM'), 'dir'))
+    FSM_train = load(fullfile(model_dir, behavior, 'FSM', [FSM_train_nm '.mat']));
+    FSM_train = FSM_train.FSM(split_grp1(f).fold_index == 0, split_grp1(f).fold_index == 0);
+else
+    FSM_train = load(fullfile(model_dir, behavior, 'FSM_innerloop', ['fold_' num2str(f)], [FSM_train_nm '.mat']));
+    FSM_train = FSM_train.FSM;
+end
+
 
 %% use optimal parameter to test grp2 subjects
 [yp_grp2, yt_grp2, acc, pred_stats] = CBIG_KRR_test_cv( 0, FSM_train, FSM, ...

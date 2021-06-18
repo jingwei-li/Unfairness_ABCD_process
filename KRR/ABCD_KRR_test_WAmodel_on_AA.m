@@ -1,7 +1,7 @@
-function  ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
+function  ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, cfds_X_ls, full_subj_ls, ...
 	full_FC, split_dir, split_fstem, WA_subdir, AAWA_subdir, outstem)
 
-% ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full_subj_ls, ...
+% ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, cfds_X_ls, full_subj_ls, ...
 %	 full_FC, split_dir, split_fstem, WA_subdir, AAWA_subdir, outstem)
 %
 % Check the performance of KRR models trained on WA when they are tested on AA subjects.
@@ -15,8 +15,13 @@ function  ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full
 %     List of behaviors (full path). Default:
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
 %   - cfds_ls (optional)
-%     List of confounding variable names (full path). Default:
+%     List of confounding variable names which need to be regressed out from behavioral scores
+%     (full path). Default:
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+%   - cfds_X_ls (optional)
+%     List of confounding variable names which need to be regressed out from RSFC (full path).
+%     Default: NONE. If "NONE" or empty vector is passed in, no confound will be regressed out 
+%     from RSFC. 
 %   - full_subj_ls (optional)
 %     List of all subjects involved is project. Default:
 %     '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
@@ -36,8 +41,8 @@ function  ABCD_KRR_test_WAmodel_on_AA(csvname, model_dir, bhvr_ls, cfds_ls, full
 %     fullfile(model_dir, <behavior>, ['final_result' outstem '_' <behavior> '.mat'])
 
 %% default input arguments
-[csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
-	ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, full_subj_ls, full_FC);
+[csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, cfds_X_nm, ncfds_X, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
+	ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, cfds_X_ls, full_subj_ls, full_FC);
 
 %% load confounds of all subjects
 fprintf('Loading confounds of all subjects...\n')
@@ -51,7 +56,20 @@ else
 		cfds_types{sex_idx} = 'categorical';
 	end
 	
-	all_cov = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_nm, cfds_types, full_subj_ls, 'NONE', ',' );
+	all_cov_y = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_nm, cfds_types, full_subj_ls, 'NONE', ',' );
+end
+
+%% load confounds (to be regressed from RSFC)
+fprintf('Loading confounds to be regressed from RSFC of all subjects ...\n')
+if(strcmpi(cfds_X_ls, 'none'))
+    all_cov_X = [];
+else
+    cfds_types = repmat({'continuous'}, 1, ncfds);
+	sex_idx = strcmpi(cfds_nm, 'sex');
+	if(any(sex_idx))
+		cfds_types{sex_idx} = 'categorical';
+	end
+    all_cov_X = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_X_nm, cfds_types, full_subj_ls, 'NONE', ',' );
 end
 
 metrics = {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'};
@@ -96,7 +114,7 @@ for b = 1:nbhvr
 
 		[yp, yt, optimal_acc(f), pred_stats, y_AA{f}, y_AA_resid{f}, y_train_resid{f}, y_matchedWA_resid{f}] = ...
 			ABCD_KRR_test_grp1Model_on_grp2_perfold( f, model_dir, bhvr_nm{b}, ...
-			WA_fold.sub_fold, idxWA_all, idx_AA, covariates, all_cov, all_y, ...
+			WA_fold.sub_fold, idxWA_all, idx_AA, covariates, all_cov_y, all_cov_X, all_y, ...
 			corr_mat, opt, metrics, idx_matchedWA);
 
 		ssr = sum((yt{1} - yp{1}).^2) ./ length(yt{1});

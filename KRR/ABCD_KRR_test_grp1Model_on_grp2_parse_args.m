@@ -1,5 +1,5 @@
-function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
-	ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, full_subj_ls, full_FC)
+function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, cfds_X_nm, ncfds_X, full_subj_ls, all_subj, idx_full_subj, corr_mat] = ...
+	ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, cfds_X_ls, full_subj_ls, full_FC)
 
 % [csvname, d, bhvr_nm, nbhvr, cfds_nm, ncfds, all_subj, full_subj_ls, corr_mat] = ...
 %	 ABCD_KRR_test_grp1Model_on_grp2_parse_args(csvname, bhvr_ls, cfds_ls, full_subj_ls, full_FC)
@@ -11,8 +11,10 @@ function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, al
 %   - csvname: Name of csv file containing all behavioral and confonding variables.
 %   - bhvr_ls: Behaviors list. Default:
 %         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/behavior_list.txt'
-%   - cfds_ls: Confounds list. Default:
+%   - cfds_ls: Confounds list to be regressed from behavioral scores. Default:
 %         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/confounds_list.txt'
+%   - cfds_X_ls: List of confounding variable names to be regressed from RSFC (full path). Default: NONE.
+%                If 'NONE' or empty vector is passed in, then no regressors will be regressed from RSFC.
 %   - full_subj_ls: List of all subjects involved is project. Default:
 %         '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists/subjects_pass_rs_pass_pheno.txt'
 %   - full_FC: Functional connectivity file corresponding to 'full_subj_ls'. Default:
@@ -23,8 +25,10 @@ function [csvname, subj_hdr, d, bhvr_nm, nbhvr, cfds_nm, ncfds, full_subj_ls, al
 %   - d: table read from 'csvname'.
 %   - bhvr_nm: behavioral names.
 %   - nbhvr: number of behaviors.
-%   - cfds_nm: confounding variable names.
-%   - ncfds: number of confounds.
+%   - cfds_nm: names of confounding variables to be regressed from behavioral scores.
+%   - ncfds: number of confounds to be regressed from behavior.
+%   - cfds_X_nm: names of confounding variables to be regressed from RSFC.
+%   - ncfds_X: number of confounds to be regressed from RSFC.
 %   - full_subj_ls: return default value if input 'full_subj_ls' is empty.
 %   - all_subj: cell of subject IDs read from 'full_subj_ls'.
 %   - corr_mat: #features x #subjects functional connectivity, read from 'full_FC'.
@@ -54,6 +58,14 @@ if(~exist('cfds_ls', 'var') || isempty(cfds_ls))
 	cfds_ls = fullfile(ls_dir, 'confounds_list.txt');
 end
 [cfds_nm, ncfds] = CBIG_text2cell(cfds_ls);
+if(~exist('cfds_X_ls', 'var') || isempty(cfds_X_ls))
+    cfds_X_ls = 'NONE';
+end
+if(~strcmpi(cfds_X_ls, 'none'))
+    [cfds_X_nm, ncfds_X] = CBIG_text2cell(cfds_X_ls);
+else
+    cfds_X_nm = []; ncfds_X = 0;
+end
 if(~exist('full_subj_ls', 'var') || isempty(full_subj_ls))
 	full_subj_ls = fullfile(ls_dir, 'subjects_pass_rs_pass_pheno.txt');
 end
