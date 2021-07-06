@@ -29,7 +29,6 @@ main() {
 	mkdir -p $work_dir
 
     for b in $behaviors; do
-        if [ "$b" == "pea_ravlt_sd_trial_vi_tc" ]; then continue; fi
 
 	    memory=35
 
