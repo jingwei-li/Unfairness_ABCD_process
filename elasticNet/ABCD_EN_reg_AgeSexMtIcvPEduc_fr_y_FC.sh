@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Wrapper script to perform kernel ridge regression on whole population.
+# Wrapper script to perform elastic net on whole population.
 # Confounding variables are regressed from both behavioral scores and RSFC.
 #
 # Jingwei Li, 20210625
@@ -21,7 +21,7 @@ cfds_ls=$ls_dir/confounds_list.txt
 cfds_X_ls=$cfds_ls
 
 FC_file=$proj_dir/mat/RSFC/pass_rs_pass_pheno_5351.mat
-outdir=$proj_dir/models/elasticNet/20200721/reg_AgeSexMtIcvPEduc_fr_y_FC
+outdir=$proj_dir/models/elasticNet/20210627/reg_AgeSexMtIcvPEduc_fr_y_FC
 
 subfold_dir=$proj_dir/mat/matchANDsplit/20200719
 subfold_stem=_pass_rs_pass_pheno
@@ -55,11 +55,11 @@ $FC_file -outdir $outdir/$b -outstem $b -csvname $csvname -cfds_ls $cfds_ls -cfd
 #############################
 usage() { echo "
 NAME:
-    ABCD_EN_reg_AgeSexMtIcvPEduc_from_y.sh
+    ABCD_EN_reg_AgeSexMtIcvPEduc_fr_y_FC.sh
 
 DESCRIPTION:
-    Wrapper script to perform kernel ridge regression on whole population.
-    Confounding variables are regressed from behavioral scores.
+    Wrapper script to perform elastic net on whole population.
+    Confounding variables are regressed from behavioral scores and RSFC.
 
 ARGUMENTS:
     -h                            : Display help information.
