@@ -1,8 +1,8 @@
 function ABCD_KRR_learned_BWAS(model_dir, has_subdir, split_dir, split_fstem, outmat, fig_dir, ...
-    full_FC, subj_ls, bhvr_ls, colloq_ls, nfolds)
+    full_FC, bhvr_ls, colloq_ls, nfolds)
 
-% ABCD_KRR_learned_BWAS(model_dir, has_subdir, split_dir, split_fstem, outdir, outstem,...
-%     subj_ls, bhvr_ls, colloq_ls)
+% ABCD_KRR_learned_BWAS(model_dir, has_subdir, split_dir, split_fstem, outmat, fig_dir, ...
+%     full_FC, bhvr_ls, colloq_ls, nfolds)
 %
 % Compute the brain-wide behavior association learned by kernal regression model.
 % In detial, calculate the covariance between FC and predicted behaviors in the training
@@ -42,20 +42,24 @@ end
 
 proj_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race');
 ls_dir = fullfile(proj_dir, 'scripts', 'lists');
-if(~exist('subj_ls', 'var') || isempty(subj_ls))
-    subj_ls = fullfile(ls_dir, 'subjects_pass_rs_pass_pheno.txt');
-end
-[full_subj, nsub] = CBIG_text2cell(subj_ls);
 
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
-[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+if(exist(bhvr_ls, 'file'))
+    [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+else
+    bhvr_nm = {bhvr_ls};  nbhvr = 1;
+end
 
 if(~exist('colloq_ls', 'var') || isempty(colloq_ls))
     colloq_ls = fullfile(ls_dir, 'colloquial_list.txt');
 end
-colloq_nm = CBIG_text2cell(colloq_ls);
+if(exist(colloq_ls, 'file'))
+    colloq_nm = CBIG_text2cell(colloq_ls);
+else
+    colloq_nm = {colloq_ls};
+end
 
 if(~exist('full_FC', 'var') || isempty(full_FC))
     full_FC = fullfile(proj_dir, 'mat', 'RSFC', 'pass_rs_pass_pheno_5351.mat');
@@ -68,8 +72,13 @@ for b = 1:nbhvr
     fprintf('#%d behavior: %s\n', b, bhvr_nm{b})
     %% load fold splits
     split_fname = fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
+    if(~exist(split_fname, 'file'))
+        split_fname = fullfile(split_dir, [bhvr_nm{b} split_fstem '.mat']);
+    end
     load(split_fname)
     assert(length(sub_fold) == nfolds, 'Input nfolds deviartes from #folds in sub_fold.')
+    size(corr_mat)
+    size(sub_fold(1).fold_index)
 
     for f = 1:nfolds
         %% load KRR prediction of training subjects

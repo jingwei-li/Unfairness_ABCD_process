@@ -52,12 +52,20 @@ end
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
 end
-[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+if(exist(bhvr_ls, 'file'))
+    [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+else
+    bhvr_nm = {bhvr_ls};  nbhvr = 1;
+end
 
 if(~exist('colloq_ls', 'var') || isempty(colloq_ls))
     colloq_ls = fullfile(ls_dir, 'colloquial_list.txt');
 end
-colloq_nm = CBIG_text2cell(colloq_ls);
+if(exist(colloq_ls, 'file'))
+    colloq_nm = CBIG_text2cell(colloq_ls);
+else
+    colloq_nm = {colloq_ls};
+end
 
 if(~exist('csvname', 'var') || isempty(csvname))
     csvname = fullfile(ls_dir, 'phenotypes_pass_rs.txt');
@@ -81,6 +89,9 @@ cov_testAA = zeros(size(corr_mat, 1), size(corr_mat, 2), nfolds, nbhvr);
 cov_testWA = zeros(size(corr_mat, 1), size(corr_mat, 2), nfolds, nbhvr);
 for b = 1:nbhvr
     split_fname = fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
+    if(~exist(split_fname, 'file'))
+        split_fname = fullfile(split_dir, [bhvr_nm{b} split_fstem '.mat']);
+    end
     load(split_fname)
     assert(length(sub_fold) == nfolds, 'nfolds not equal to the length of sub_fold.')
 

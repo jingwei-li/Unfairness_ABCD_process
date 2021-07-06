@@ -1,4 +1,4 @@
-function ABCD_KRR_training_prediction(model_dir, has_subdir, split_dir, split_fstem, bhvr_ls)
+function ABCD_KRR_training_prediction(model_dir, has_subdir, split_dir, split_fstem, bhvr_ls, LITE)
 
 % ABCD_KRR_training_prediction(model_dir, has_subdir, split_dir, split_fstem, bhvr_ls)
 %
@@ -13,6 +13,9 @@ metrics = {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'};
 if(ischar(has_subdir))
     has_subdir = str2num(has_subdir);
 end
+if(~exist('LITE', 'var') || isempty(LITE))
+    LITE = true;
+end
 
 proj_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race');
 ls_dir = fullfile(proj_dir, 'scripts', 'lists');
@@ -22,7 +25,7 @@ end
 [bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
 
 %% load FSM, if KRR results WERE NOT saved for each behavior separately.
-if(~has_subdir)
+if(~has_subdir && LITE)
     load(fullfile(model_dir, 'FSM', 'FSM_corr.mat'))
 end
 
@@ -30,6 +33,9 @@ for b = 1:nbhvr
     fprintf('#%d behavior: %s\n', b, bhvr_nm{b})
     %% load fold splits
     split_fname = fullfile(split_dir, ['sub_fold' split_fstem '_' bhvr_nm{b} '.mat']);
+    if(~exist(split_fname, 'file'))
+        split_fname = fullfile(split_dir, [bhvr_nm{b} split_fstem '.mat']);
+    end
     load(split_fname)
     nfolds = length(sub_fold);
 
@@ -42,12 +48,20 @@ for b = 1:nbhvr
     opt = load(opt);
 
     %% load FSM, if KRR results WERE saved for each behavior separately.
-    if(has_subdir)
-        load(proj_dir, 'FSM', 'FSM_corr.mat')
+    if(has_subdir && LITE)
+        load(fullfile(model_dir, bhvr_nm{b}, 'FSM', 'FSM_corr.mat'))
     end
 
     for f = 1:nfolds
         fprintf('\tFold %d\n', f)
+        if(~LITE)
+            if(has_subdir)
+                load(fullfile(model_dir, bhvr_nm{b}, 'FSM_innerloop', ['fold_' num2str(f)], 'FSM_corr.mat'))
+            else
+                load(fullfile(model_dir, 'FSM_innerloop', ['fold_' num2str(f)], 'FSM_corr.mat'))
+            end
+        end
+
         %% load regressed y, select regressed y of training subjects
         if(has_subdir)
             y = fullfile(model_dir, bhvr_nm{b}, 'y', ['fold_' num2str(f)], ['y_regress_' bhvr_nm{b} '.mat']);
@@ -59,7 +73,11 @@ for b = 1:nbhvr
         y_orig = y.y_orig(sub_fold(f).fold_index==0);
 
         %% select FSM among training subjects
-        kernel_train = FSM(sub_fold(f).fold_index==0, sub_fold(f).fold_index==0);
+        if(LITE)
+            kernel_train = FSM(sub_fold(f).fold_index==0, sub_fold(f).fold_index==0);
+        else
+            kernel_train = FSM;
+        end
 
         %% train KRR with optimal hyperparameters, and predict behaviors of training subjects
         [y_p, y_t, acc, pred_stats] = CBIG_KRR_test_cv_training_scores( bin_flag, kernel_train, ...
