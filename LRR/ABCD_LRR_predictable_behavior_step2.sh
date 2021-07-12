@@ -27,7 +27,9 @@ main() {
         curr_bhvr=${bhvr_nm[$i]}
         log_dir=$model_dir/$curr_bhvr/logs
 
-        for curr_fold in $(seq 34 1 42); do
+        for curr_fold in $(seq 1 1 120); do
+            curr_out=$model_dir/$curr_bhvr/perm/fold_${curr_fold}.mat
+            if [ -f $curr_out ]; then continue; fi
             LF=$log_dir/predictability_step2_${curr_fold}.log
             if [ -f $LF ]; then rm $LF; fi
 
@@ -43,7 +45,7 @@ main() {
                 '$colloq_nm'); exit; \" >> $LF 2>&1 "
             work_dir=$log_dir/HPC
             jname=ABCD_LRR_predictability_step2_${curr_bhvr}_${curr_fold}
-            $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 02:00:00 -mem 30G -ncpus 1 \
+            $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 04:00:00 -mem 30G -ncpus 1 \
                 -name $jname -joberr $work_dir/$jname.err -jobout $work_dir/$jname.out
             sleep 10s
         done

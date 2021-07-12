@@ -42,7 +42,7 @@ end
 p_perm = zeros(nbhvr, 1);
 for b = 1:nbhvr
     opt = load(fullfile(model_dir, bhvr_nm{b}, 'results', 'optimal_acc', ...
-        [bhvr_nm{b} '_final_acc.mat']));
+        [bhvr_nm{b} '.mat']));
     Nfolds = length(opt.optimal_statistics);
     orig_stats = zeros(Nfolds, 1);
     for f = 1:Nfolds
@@ -55,10 +55,10 @@ for b = 1:nbhvr
     else
         metrics = {'corr','COD','predictive_COD','MAE','MAE_norm','MSE','MSE_norm'};
         for k = 1:length(metrics)
-            stats_perm.(metrics{k}) = zeros(Nfolds, Nperm);
+            stats_perm.(metrics{k}) = zeros(Nfolds, Nperm+1);
         end
         for f = 1:Nfolds
-            curr_perm = load(fullfile(model_dir, bhvr_nm, 'perm', ['fold_' num2str(f) '.mat']));
+            curr_perm = load(fullfile(model_dir, bhvr_nm{b}, 'perm', ['fold_' num2str(f) '.mat']));
             for k = 1:length(metrics)
                 stats_perm.(metrics{k})(f,:) = curr_perm.stats_perm.(metrics{k})(1,:);
             end
