@@ -109,8 +109,8 @@ switch metric
     case {'predictive_COD', 'pCOD'}
         ss_res_AA = sum((null_yt_AA - null_yp_AA).^2, 1) ./ length(null_yt_AA);
         ss_res_WA = sum((null_yt_WA - null_yp_WA).^2, 1) ./ length(null_yt_WA);
-        ss_total = sum(([y_train] - mean(y_train)).^2, 1) ./ ...
-            length([y_train]);
+        ss_total = sum(([null_yt_AA; null_yt_WA] - mean(y_train)).^2, 1) ./ ...
+            length([null_yt_AA; null_yt_WA]);
         
         null_acc_AA = bsxfun(@minus, 1, ss_res_AA ./ ss_total);
         null_acc_WA = bsxfun(@minus, 1, ss_res_WA ./ ss_total);

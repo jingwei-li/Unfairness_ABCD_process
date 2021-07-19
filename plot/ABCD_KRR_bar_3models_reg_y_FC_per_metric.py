@@ -14,14 +14,14 @@ grey = [0.9, 0.9, 0.9, 1]
 Nbehavior = 36
 
 df = pd.DataFrame(dict(
-	allAArandWA_WAbetter = [20, 11],
-	allAArandWA_sigdiff = [20+5, 11+20],
+	allAArandWA_WAbetter = [24, 11],
+	allAArandWA_sigdiff = [24+5, 11+20],
 	allAArandWA_all = [Nbehavior] * 2,
 	randWA_WAbetter = [26, 13],
 	randWA_sigdiff = [26+2, 13+16],
 	randWA_all = [Nbehavior] * 2,
-	allAA_WAbetter = [17, 11],
-	allAA_sigdiff = [17+6, 11+22],
+	allAA_WAbetter = [19, 11],
+	allAA_sigdiff = [19+8, 11+22],
 	allAA_all = [Nbehavior] * 2))
 
 fig = plt.figure(figsize=(6.5, 8))
