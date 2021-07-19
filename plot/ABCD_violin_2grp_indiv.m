@@ -1,5 +1,5 @@
 function ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
-	tit, colloq_nm, sigdiff_idx, outdir, outstem, metric)
+	tit, colloq_nm, sigdiff_idx, outdir, outstem, metric, cutoff)
 
 	% ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
 	%	  tit, colloq_nm, sigdiff_idx, outdir, outstem)
@@ -14,13 +14,19 @@ function ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
 	%   - sigdiff_idx: indices of behaviors with significant group difference.
 	%   - outdir: output directory, full path.
 	%   - outstem: output name relative to outdir, without extension.
+    %   - cutoff: true or false. "True" means values below -1 and above 1 will not
+    %             be shown. False means all values will be shown. Defaul: true
 	%
 
 	nbhvr = size(data, 3);
 
-	if(~exist('metric', 'var'))
+	if(~exist('metric', 'var') || isempty(metric))
 		metric = 'predictive_COD';
 	end
+
+    if(~exist('cutoff', 'var') || isempty(cutoff))
+        cutoff = true;
+    end
 
 	f = figure;
 	hold on
@@ -60,15 +66,18 @@ function ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
 	
 	if(strfind(metric, 'COD'))
 		ylm = get(gca, 'ylim');
-		if(ylm(1)<-1)
+		if(ylm(1)<-1 && cutoff)
 			ylm(1) = -1;
 			warning('There are behaviors with accuracy lower than -1.')
 		end
-		if(ylm(2)>2)
+		if(ylm(2)>2 && cutoff)
 			ylm(2) = 1;
 			warning('There are values higher than 1.')
 		end
-		set(gca, 'ylim', ylm, 'ytick', [ylm(1):0.2:ylm(2)]);
+		set(gca, 'ylim', ylm);
+        if(ylm(2) > 0.4)
+            set(gca, 'ytick', [ylm(1):0.2:ylm(2)])
+        end
 	end
 	yl = ylabel(y_label);
 	set(yl, 'fontsize', 16, 'linewidth', 2)
