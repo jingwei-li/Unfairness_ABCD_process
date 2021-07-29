@@ -185,6 +185,30 @@ ABCD_KRR_test_HCP_predictable_behavior( ...
     fullfile(proj_dir, 'HCP_race', 'trained_model', 'split_948sub_AA_matchedWA_rm_AA_outliers18', 'outputs', 'l2_0_20_opt_pCOD_no_reg') )
 ```
 
+### Plot accuracies across all subjects
+
+1. metric: predictive COD
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI';
+ABCD_to_HCP_violin_allsubj( ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'models', 'KRR', 'no_reg', 'ABCD_to_HCP'), 'predictive_COD', ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'figures', 'KRR', 'no_reg', 'ABCD_to_HCP'), 'pCOD_allsubj', ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'scripts', 'lists', 'ABCD_behavior.txt'), ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'scripts', 'lists', 'HCP_colloquial.txt'))
+```
+
+2. metric: Pearson's correlation
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI';
+ABCD_to_HCP_violin_allsubj( ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'models', 'KRR', 'no_reg', 'ABCD_to_HCP'), 'corr', ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'figures', 'KRR', 'no_reg', 'ABCD_to_HCP'), 'corr_allsubj', ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'scripts', 'lists', 'ABCD_behavior.txt'), ...
+    fullfile(proj_dir, 'cross_ABCD_HCP', 'scripts', 'lists', 'HCP_colloquial.txt'))
+```
+
 
 ### Compare prediction accuracy between AA and WA of test ABCD subjects
 

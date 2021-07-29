@@ -10,7 +10,7 @@ if(~exist('HCP_FC', 'var') || isempty(HCP_FC))
     HCP_FC = fullfile(proj_dir, 'HCP_race', 'mat', 'RSFC_948.mat');
 end
 if(~exist('ABCD_FC', 'var') || isempty(ABCD_FC))
-    ABCD_FC = fullfile(proj_dir, 'ABCD_race', 'mat', 'RSFC', 'pass_rs_pass_pheno_5351.mat');
+    ABCD_FC = fullfile(proj_dir, 'ABCD_race', 'mat', 'RSFC', 'pass_rs_pass_pheno_5351_z.mat');
 end
 if(~exist('HCP_bhvr_ls', 'var') || isempty(HCP_bhvr_ls))
     HCP_bhvr_ls = fullfile(proj_dir, 'cross_ABCD_HCP', 'scripts', 'lists', 'HCP_behavior.txt');
