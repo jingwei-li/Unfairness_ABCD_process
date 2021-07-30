@@ -47,6 +47,7 @@ ABCD_KRR_violin_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'FCno
       fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
       '_pass_rs_pass_pheno', 1000, 'predictive_COD', \
       fullfile('$proj_dir', 'mat', 'predictability', 'KRR', 'pCOD_pass_rs_pass_pheno_FCnocensor_reg_AgeSexMtIcvPEduc_fr_y_FC.mat'));  exit; \" "
+   echo $cmd
    work_dir=$proj_dir/models/KRR/20200721/FCnocensor_reg_AgeSexMtIcvPEduc_fr_y_FC/logs
    jname=perm_pCOD_predictability
    $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 30:00:00 -mem 12G \
@@ -64,6 +65,7 @@ ABCD_KRR_violin_acc_allsub(fullfile(proj_dir, 'models', 'KRR', '20200721', 'FCno
       fullfile('$proj_dir', 'mat', 'matchANDsplit', '20200719'), \
       '_pass_rs_pass_pheno', 1000, 'corr', \
       fullfile('$proj_dir', 'mat', 'predictability', 'KRR', 'corr_pass_rs_pass_pheno_FCnocensor_reg_AgeSexMtIcvPEduc_fr_y_FC.mat'));  exit; \" "
+   echo $cmd
    work_dir=$proj_dir/models/KRR/20200721/FCnocensor_reg_AgeSexMtIcvPEduc_fr_y_FC/logs
    jname=perm_corr_predictability
    $CBIG_CODE_DIR/setup/CBIG_pbsubmit -cmd "$cmd" -walltime 30:00:00 -mem 12G \
