@@ -42,7 +42,8 @@ function ABCD_LRR_violin_acc_allsub(model_dir, metric, outdir, outstem, bhvr_ls,
     vio = violinplot(data, [], [], 'ViolinColor', colormat, 'ShowMean', true);
     for i = 1:length(vio)
         vio(i).ViolinPlot.LineWidth = 2;
-        vio(i).ScatterPlot.Marker = '.';
+        %vio(i).ScatterPlot.Marker = '.';
+        vio(i).ScatterPlot.SizeData = 12;
         vio(i).MedianPlot.SizeData = 18;
     end
     hold on

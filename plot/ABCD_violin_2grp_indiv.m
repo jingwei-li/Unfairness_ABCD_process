@@ -34,9 +34,11 @@ function ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
     if(nbhvr<20)
         med_circle = 16;
         med_line = 2;
+        sc_circle = 5;
     else
         med_circle = 3;
         med_line = 0.5;
+        sc_circle = 2;
     end
 
     vio{1} = violinplot(squeeze(data(1,:,:)), [], [1:nbhvr]-step, 'ViolinColor', colormat(1,:), 'ShowMean', true, 'Width', width);
@@ -46,7 +48,8 @@ function ABCD_violin_2grp_indiv(data, colormat, y_label, legends, ...
     for i = 1:3
         for b = 1:nbhvr
             vio{i}(b).ViolinPlot.LineWidth = 2;
-            vio{i}(b).ScatterPlot.Marker = '.';
+            %vio{i}(b).ScatterPlot.Marker = '.';
+            vio{i}(b).ScatterPlot.SizeData = sc_circle;
             vio{i}(b).MedianPlot.SizeData = med_circle;
             vio{i}(b).MedianPlot.LineWidth = med_line;
         end
