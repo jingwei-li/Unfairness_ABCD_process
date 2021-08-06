@@ -1,6 +1,5 @@
 function ABCD_KRR_scatter_AAvsWA(colloq_ls, pCOD_diff, outdir)
 
-addpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 %% figure configuration parameters setup
 colorAA = [114 147 203] ./ 255;
@@ -8,7 +7,7 @@ colorWA = [132 186 91] ./ 255;
 sz = 25;
 
 %% parse input arguments
-ls_dir = '/data/users/jingweil/storage/MyProject/fairAI/ABCD_race/scripts/lists';
+ls_dir = fullfile(getenv('HOME'), 'storage', 'MyProject', 'fairAI', 'ABCD_race', 'scripts', 'lists');
 if(~exist('colloq_ls', 'var') || isempty(colloq_ls))
     colloq_ls = fullfile(ls_dir, 'colloquial_list.txt');
 end
@@ -85,7 +84,6 @@ for b = 1:nbhvr
     end
 end
 
-rmpath(genpath( '/data/users/jingweil/storage/from_HOME/code/plotting_functions/'))
 
 end
 
