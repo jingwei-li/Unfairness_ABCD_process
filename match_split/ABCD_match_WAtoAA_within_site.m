@@ -76,8 +76,12 @@ for b = 1:size(bhvr_zn,2)
         if(~isempty(curr_WA))
             [~, curr_AAidx] = intersect(subjects, curr_AA, 'stable');
             [~, curr_WAidx] = intersect(subjects, curr_WA, 'stable');
-            mAA = [cfds_zn(curr_AAidx, :) bhvr_zn(curr_AAidx, b)];
-            mWA = [cfds_zn(curr_WAidx, :) bhvr_zn(curr_WAidx, b)];
+
+            mAA = bhvr_zn(curr_AAidx, b); mWA = bhvr_zn(curr_WAidx, b);
+            if(~isempty(cfds_zn))
+                mAA = [cfds_zn(curr_AAidx, :) mAA];
+                mWA = [cfds_zn(curr_WAidx, :) mWA];
+            end
             
             mAA_3d = reshape(mAA, size(mAA,1), 1, size(mAA,2));
             mWA_3d = reshape(mWA, 1, size(mWA,1), size(mWA,2));
@@ -95,6 +99,7 @@ for b = 1:size(bhvr_zn,2)
                     mAA_newiter(unmatch_idx,:) = [];
                     cost_mat(unmatch_idx, :) = [];
                     [asgn_WAidx_newiter, cost_new_iter] = munkres(cost_mat);
+                    curr_AA = curr_AA_newiter;
                 end
                 
                 cost_new_iter = cost_new_iter / length(curr_AA_newiter);
@@ -102,8 +107,12 @@ for b = 1:size(bhvr_zn,2)
                 cost_currAA = cost_mat(cost_idx);
                 [max_cost, maxidx] = max(cost_currAA);
                 
+                if(iter==1)
+                    asgn_WAidx = asgn_WAidx_newiter;
+                end
+                
                 cost_diff = cost_last_iter - cost_new_iter;
-                if(cost_diff / cost_new_iter <= 0.05 && max_cost<=cost_ceil)
+                if(cost_new_iter<1e-10 || (cost_diff / cost_new_iter <= 0.05 && max_cost<=cost_ceil))
                     break
                 end
                 

@@ -78,7 +78,11 @@ end
 if(~exist('cfds_ls', 'var') || isempty(cfds_ls))
     cfds_ls = fullfile(ls_dir, 'confounds_list.txt');
 end
-cfds_nm = CBIG_text2cell(cfds_ls);
+if(strcmpi(cfds_ls, 'none'))
+    cfds_nm = [];
+else
+    cfds_nm = CBIG_text2cell(cfds_ls);
+end
 
 if(~exist('bhvr_ls', 'var') || isempty(bhvr_ls))
     bhvr_ls = fullfile(ls_dir, 'behavior_list.txt');
