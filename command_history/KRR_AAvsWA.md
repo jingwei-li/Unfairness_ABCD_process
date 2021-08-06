@@ -197,6 +197,8 @@ CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(l
 
 ### Violin plot
 
+#### Plot accuracy difference
+
 1. metric: predictive COD
 
    Only plot predictable behaviors:
@@ -249,6 +251,50 @@ CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(l
       fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', 'sig_corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC.mat'), ...
       'corr', ...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), 'corr_allbehaviors')
+   ```
+
+#### Plot "predicted score - original score"
+
+1. Only plot behaviors with predictable COD
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_KRR_violin_predVStrue(...
+       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+       'predVStrue_predictableCOD', fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC_predictable.mat'), [], ...
+       fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC', 'lists', 'pCOD_predictable_colloquial.txt'))
+   ```
+
+2. Only plot behaviors with predictable corr
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+   ABCD_KRR_violin_predVStrue(...
+       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+       'predVStrue_predictableCORR', fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'corr_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC_predictable.mat'), [], ...
+       fullfile(proj_dir, 'models', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC', 'lists', 'corr_predictable_colloquial.txt'))
+   ```
+
+3. All 36 behaviors
+
+   ```matlab
+   proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+
+   % Are AA-WA differences in terms of "predicted - orginal score" significant?
+   ABCD_PermTest_predVStrue_AAvsWA(fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC.mat'), [], ...
+       fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'sig_predVStrue_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC.mat'))
+
+   % plot
+   ABCD_KRR_violin_predVStrue(...
+       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'reg_AgeSexMtIcvPEduc_fr_y_FC'), ...
+       'predVStrue_allbehaviors', fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'pCOD_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC.mat'), ...
+       fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', ...
+       'sig_predVStrue_pass_rs_pass_pheno_reg_AgeSexMtIcvPeduc_fr_y_FC.mat'), [])
    ```
 
 ## ------ KRR: no confounds regression ------
@@ -416,6 +462,8 @@ CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(l
 
 ### Violin plot
 
+#### Plot accuracy difference
+
 1. metric: predictive COD
 
    Only plot predictable behaviors:
@@ -468,6 +516,7 @@ CBIG_cell2text(colloq_nm, fullfile(model_dir, 'lists', ['R_thres0.15_' num2str(l
       fullfile(proj_dir, 'mat', 'AAvsWA', 'KRR', 'sig_corr_pass_rs_pass_pheno_no_reg.mat'), ...
       'corr', ...
       fullfile(proj_dir, 'figures', 'AAvsWA', 'KRR', '20200721', 'no_reg'), 'corr_allbehaviors')
+    ```
 
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
