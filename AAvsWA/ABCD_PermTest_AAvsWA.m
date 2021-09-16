@@ -97,7 +97,7 @@ H_perm = setdiff(H_perm_all, nbhvr+1);
 sig_diff_idx = sort(H_perm);
 sig_diff_bhvr = bhvr_nm(sig_diff_idx);
 
-save(outmat, 'p_perm', 'H_perm_all', 'H_perm', 'sig_diff_idx', 'sig_diff_bhvr');
+save(outmat, 'p_perm', 'H_perm_all', 'H_perm', 'sig_diff_idx', 'sig_diff_bhvr', 'null_acc_diff');
 
 
 end
