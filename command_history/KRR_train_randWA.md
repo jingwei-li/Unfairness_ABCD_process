@@ -130,6 +130,20 @@ proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
         fullfile(proj_dir, 'mat', 'AAvsWA_train_subpop', 'corr_randWAmodel_reg_AgeSexMtIcvPEduc_y_FC_test_matchedAAvsWA_predictable_WholepopModel.mat'))
     ```
 
+### Plot chord diagrams of model-learned brain-behavioral association
+
+```matlab
+proj_dir = '/home/jingweil/storage/MyProject/fairAI/ABCD_race';
+bhvr_ls = fullfile(proj_dir, 'scripts', 'lists', 'behavior_list.txt');
+[bhvr_nm, nbhvr] = CBIG_text2cell(bhvr_ls);
+for b = 1:nbhvr
+    ABCD_chord_learnedBBA(fullfile(proj_dir, 'mat', 'interpretation', 'KRR', '20200719', ...
+        'reg_AgeSexMtIcvPEduc_fr_y_FC_randWA', ['learned_BWAS_' bhvr_nm{b} '.mat']), ...
+        fullfile(proj_dir, 'figures', 'interpretation', 'KRR', '20200721', ...
+        'reg_AgeSexMtIcvPEduc_fr_y_FC_randWA', ['chord_' bhvr_nm{b}]));
+end
+```
+
 ## ------ KRR: regress age, sex, FD, DVARS, ICV, parental education from behaviors ------
 
 ### Test the random-WA trained model with matched WA subjects
