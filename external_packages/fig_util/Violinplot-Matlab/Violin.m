@@ -138,20 +138,60 @@ classdef Violin < handle
                 jitterstrength = density*width;
             end
             jitter = 2*(rand(size(data))-0.5);
+            %%%%%%%%% -- jingwei
+            switch args.PlotPos
+                case 'left'
+                    jitter = -abs(jitter);
+                case 'right'
+                    jitter = abs(jitter);
+                otherwise
+                    jitter = jitter;
+            end
+            %%%%%%%%%%%%%%%%%%%
             obj.ScatterPlot = ...
                 scatter(pos + jitter.*jitterstrength, data, 'filled');
 
             % plot the violin
-            obj.ViolinPlot =  ... % plot color will be overwritten later
-                fill([pos+density*width pos-density(end:-1:1)*width], ...
-                     [value value(end:-1:1)], [1 1 1]);
+            %%%% -- jingwei
+            switch args.PlotPos
+                case 'left'
+                    obj.ViolinPlot =  ... % plot color will be overwritten later
+                        fill([pos+density*0 pos-density(end:-1:1)*width], ...
+                        [value value(end:-1:1)], [1 1 1]);
+                case 'right'
+                    obj.ViolinPlot =  ... % plot color will be overwritten later
+                        fill([pos+density*width pos-density(end:-1:1)*0], ...
+                        [value value(end:-1:1)], [1 1 1]);
+                otherwise
+                    %%%%%% this is the original code
+                    obj.ViolinPlot =  ... % plot color will be overwritten later
+                        fill([pos+density*width pos-density(end:-1:1)*width], ...
+                        [value value(end:-1:1)], [1 1 1]);
+                    %%%%%%%%
+            end
 
             % plot the mini-boxplot within the violin
-            quartiles = quantile(data, [0.25, 0.5, 0.75]);         
-            obj.BoxPlot = ... % plot color will be overwritten later
-                fill(pos+[-1,1,1,-1]*args.BoxWidth, ...
-                     [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
-                     [1 1 1]);
+            quartiles = quantile(data, [0.25, 0.5, 0.75]);    
+            %%%%%% -- jingwei
+            switch args.PlotPos
+                case 'left'
+                    obj.BoxPlot = ... % plot color will be overwritten later
+                        fill(pos+[-1,0,0,-1]*args.BoxWidth, ...
+                        [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
+                        [1 1 1]);
+                case 'right'
+                    obj.BoxPlot = ... % plot color will be overwritten later
+                        fill(pos+[0,1,1,0]*args.BoxWidth, ...
+                        [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
+                        [1 1 1]);
+                otherwise
+                    %%%% this is the orignal code
+                    obj.BoxPlot = ... % plot color will be overwritten later
+                        fill(pos+[-1,1,1,-1]*args.BoxWidth, ...
+                        [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
+                        [1 1 1]);
+                    %%%%%%%%%%
+            end
                  
             % plot the data mean
             meanValue = mean(data);
@@ -163,8 +203,21 @@ classdef Violin < handle
             if meanDensityWidth<args.BoxWidth/2
                 meanDensityWidth=args.BoxWidth/2;
             end
-            obj.MeanPlot = plot(pos+[-1,1].*meanDensityWidth, ...
-                                [meanValue, meanValue]);
+            %%%% -- jingwei
+            switch args.PlotPos
+                case 'left'
+                    obj.MeanPlot = plot(pos+[-1,0].*meanDensityWidth, ...
+                                        [meanValue, meanValue]);
+                case 'right'
+                    obj.MeanPlot = plot(pos+[0,1].*meanDensityWidth, ...
+                                        [meanValue, meanValue]);
+                otherwise
+                    %%%%%%% this is the original code
+                    obj.MeanPlot = plot(pos+[-1,1].*meanDensityWidth, ...
+                                        [meanValue, meanValue]);
+                    %%%%%%%%%%%%%
+            end
+            %%%%%
             obj.MeanPlot.LineWidth = 1;
                  
             IQR = quartiles(3) - quartiles(1);
@@ -338,6 +391,7 @@ classdef Violin < handle
             p.addParameter('ShowData', true, isscalarlogical);
             p.addParameter('ShowNotches', false, isscalarlogical);
             p.addParameter('ShowMean', false, isscalarlogical);
+            p.addParameter('PlotPos', 'center', @ischar);
 
             p.parse(data, pos, varargin{:});
             results = p.Results;
