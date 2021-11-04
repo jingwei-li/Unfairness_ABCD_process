@@ -128,13 +128,13 @@ if(any(n))
     cfds = [cfds age];
 end
 
-n = strcmpi(cfds_nm, 'sex');
+n = strcmpi(cfds_nm, 'gender');
 if(any(n))
     sex = strcmp(d.(cfds_nm{n==1}), 'F');
     cfds = [cfds sex];
 end
 
-possib_cfds = {'FD', 'DVARS', 'ICV', 'peduc_avg'};
+possib_cfds = {'FD', 'DVARS', 'ICV', 'peduc_avg', 'income_trans'};
 for c = 1:length(possib_cfds)
     n = strcmpi(cfds_nm, possib_cfds{c});
     if(any(n))

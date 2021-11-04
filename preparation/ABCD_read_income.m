@@ -1,6 +1,6 @@
-function income = ABCD_read_income(subj_list, race, dohist, hist_fname)
+function [income, income_trans] = ABCD_read_income(subj_list, race, dohist, hist_fname)
 
-% income = ABCD_read_income(subj_list, race, dohist, hist_fname)
+% [income, income_trans] = ABCD_read_income(subj_list, race, dohist, hist_fname)
 % 
 % Read household income from ABCD csv file. Create histograms of income distributions
 % by race.
@@ -67,6 +67,45 @@ empty_idx = cellfun(@isempty, income);
 if(any(empty_idx))
     income{empty_idx} = '999';
 end
+
+%% transform categorical data into median income of every group
+income_trans = cellfun(@str2num, income);
+nan_idx = income_trans==777 | income_trans==999;
+income_trans(nan_idx) = nan;
+% 1= Less than $5,000
+idx = income_trans==1;
+income_trans(idx) = 2500;
+% 2=$5,000 through $11,999
+idx = income_trans==2;
+income_trans(idx) = 8500;
+% 3=$12,000 through $15,999
+idx = income_trans==3;
+income_trans(idx) = 14000;
+% 4=$16,000 through $24,999
+idx = income_trans==4;
+income_trans(idx) = 20500;
+% 5=$25,000 through $34,999
+idx = income_trans==5;
+income_trans(idx) = 30000;
+% 6=$35,000 through $49,999
+idx = income_trans==6;
+income_trans(idx) = 42500;
+% 7=$50,000 through $74,999
+idx = income_trans==7;
+income_trans(idx) = 62500;
+% 8= $75,000 through $99,999
+idx = income_trans==8;
+income_trans(idx) = 87500;
+% 9=$100,000 through $199,999
+idx = income_trans==9;
+income_trans(idx) = 150000;
+% 10=$200,000 and greater
+idx = income_trans==10;
+x = 1:9;
+y = [2500 8500 14000 20500 30000 42500 62500 87500 150000];
+f = @(b,x) b(1).*exp(b(2).*x)+b(3);                              % Objective Function
+B = fminsearch(@(b) norm(y - f(b,x)), ones(3,1))
+income_trans(idx) = round(f(B, 10)/100)*100;  % use exponentially fitted value
 
 if(dohist==1)
     % 1= Less than $5,000; 2=$5,000 through $11,999; 3=$12,000 through $15,999; 4=$16,000 through $24,999; 

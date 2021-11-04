@@ -1,4 +1,4 @@
-function ABCD_read_all_measures(fmri_dir, FSdir, subj_list, outdir, outstem)
+function ABCD_read_all_measures(fmri_dir, FSdir, subj_list, outdir, outstem, bool_income)
 
 % ABCD_read_all_measures(fmri_dir, subj_list, outdir, outstem)
 %
@@ -30,6 +30,10 @@ function ABCD_read_all_measures(fmri_dir, FSdir, subj_list, outdir, outstem)
 %   4. [outdir '/behavior_list.txt']   -- summary of all required behavioral names
 %   5. [outdir '/colloquial_list.txt']  -- summary of colloquial names of the behavioral measures
 %
+% - bool_income
+%   Bololean. True means confounding variables include family income. False means family income is not
+%   considered. Default: False.
+%
 % Example:
 % ABCD_read_all_measures([], [], ...
 %    '/mnt/isilon/CSC2/Yeolab/Data/ABCD/process/y0/orig_scripts/release2.0/lists/subjects_pass_rs.txt', ...
@@ -39,6 +43,9 @@ function ABCD_read_all_measures(fmri_dir, FSdir, subj_list, outdir, outstem)
 
 dohist = 0;
 subjectkey = CBIG_text2cell(subj_list);
+if(~exist('bool_income', 'var'))
+    bool_income = false;
+end
 
 %% read race
 [race, race_hdr] = ABCD_read_race(subj_list, dohist);
@@ -77,8 +84,19 @@ fprintf('Empty ICV: %d subjects.\n', length(find(ICV_empty)));
 peduc_empty = isnan(peduc_avg);
 fprintf('Empty parental education: %d subjects.\n', length(find(peduc_empty)));
 
+% 8. family income
+if(bool_income)
+    [income, income_trans] = ABCD_read_income(subj_list, race, dohist);
+    income_empty = isnan(income_trans);
+    fprintf('Empty family income: %d subject.\n', length(find(income_empty)));
+end
+
 subjectkey = subjectkey';
-d = table(subjectkey, race, age, gender, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg);
+if(bool_income)
+    d = table(subjectkey, race, age, gender, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg, income_trans);
+else
+    d = table(subjectkey, race, age, gender, site, family_id, rel_grp_id, FD, DVARS, ICV, peduc_avg);
+end
 for i = 1:length(peduc_hdr)
     d.(peduc_hdr{i}) = peduc(:,i);
 end
@@ -184,13 +202,24 @@ colloquial = [colloquial BISBAS_colloquial];
 
 
 %% integrate results
-any_empty = race_empty | age_empty | gender_empty | site_empty | ICV_empty | peduc_empty | ...
-    RAVLT_empty | WISC_empty | NIH_empty | LMT_empty | CBCL_empty | PGBI_empty | ...
-    PPS_empty | UPPS_empty | BISBAS_empty;
+if(bool_income)
+    any_empty = race_empty | age_empty | gender_empty | site_empty | ICV_empty | peduc_empty | ...
+        income_empty | RAVLT_empty | WISC_empty | NIH_empty | LMT_empty | CBCL_empty | ...
+        PGBI_empty | PPS_empty | UPPS_empty | BISBAS_empty;
+else
+    any_empty = race_empty | age_empty | gender_empty | site_empty | ICV_empty | peduc_empty | ...
+        RAVLT_empty | WISC_empty | NIH_empty | LMT_empty | CBCL_empty | PGBI_empty | ...
+        PPS_empty | UPPS_empty | BISBAS_empty;
+end
 any_empty = any_empty | isPhilips;
 pass_subj = subjectkey(~any_empty);
-CBIG_cell2text(pass_subj, fullfile(outdir, ['subjects' outstem '_pass_pheno.txt']));
-writetable(d, fullfile(outdir, ['phenotypes' outstem '.txt']));
+if(bool_income)
+    CBIG_cell2text(pass_subj, fullfile(outdir, ['subjects' outstem '_pass_pheno_income.txt']));
+    writetable(d, fullfile(outdir, ['phenotypes' outstem '_income.txt']));
+else
+    CBIG_cell2text(pass_subj, fullfile(outdir, ['subjects' outstem '_pass_pheno.txt']));
+    writetable(d, fullfile(outdir, ['phenotypes' outstem '.txt']));
+end
 CBIG_cell2text(behaviors, fullfile(outdir, ['behavior_list.txt']))
 CBIG_cell2text(colloquial, fullfile(outdir, ['colloquial_list.txt']))
 
