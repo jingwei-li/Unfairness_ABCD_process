@@ -19,7 +19,7 @@ function ABCD_PermTest_AAvsWA( group_diff, bhvr_ls, metric, outmat )
 %     Output filename (full path).
 % 
 
-alpha = 0.5;
+alpha = 0.05;
 grpdif = load(group_diff);
 
 switch metric

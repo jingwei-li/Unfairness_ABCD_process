@@ -17,7 +17,7 @@ function ABCD_PermTest_predVStrue_AAvsWA(group_diff, bhvr_ls, outmat)
 %
 % Author: Jingwei Li
 
-alpha = 0.5;
+alpha = 0.05;
 nperm = 1000;
 grpdif = load(group_diff);
 
