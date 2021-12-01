@@ -2,11 +2,12 @@
 
 ## Reference
 
-Jingwei Li, Danilo Bzdok, Jianzhong Chen, Angela Tam, Leon Qi Rong Ooi, Avram J. Holmes, Tian Ge, Kaustubh R. Patil, Simon B. Eickhoff, B.T. Thomas Yeo*, Sarah Genon*, _**Cross-ethnicity/race generalization failure of behavioral prediction from resting-state functional connectivity**_, under review.
+Jingwei Li, Danilo Bzdok, Jianzhong Chen, Angela Tam, Leon Qi Rong Ooi, Avram J. Holmes, Tian Ge, Kaustubh R. Patil, Mbemba Jabbi, Simon B. Eickhoff, B.T. Thomas Yeo*, Sarah Genon*, _**Cross-ethnicity/race generalization failure of behavioral prediction from resting-state functional connectivity**_, under review.
 
 ## Background
 
-Machine learning is expected to play a crucial role in precision medicine, yet algorithmic biases towards majority populations may pose a key challenge towards this goal. Here, we assessed such bias in prediction models of behavioral phenotypes from brain functional magnetic resonance imaging. We examined this question using two independent pre-adolescent and adult, respectively, datasets of mixed ethnic/racial composition. When predictive models were trained on data dominated by white Americans (WA), out-of-sample prediction errors were generally higher in African Americans (AA) than for WA. This bias towards WA corresponds to more WA-like brain-behavioral association patterns learned by models. When models were trained on AA only, compared to training only on WA or an equal number of AA and WA participants, AA prediction accuracy improved but stayed below that for WA. Overall, the results point to the need for caution and further research regarding the application of current brain-behavior prediction models in minority population.
+Algorithmic biases that favor majority populations pose a key challenge to the application of machine learning for precision medicine. Here, we assessed such bias in prediction models of behavioral phenotypes from brain functional magnetic resonance imaging. We examined 
+the prediction bias using two independent datasets (pre-adolescent versus adult) of mixed ethnic/racial composition. When predictive models were trained on data dominated by white Americans (WA), out-of-sample prediction errors were generally higher in African Americans (AA) than for WA. This bias towards WA corresponds to more WA-like brain-behavioral association patterns learned by models. When models were trained on AA only, compared to training only on WA or an equal number of AA and WA participants, AA prediction accuracy improved but stayed below that for WA. Overall, the results point to the need for caution and further research regarding the application of current brain-behavior prediction models in minority population.
 
 ## Usage
 
