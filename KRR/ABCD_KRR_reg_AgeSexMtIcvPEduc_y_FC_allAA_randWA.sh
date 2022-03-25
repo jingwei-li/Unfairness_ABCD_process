@@ -42,7 +42,7 @@ main() {
 	    mkdir -p $outdir/$b
         cmd="$DIR/ABCD_KRR_in_subgroup.sh -bhvr_name $b -full_subj_ls $full_subj_ls "
         cmd="$cmd -subj_ls $subj_ls -subfold_f $subfold_f -full_FC_file $full_FC_file "
-	    cmd="$cmd -FC_file $FC_file -outdir $outdir/$b -csvname $csvname -cfds_ls $cfds_ls -LITE 1"
+	    cmd="$cmd -FC_file $FC_file -outdir $outdir/$b -csvname $csvname -cfds_ls $cfds_ls"
         cmd="$cmd -cfds_X_ls $cfds_X_ls"
 
         jname=ABCD_KRR_${b}

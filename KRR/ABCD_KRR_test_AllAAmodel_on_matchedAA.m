@@ -64,13 +64,11 @@ if(strcmpi(cfds_ls, 'none'))
 	covariates = 'NONE';
 else
 	cfds_types = repmat({'continuous'}, 1, ncfds);
-	sex_idx = strcmpi(cfds_nm, 'sex');
+	sex_idx = strcmpi(cfds_nm, 'sex') | strcmpi(cfds_nm, 'gender');
 	if(any(sex_idx))
 		cfds_types{sex_idx} = 'categorical';
 	end
 	
-    csvname
-    full_subj_ls
 	all_cov_y = CBIG_read_y_from_csv( {csvname}, subj_hdr, cfds_nm, cfds_types, full_subj_ls, 'NONE', ',' );
 end
 
@@ -80,7 +78,7 @@ if(strcmpi(cfds_X_ls, 'none'))
     all_cov_X = [];
 else
     cfds_types = repmat({'continuous'}, 1, ncfds);
-	sex_idx = strcmpi(cfds_nm, 'sex');
+	sex_idx = strcmpi(cfds_nm, 'sex') | strcmpi(cfds_nm, 'gender');
 	if(any(sex_idx))
 		cfds_types{sex_idx} = 'categorical';
 	end

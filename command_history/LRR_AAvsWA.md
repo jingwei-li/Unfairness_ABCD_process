@@ -26,7 +26,7 @@ ABCD_LRR_predictable_behavior_step1('/home/jingweil/storage/MyProject/fairAI/ABC
 #### Step2. repeat LRR with permuted y for each behavior
 
 ```bash
-../LRR/ABCD_LRR_predictable_behavior_step1.sh -Nperm 1000
+../LRR/ABCD_LRR_predictable_behavior_step2.sh -Nperm 1000
 ```
 
 #### Step 3: compute p values

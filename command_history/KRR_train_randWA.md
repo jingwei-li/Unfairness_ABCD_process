@@ -17,7 +17,7 @@ ABCD_create_subfold_randWA(...
 
 ```bash
 cd ../KRR
-././ABCD_KRR_reg_AgeSexMtIcvPEduc_y_FC_randWA.sh
+./ABCD_KRR_reg_AgeSexMtIcvPEduc_y_FC_randWA.sh
 ```
 
 ### Test the random-WA trained model with matched WA subjects

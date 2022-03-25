@@ -11,7 +11,7 @@ DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 proj_dir=/home/jingweil/storage/MyProject/fairAI/ABCD_race
 model_dir=$proj_dir/models/LRR/20210629/reg_AgeSexMtIcvPEduc_fr_y_FC
-cov_stem="_age_sex_FD_DVARS_ICV_peduc_avg"
+cov_stem="_age_gender_FD_DVARS_ICV_peduc_avg"
 FC_file=$proj_dir/mat/RSFC/pass_rs_pass_pheno_5351.mat
 folds_dir=$proj_dir/mat/matchANDsplit/20200719
 folds_fstem="_pass_rs_pass_pheno"

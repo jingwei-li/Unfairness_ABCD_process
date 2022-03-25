@@ -91,7 +91,7 @@ if(~exist(cfds_file, 'file'))
         covariates = 'NONE';
     else
         cfds_types = repmat({'continuous'}, 1, Ncfds);
-        sex_idx = strcmpi(cfds_nm, 'sex');
+        sex_idx = strcmpi(cfds_nm, 'sex') | strcmpi(cfds_nm, 'gender');
         if(any(sex_idx))
             cfds_types{sex_idx} = 'categorical';
         end
@@ -109,7 +109,7 @@ if(~exist(cfds_X_file, 'file'))
         cov_X = [];
     else
         cfds_types = repmat({'continuous'}, 1, Ncfds_X);
-        sex_idx = strcmpi(cfds_nm, 'sex');
+        sex_idx = strcmpi(cfds_nm, 'sex') | strcmpi(cfds_nm, 'gender');
         if(any(sex_idx))
             cfds_types{sex_idx} = 'categorical';
         end

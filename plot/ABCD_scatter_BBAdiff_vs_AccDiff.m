@@ -49,9 +49,11 @@ for b = 1:size(learnedBBA,2)
     simi_AA(b) = CBIG_corr(learnedBBA(:,b), realBBA_AA(:,b));
     simi_WA(b) = CBIG_corr(learnedBBA(:,b), realBBA_WA(:,b));
 end
-Xdata = simi_WA(sig_diff_idx) - simi_AA(sig_diff_idx);
-Ydata = mean(grpdif.(WA_acc)(sig_diff_idx,:) - ...
-    grpdif.(AA_acc)(sig_diff_idx,:), 2);
+%Xdata = simi_WA(sig_diff_idx) - simi_AA(sig_diff_idx);
+%Ydata = mean(grpdif.(WA_acc)(sig_diff_idx,:) - ...
+%    grpdif.(AA_acc)(sig_diff_idx,:), 2);
+Xdata = simi_WA - simi_AA;
+Ydata = mean(grpdif.(WA_acc) - grpdif.(AA_acc), 2);
 
 %% scatter plot
 sz = 25;

@@ -17,7 +17,7 @@ ABCD_create_subfold_allAA(...
 
 ```bash
 cd ../KRR
-././ABCD_KRR_reg_AgeSexMtIcvPEduc_y_FC_allAA.sh
+./ABCD_KRR_reg_AgeSexMtIcvPEduc_y_FC_allAA.sh
 ```
 
 ### Test the all-AA model with matched AA subjects

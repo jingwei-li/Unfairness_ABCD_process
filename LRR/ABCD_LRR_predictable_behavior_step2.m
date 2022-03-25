@@ -63,6 +63,7 @@ end
 
         %% do confound regression from features, if necessary
         if(~isempty(cov_X) && ~strcmpi(cov_X, 'none'))
+            cov_X_mean = mean(cov_X(train_ind, :), 1);
             [feat_train, beta] = CBIG_regress_X_from_y_train(feat_train', ...
                 cov_X(train_ind, :));
             beta_pre = load(fullfile(model_dir, bhvr_nm, ...
@@ -72,7 +73,7 @@ end
             end
 
             feat_test = CBIG_regress_X_from_y_test(feat_test', ...
-                cov_X(test_ind, :), beta);
+                cov_X(test_ind, :), beta, cov_X_mean);
             feat_train = feat_train';  feat_test = feat_test';
         end
 

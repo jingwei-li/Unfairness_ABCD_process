@@ -58,13 +58,14 @@ else
 		end
 	end
 
+	cov_grp1_train_mean = mean(cov_grp1_train);
 	[y_grp1_train_resid, beta] = CBIG_regress_X_from_y_train(y_grp1_train, cov_grp1_train);
 	if(max(abs(y_grp1_train_resid - y_fold_grp1.y_resid(split_grp1(f).fold_index == 0))) > 1e-6);
 		error('Regression in training sample was not replicated. Max diff: %f', max(abs(y_grp1_train_resid - y_fold_grp1.y_resid(split_grp1(f).fold_index == 0))) )
 	end
-	y_grp2_resid = CBIG_regress_X_from_y_test(y_grp2, cov_grp2, beta);
+	y_grp2_resid = CBIG_regress_X_from_y_test(y_grp2, cov_grp2, beta, cov_grp1_train_mean);
 	if(exist('idx_grp3', 'var') && ~isempty(idx_grp3))
-		y_grp3_resid = CBIG_regress_X_from_y_test(y_grp3, cov_grp3, beta);
+		y_grp3_resid = CBIG_regress_X_from_y_test(y_grp3, cov_grp3, beta, cov_grp1_train_mean);
 	end
 end
 
@@ -74,11 +75,12 @@ idx_grp1_train = idx_grp1_all(split_grp1(f).fold_index == 0);
 FC_grp1_train = corr_mat(:, idx_grp1_train);
 FC_grp2 = corr_mat(:, idx_grp2);
 if(~isempty(all_cov_X))
+	cov_X_train_mean = mean(all_cov_X(idx_grp1_train, :));
     [FC_grp1_train, beta] = CBIG_regress_X_from_y_train(...
         FC_grp1_train', all_cov_X(idx_grp1_train, :));
     FC_grp1_train = FC_grp1_train';
 
-    FC_grp2 = CBIG_regress_X_from_y_test(FC_grp2', all_cov_X(idx_grp2, :), beta);
+    FC_grp2 = CBIG_regress_X_from_y_test(FC_grp2', all_cov_X(idx_grp2, :), beta, cov_X_train_mean);
     FC_grp2 = FC_grp2';
 end
 FSM = CBIG_crossvalid_kernel_with_scale(FC_grp1_train, FC_grp2, ...
