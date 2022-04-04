@@ -2,7 +2,7 @@
 
 ## Reference
 
-Jingwei Li, Danilo Bzdok, Jianzhong Chen, Angela Tam, Leon Qi Rong Ooi, Avram J. Holmes, Tian Ge, Kaustubh R. Patil, Mbemba Jabbi, Simon B. Eickhoff, B.T. Thomas Yeo*, Sarah Genon*, _**Cross-ethnicity/race generalization failure of behavioral prediction from resting-state functional connectivity**_, under review.
+Jingwei Li, Danilo Bzdok, Jianzhong Chen, Angela Tam, Leon Qi Rong Ooi, Avram J. Holmes, Tian Ge, Kaustubh R. Patil, Mbemba Jabbi, Simon B. Eickhoff, B.T. Thomas Yeo*, Sarah Genon*, (2022), **Cross-ethnicity/race generalization failure of behavioral prediction from resting-state functional connectivity**, _Science Advances_, 8(11):eabj1812.
 
 ## Background
 
