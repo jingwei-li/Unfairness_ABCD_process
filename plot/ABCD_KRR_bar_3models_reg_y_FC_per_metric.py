@@ -15,10 +15,10 @@ Nbehavior = 36
 
 df = pd.DataFrame(dict(
 	allAArandWA_WAbetter = [22, 12],
-	allAArandWA_sigdiff = [24+5, 12+21],
+	allAArandWA_sigdiff = [22+5, 12+21],
 	allAArandWA_all = [Nbehavior] * 2,
 	randWA_WAbetter = [25, 13],
-	randWA_sigdiff = [25+2, 13+15],
+	randWA_sigdiff = [25+1, 13+15],
 	randWA_all = [Nbehavior] * 2,
 	allAA_WAbetter = [18, 9],
 	allAA_sigdiff = [18+8, 9+20],
