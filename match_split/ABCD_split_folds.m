@@ -50,7 +50,7 @@ for f = 1:length(uniq_fam)
     if(fam_sz(f)>1)
         fam_site = site(idx);
         if(length(unique(fam_site)) > 1)
-            sites_same_fam = [site_same_fam; {unique(fam_site)}];
+            sites_same_fam = [sites_same_fam; {unique(fam_site)}];
             str = strjoin(sprintfc('%d', unique(fam_site)), ',');
             warning('Sites %s must be put into the same fold.', str);
         end
@@ -60,7 +60,7 @@ end
 %% if there are subjects from the same family across different sites, combine those sites
 if(~isempty(sites_same_fam))
     restrictions = cat(1, sites_same_fam{:});
-    for i = 1:length(restrictoins)
+    for i = 1:length(restrictions)
         idx = find(cellfun(@(x)(ismember(restrictions(i), x)), sites_same_fam));
         sites_same_fam{min(idx)} = cat(1, sites_same_fam{idx});
         sites_same_fam(idx(2:end)) = [];
