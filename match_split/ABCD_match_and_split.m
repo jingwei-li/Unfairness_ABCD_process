@@ -152,7 +152,7 @@ end
 bhvr_zn = zscore(bhvr, 0, 1);
 
 %% select AA that can find matched AA, return selected AA and WA
-[selAA, selWA, sel_mAA, sel_mWA] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter, ss_cost_ub);
+[selAA, selWA, sel_mAA, sel_mWA, uq_AA_sites] = ABCD_match_WAtoAA_within_site(subjects, race, site, bhvr_zn, cfds_zn, niter, ss_cost_ub);
 
 %% statistical testing of measure difference between selected AA and WA
 [p_tt, H_tt_FDR, FDR_th] = ABCD_stats_MatchDiff_AAvsWA(sel_mAA, sel_mWA);
@@ -171,7 +171,7 @@ end
 fold_subj = cell(length(bhvr_nm), 1);
 fold_WA = cell(length(bhvr_nm), 1);
 for b = 1:length(bhvr_nm)
-    [fold_subj{b}, fold_WA{b}] = ABCD_split_unselected(subjects, site, selAA(b,:), selWA(b,:), fold_AA{b});
+    [fold_subj{b}, fold_WA{b}] = ABCD_split_unselected(subjects, site, uq_AA_sites, selAA(b,:), selWA(b,:), fold_AA{b});
 end
 
 

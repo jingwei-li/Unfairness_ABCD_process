@@ -1,4 +1,4 @@
-function [fold_subj, fold_WA] = ABCD_split_unselected(subjects, site, sel_AA, sel_WA, fold_AA)
+function [fold_subj, fold_WA] = ABCD_split_unselected(subjects, site, uq_AA_sites, sel_AA, sel_WA, fold_AA)
 
 % [fold_subj] = ABCD_split_unselected(subjects, site, sel_AA, sel_WA, fold_AA)
 %
@@ -44,7 +44,7 @@ for f = 1:Nfolds
     curr_sites = unique(curr_sites);
     
     for st = 1:length(curr_sites)
-        st_idx = uniq_sites == curr_sites(st);
+        st_idx = uq_AA_sites == curr_sites(st);
         used_site(st_idx) = 1;
         
         % each fold contains selected AA and correspnding WA
@@ -62,13 +62,13 @@ end
 
 site_sz = zeros(Nsites, 1);
 for st = 1:Nsites
-    site_sz(st) = length(find(site == uniq_sites(st) ));
+    site_sz(st) = length(find(site == uq_AA_sites(st) ));
 end
 [~, sort_idx] = sort(site_sz, 'descend');
 
 unused = find(used_site==0);
 for st = 1:length(unused)
-    curr_site = uniq_sites(sort_idx(st));
+    curr_site = uq_AA_sites(sort_idx(st));
     
     [~, minf] = min(fold_sz);
     fold_subj{minf} = [fold_subj{minf}; subjects(site == curr_site)'];
@@ -77,6 +77,14 @@ for st = 1:length(unused)
     used_site(unused(st)) = 1;
 end
 
+% handle the subjects who are not in the same site with any AA
+non_AA_sites = setdiff(uniq_sites, uq_AA_sites);
+for st = 1:length(non_AA_sites)
+    curr_site = non_AA_sites(st);
+    [~, minf] = min(fold_sz);
+    fold_subj{minf} = [fold_subj{minf}; subjects(site == curr_site)'];
+    fold_sz(minf) = length(fold_subj{minf});
+end
 
 for f = 1:Nfolds
     fold_subj{f} = intersect(subjects', fold_subj{f}, 'stable');
